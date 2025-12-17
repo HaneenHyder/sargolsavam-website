@@ -1,0 +1,52 @@
+{
+  "declared_events": [
+    {
+      "id": 2,
+      "name": "weergfd",
+      "status": "Declared"
+    },
+    {
+      "id": 3,
+      "name": "o",
+      "status": "Declared"
+    },
+    {
+      "id": 1,
+      "name": "t7",
+      "status": "Declared"
+    },
+    {
+      "id": 5,
+      "name": "TeamA@100",
+      "status": "Declared"
+    },
+    {
+      "id": 4,
+      "name": "HaneenHyder's Org",
+      "status": "Declared"
+    }
+  ],
+  "participants": [
+    {
+      "id": 53,
+      "candidate_id": null,
+      "status": "Winner",
+      "position": 1,
+      "grade": "A"
+    },
+    {
+      "id": 54,
+      "candidate_id": null,
+      "status": "Winner",
+      "position": 2,
+      "grade": "A"
+    },
+    {
+      "id": 52,
+      "candidate_id": null,
+      "status": "Winner",
+      "position": 3,
+      "grade": "A"
+    }
+  ]
+}

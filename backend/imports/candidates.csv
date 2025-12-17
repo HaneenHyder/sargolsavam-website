@@ -1,0 +1,201 @@
+category ,team_code ,chest_no ,name ,role 
+Senior,100,101,Ashique,Captain
+Senior,100,102,Mihad Ihsan,Vice Captain
+Senior,100,103,Adil Ameen ,Mentor
+Senior,100,104,Abdul Wadood,Participant
+Senior,100,105,Adnan MN,Participant
+Senior,100,106,Aflah Zaman NT,Participant
+Senior,100,107,Al Ameen KK,Participant
+Senior,100,108,Ameen Abdul Salam,Participant
+Senior,100,109,Anees Ahmed AS,Participant
+Senior,100,110,Baraa Sahmi,Participant
+Senior,100,111,Fajar Yasar Ali CK,Participant
+Senior,100,112,Muhammed Faez NA,Participant
+Senior,100,113,Muhammed Nadhil,Participant
+Senior,100,114,Muhammed Rafid ,Participant
+Senior,100,115,Shafi FS,Participant
+Senior,100,116,SK Arif Billah,Participant
+Junior,100,117,Abdul Ahad,Participant
+Junior,100,118,Abdul Bazil Ameen,Participant
+Junior,100,119,Abdul Nafih NP,Participant
+Junior,100,120,Abdul Razak R,Participant
+Junior,100,121,Abdulla Hassan PB,Participant
+Junior,100,122,Abdulla Subeer K,Participant
+Junior,100,123,Adnan Haris,Participant
+Junior,100,124,Ahmad Najad KH,Participant
+Junior,100,125,Ajmal Siraj,Participant
+Junior,100,126,Asim Sadath,Participant
+Junior,100,127,Bilal Muhammed Saffir,Participant
+Junior,100,128,Fayiz Muhammed ,Participant
+Junior,100,129,Hafiz Muhammed,Participant
+Junior,100,130,Hamdan A,Participant
+Junior,100,131,Hanan Ad-Ham,Participant
+Junior,100,132,Hanan Thayattil,Participant
+Junior,100,133,Muhammed Afiyan,Participant
+Junior,100,134,Muhammed Jasir PS,Participant
+Junior,100,135,Muhammed Rifan,Participant
+Junior,100,136,Muhammed Shahzad,Participant
+Junior,100,137,Muhammed Sinan TT,Participant
+Junior,100,138,Musaddiq M,Participant
+Junior,100,139,Musafir Muhammed ,Participant
+Junior,100,140,Nasih Ameen AJ,Participant
+Junior,100,141,Nasih Sharafudheen,Participant
+Junior,100,142,Shamil N,Participant
+Junior,100,143,Shihas KS,Participant
+Junior,100,144,Thameem Ahsan KK,Participant
+Sub Junior,100,145,Aabis Muhammed ,Participant
+Sub Junior,100,146,Aarif Ali,Participant
+Sub Junior,100,147,Adhil Abdulla KM,Participant
+Sub Junior,100,148,Ahmad Bilal MA,Participant
+Sub Junior,100,149,Ajwad Noushad ,Participant
+Sub Junior,100,150,Amal Muhammed Noushad,Participant
+Sub Junior,100,151,Bilal Siyasudheen Hamza,Participant
+Sub Junior,100,152,Gazwan Marsid,Participant
+Sub Junior,100,153,Hassan Nasarullah KP,Participant
+Sub Junior,100,154,Irfan Labeeb TL,Participant
+Sub Junior,100,155,Isahaq Shameer ,Participant
+Sub Junior,100,156,Muhammed Bilal ,Participant
+Sub Junior,100,157,Muhammed Sidhan ,Participant
+Sub Junior,100,158,Muhammed Zaman SS,Participant
+Sub Junior,100,159,Nishmal Jabin A,Participant
+Sub Junior,100,160,Omar Mukthar PA ,Participant
+Sub Junior,100,161,Ramees Jaman A,Participant
+Sub Junior,100,162,Raseem Savi C,Participant
+Sub Junior,100,163,Sacthchal P,Participant
+Sub Junior,100,164,Saffan M,Participant
+Sub Junior,100,165,Sainul Hami,Participant
+Sub Junior,100,166,Yahya Jalal,Participant
+Senior,200,201,Umar Mukthar,Captain
+Senior,200,202,Ayman Abdulla,Vice Captain
+Senior,200,203,Faheemul Haque,Mentor
+Senior,200,204,Anas PA,Participant
+Senior,200,205,Bilal ES,Participant
+Senior,200,206,Farhad AH,Participant
+Senior,200,207,Irfan Habeeb C,Participant
+Senior,200,208,Irfan TA,Participant
+Senior,200,209,Misuab AM,Participant
+Senior,200,210,Muaad Bin Jaafar VT,Participant
+Senior,200,211,Muhammed Ameer PS,Participant
+Senior,200,212,Muhammed Yaseen Nissar,Participant
+Senior,200,213,Muzain,Participant
+Senior,200,214,Najad Shameer,Participant
+Senior,200,215,Nizamudheen KR,Participant
+Senior,200,216,Sajid SidhikC,Participant
+Senior,200,217,Suhail KH,Participant
+Junior,200,218,Abdulla Shakeeb CL,Participant
+Junior,200,219,Adam Muhammed Sulthan,Participant
+Junior,200,220,Adil Muhammed,Participant
+Junior,200,221,Ameer Ali S,Participant
+Junior,200,222,Ansar AM,Participant
+Junior,200,223,Arshad A,Participant
+Junior,200,224,Aslam Muhammed,Participant
+Junior,200,225,Fawaz Iqhwan,Participant
+Junior,200,226,Ihlas Ameer,Participant
+Junior,200,227,Misab,Participant
+Junior,200,228,Muhammed Abdullah PS,Participant
+Junior,200,229,Muhammed Bilal P,Participant
+Junior,200,230,Muhammed Jasir AJ,Participant
+Junior,200,231,Muhammed Mujthaba,Participant
+Junior,200,232,Muhammed Naseef MC,Participant
+Junior,200,233,Muhammed Safwan KS,Participant
+Junior,200,234,Muhammed Safwan PS,Participant
+Junior,200,235,Muhammed Sinan KM,Participant
+Junior,200,236,Muhammed Yaseen,Participant
+Junior,200,237,Nihal Navas,Participant
+Junior,200,238,Nihal Ummar A,Participant
+Junior,200,239,Salman Umar Kunjali,Participant
+Junior,200,240,Shafeeq Ajmal,Participant
+Junior,200,241,Shamveel Najah,Participant
+Junior,200,242,Thanveer CK,Participant
+Junior,200,243,Umarul Farooq,Participant
+Junior,200,244,Yousuf M,Participant
+Sub Junior,200,245, Abdul Majid N,Participant
+Sub Junior,200,246,Aboobackar Sulaiman MF,Participant
+Sub Junior,200,247,Adhil Umar CA,Participant
+Sub Junior,200,248,Adhnan KS,Participant
+Sub Junior,200,249,Affan Malik ,Participant
+Sub Junior,200,250,Afnanul Jabbar,Participant
+Sub Junior,200,251,Amal Swalih,Participant
+Sub Junior,200,252,Ammar Akif,Participant
+Sub Junior,200,253,Anas B,Participant
+Sub Junior,200,254,Anas Sidhik,Participant
+Sub Junior,200,255,Atheequr Rahman ,Participant
+Sub Junior,200,256,Fahadbnu Bilal ,Participant
+Sub Junior,200,257,Furqan Sidhik,Participant
+Sub Junior,200,258,Majid NS,Participant
+Sub Junior,200,259,Muhammed Aadhil ,Participant
+Sub Junior,200,260,Muhammed Ajmal PP,Participant
+Sub Junior,200,261,Muhammed Izaan ES,Participant
+Sub Junior,200,262,Muhammed Sameer PS,Participant
+Sub Junior,200,263,Muhammed Ziyan TS,Participant
+Sub Junior,200,264,Mujeebu Rahman S,Participant
+Sub Junior,200,265,Sabith Ibnu Sayd,Participant
+Sub Junior,200,266,Salman Ashraf ,Participant
+Senior,300,301,Althaf KA,Captain
+Senior,300,302,Souban Saleem,Mentor
+Senior,300,303,Abid Ameen,Participant
+Senior,300,304,Alfad K,Participant
+Senior,300,305,Amal Rahim,Participant
+Senior,300,306,Amar Muhsin,Participant
+Senior,300,307,Anas K,Participant
+Senior,300,308,Basim Yousuf Ali,Participant
+Senior,300,309,Faayis Muhammed KS,Participant
+Senior,300,310,Hisham Abbas M,Participant
+Senior,300,311,Muhammed Hamaz T,Participant
+Senior,300,312,Muhammed Irfan,Participant
+Senior,300,313,Muhammed Yaseen PS,Participant
+Senior,300,314,Nihan Haffiz KN,Participant
+Senior,300,315,Sayyed Abdul Rahman Bafaqui,Participant
+Senior,300,316,Syed Azim Ahmed,Participant
+Junior,300,317,Muhammed Nibras,Vice Captain
+Junior,300,318,Abdullah Farook,Participant
+Junior,300,319,Abidh KS,Participant
+Junior,300,320,Aflah CK,Participant
+Junior,300,321,Afreed CS,Participant
+Junior,300,322,Ameen Faraz Bin Raoof,Participant
+Junior,300,323,Ansaf Ajas,Participant
+Junior,300,324,Ansaf Ali,Participant
+Junior,300,325,Ashiq KS,Participant
+Junior,300,326,Hadin Vahab,Participant
+Junior,300,327,Haris CR,Participant
+Junior,300,328,Hassan Abdulla,Participant
+Junior,300,329,Ihan Yasar,Participant
+Junior,300,330,Jasim Zubair,Participant
+Junior,300,331,Jibin Mohandas,Participant
+Junior,300,332,Muhammed Aadil,Participant
+Junior,300,333,Muhammed Anshid P,Participant
+Junior,300,334,Muhammed Easa KS,Participant
+Junior,300,335,Muhammed Khais MR,Participant
+Junior,300,336,Muhammed Mushthaq,Participant
+Junior,300,337,Muhammed Nihal PT,Participant
+Junior,300,338,Muhammed Thajudheen,Participant
+Junior,300,339,Muhsin VS,Participant
+Junior,300,340,Nabeel Muhammed M,Participant
+Junior,300,341,Nazim PS,Participant
+Junior,300,342,Nihal Najeeb,Participant
+Junior,300,343,PA Aman Hyder Muhammed,Participant
+Junior,300,344,Sainudheen Fasly,Participant
+Junior,300,345,Yanid Ahammed,Participant
+Sub Junior,300,346,Abdul Hadi Nizamudheen ,Participant
+Sub Junior,300,347,Afnan SA Rasheed,Participant
+Sub Junior,300,348,Aman Falah,Participant
+Sub Junior,300,349,Bilal Bin Sharaf ,Participant
+Sub Junior,300,350,Fahad Rahman ,Participant
+Sub Junior,300,351,Fayas Rahman ,Participant
+Sub Junior,300,352,Hamdi Huwyd,Participant
+Sub Junior,300,353,Islah Jabeer Ali ,Participant
+Sub Junior,300,354,Junaiz Yasir Jaleel,Participant
+Sub Junior,300,355,Lizan M Saleem ,Participant
+Sub Junior,300,356,Muhammed Ameen Pokker PP,Participant
+Sub Junior,300,357,Muhammed Asad PH,Participant
+Sub Junior,300,358,Muhammed Ayman ,Participant
+Sub Junior,300,359,Muhammed Azhar PM,Participant
+Sub Junior,300,360,Muhammed Muhsin CA ,Participant
+Sub Junior,300,361,Muhammed Yaseen ,Participant
+Sub Junior,300,362,Mujthaba Islam ,Participant
+Sub Junior,300,363,Nihal Aman CN,Participant
+Sub Junior,300,364,Noufal Nissar ,Participant
+Sub Junior,300,365,Rahamdil,Participant
+Sub Junior,300,366,Razal Abdul Gafoor ,Participant
+Sub Junior,300,367,Razin Dharis,Participant
+Sub Junior,300,368,Saeed Ahammed PS,Participant

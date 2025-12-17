@@ -1,0 +1,148 @@
+--- Checking Group Event Points ---
+Created Event: Test Group Event 9
+Added Result for Team 100: 1st Place, Grade A, 20 Points
+Query Results Count: 10
+Query Results: [
+  {
+    "id": 75,
+    "event_id": 4,
+    "candidate_id": 3,
+    "position": 1,
+    "grade": "A",
+    "points": 10,
+    "status": "Winner",
+    "event_name": "HaneenHyder's Org",
+    "event_type": "Offstage",
+    "item_type": "Individual",
+    "chest_no": "103",
+    "candidate_name": "Adil Ameen"
+  },
+  {
+    "id": 62,
+    "event_id": 4,
+    "candidate_id": 35,
+    "position": 2,
+    "grade": "A",
+    "points": 8,
+    "status": "Winner",
+    "event_name": "HaneenHyder's Org",
+    "event_type": "Offstage",
+    "item_type": "Individual",
+    "chest_no": "135",
+    "candidate_name": "Muhammed Rifan"
+  },
+  {
+    "id": 56,
+    "event_id": 3,
+    "candidate_id": 5,
+    "position": 1,
+    "grade": "A",
+    "points": 10,
+    "status": "Winner",
+    "event_name": "o",
+    "event_type": "Onstage",
+    "item_type": "Individual",
+    "chest_no": "105",
+    "candidate_name": "Adnan MN"
+  },
+  {
+    "id": 51,
+    "event_id": 1,
+    "candidate_id": 5,
+    "position": 1,
+    "grade": "A",
+    "points": 10,
+    "status": "Winner",
+    "event_name": "t7",
+    "event_type": "Onstage",
+    "item_type": "Individual",
+    "chest_no": "105",
+    "candidate_name": "Adnan MN"
+  },
+  {
+    "id": 44,
+    "event_id": 1,
+    "candidate_id": 45,
+    "position": 3,
+    "grade": "A",
+    "points": 6,
+    "status": "Winner",
+    "event_name": "t7",
+    "event_type": "Onstage",
+    "item_type": "Individual",
+    "chest_no": "145",
+    "candidate_name": "Aabis Muhammed"
+  },
+  {
+    "id": 70,
+    "event_id": 5,
+    "candidate_id": 2,
+    "position": 1,
+    "grade": "A",
+    "points": 10,
+    "status": "Winner",
+    "event_name": "TeamA@100",
+    "event_type": "Offstage",
+    "item_type": "Individual",
+    "chest_no": "102",
+    "candidate_name": "Mihad Ihsan"
+  },
+  {
+    "id": 72,
+    "event_id": 5,
+    "candidate_id": 4,
+    "position": 2,
+    "grade": "D",
+    "points": 3,
+    "status": "Winner",
+    "event_name": "TeamA@100",
+    "event_type": "Offstage",
+    "item_type": "Individual",
+    "chest_no": "104",
+    "candidate_name": "Abdul Wadood"
+  },
+  {
+    "id": 73,
+    "event_id": 5,
+    "candidate_id": 5,
+    "position": 2,
+    "grade": "A",
+    "points": 8,
+    "status": "Winner",
+    "event_name": "TeamA@100",
+    "event_type": "Offstage",
+    "item_type": "Individual",
+    "chest_no": "105",
+    "candidate_name": "Adnan MN"
+  },
+  {
+    "id": 79,
+    "event_id": 9,
+    "candidate_id": null,
+    "position": 1,
+    "grade": "A",
+    "points": 20,
+    "status": "Winner",
+    "event_name": "Test Group Event",
+    "event_type": "Onstage",
+    "item_type": "Group",
+    "chest_no": null,
+    "candidate_name": null
+  },
+  {
+    "id": 52,
+    "event_id": 2,
+    "candidate_id": null,
+    "position": 3,
+    "grade": "A",
+    "points": 13,
+    "status": "Winner",
+    "event_name": "weergfd",
+    "event_type": "Offstage",
+    "item_type": "Group",
+    "chest_no": null,
+    "candidate_name": null
+  }
+]
+Calculated Total Points: 98
+SUCCESS: Group event result found and points counted.

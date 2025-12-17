@@ -1,0 +1,130 @@
+[
+    {
+        "name": "Abdul Ahad Nadwi",
+        "role": "Staff Coordinator",
+        "department": "Arts Department",
+        "email": "abdulahad@college.edu",
+        "phone": "+91 97441 56629",
+        "image": "/assets/committee/Abdul Ahad Nadwi.jpeg"
+    },
+    {
+        "name": "Nayeef Panayikulam",
+        "role": "Assistant Staff Coordinator",
+        "department": "Arts Department",
+        "email": "nayeef.p@college.edu",
+        "phone": "+91 79029 35310",
+        "image": ""
+    },
+    {
+        "name": "Hanan AP",
+        "role": "General Convener",
+        "department": "Arts Department",
+        "email": "hanan.ap@college.edu",
+        "phone": "+91 94967 09382",
+        "image": "/assets/committee/Hanan AP.jpeg"
+    },
+    {
+        "name": "VA Sajadh",
+        "role": "Student Coordinator",
+        "department": "Cultural Affairs",
+        "email": "sajadh.va@student.edu",
+        "phone": "+91 87140 61968",
+        "image": "/assets/committee/VA Sajadh.jpeg"
+    },
+    {
+        "name": "Haneen Hyder PK",
+        "role": "Assistant Student Coordinator",
+        "department": "Student Council",
+        "email": "nanuhaneen@gmail.com",
+        "phone": "+91 98479 57566",
+        "image": "/assets/committee/Haneen Hyder PK.jpeg"
+    },
+    {
+        "name": "Adnan Muhammed",
+        "role": "Enquiry",
+        "department": "Help Desk",
+        "email": "adnan.m@student.edu",
+        "phone": "+91 95675 43696",
+        "image": "/assets/committee/Adnan Muhammed.jpeg"
+    },
+    {
+        "name": "Ahmad Deedat",
+        "role": "Enquiry",
+        "department": "Help Desk",
+        "email": "ahamaddeedath2005@gmail.com",
+        "phone": "+91 62822 13359",
+        "image": "/assets/committee/Ahmad Deedat.jpeg"
+    },
+    {
+        "name": "Jasim VP",
+        "role": "Tabulation",
+        "department": "Results Committee",
+        "email": "jasimvp2.0@gmail.com",
+        "phone": "+91 90371 33526",
+        "image": "/assets/committee/Jasim VP.jpeg"
+    },
+    {
+        "name": "Muhammed Shaheeb MC",
+        "role": "Tabulation",
+        "department": "Results Committee",
+        "email": "shaheeb.mc@student.edu",
+        "phone": "+91 85905 01307",
+        "image": "/assets/committee/Muhammed Shaheeb MC.jpeg"
+    },
+    {
+        "name": "Shameem Ahammed",
+        "role": "PR & Media",
+        "department": "Media Wing",
+        "email": "shameem.ahammed@student.edu",
+        "phone": "+91 94964 42065",
+        "image": "/assets/committee/Shameem Ahammed.jpeg"
+    },
+    {
+        "name": "Ahsan Malik",
+        "role": "Organising Committee Member",
+        "department": "Organising Committee",
+        "email": "77ahsanmalik777@gmail.com",
+        "phone": "+91 96056 60217",
+        "image": "/assets/committee/Ahsan Malik.jpeg"
+    },
+    {
+        "name": "Muhammed Ali",
+        "role": "Organising Committee Member",
+        "department": "Organising Committee",
+        "email": "muhammed.ali@student.edu",
+        "phone": "+91 96569 52344",
+        "image": "/assets/committee/Muhammed Ali.jpeg"
+    },
+    {
+        "name": "Ashif K",
+        "role": "Organising Committee Member",
+        "department": "Organising Committee",
+        "email": "ashif@student.edu",
+        "phone": "+91 80759 15623",
+        "image": "/assets/committee/Ashif K.jpeg"
+    },
+    {
+        "name": "Muhammed Lamigh",
+        "role": "Organising Committee Member",
+        "department": "Organising Committee",
+        "email": "lamigh.m@student.edu",
+        "phone": "+91 80869 68981",
+        "image": "/assets/committee/Muhammed Lamigh.jpeg"
+    },
+    {
+        "name": "Ziyad",
+        "role": "Organising Committee Member",
+        "department": "Organising Committee",
+        "email": "ziyadbolangadi@gmail.com",
+        "phone": "+91 81478 78241",
+        "image": "/assets/committee/Ziyad.jpeg"
+    },
+    {
+        "name": "Ajmal Noushad",
+        "role": "Organising Committee Member",
+        "department": "Organising Committee",
+        "email": "ajmal@student.edu",
+        "phone": "+91 95441 32248",
+        "image": "/assets/committee/Ajmal Noushad.jpeg"
+    }
+]

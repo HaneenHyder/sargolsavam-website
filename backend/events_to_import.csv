@@ -1,0 +1,45 @@
+id;event_name;event_code;category;event_type;max_participants;status;created_at;updated_at;stage_type
+add73c38-1d4a-4d6d-8cb4-0d07c1866201;Newspaper Report ;newspaper-report--bwi0;senior;individual;1;upcoming;2025-11-22 13:50:24.562313+00;2025-11-22 13:50:24.562313+00;off_stage
+2334d2eb-faaf-488b-8399-4b082747ec52;Poem Writing English ;poem-writing-english-6dot;senior;individual;1;upcoming;2025-11-22 16:12:52.734025+00;2025-11-22 16:12:52.734025+00;off_stage
+e6b257ca-86bb-4185-986a-622e65d32a76;Poem Writing English;poem-writing-english-054d;sub_junior;individual;1;upcoming;2025-11-27 13:12:28.852167+00;2025-11-27 13:12:28.852167+00;off_stage
+26fe11d2-fffe-478f-a290-d08324f7a418;Translation Malayalam - English ;translation-malayala-9fz0;sub_junior;individual;1;upcoming;2025-11-27 13:14:41.665203+00;2025-11-27 13:14:41.665203+00;off_stage
+11da622e-ed3c-4a89-a0b8-cd249c400fd0;Story Writing English;story-writing-englis-5emd;sub_junior;individual;1;upcoming;2025-11-27 13:16:43.665226+00;2025-11-27 13:16:43.665226+00;off_stage
+b15377f0-d896-41cc-8ccd-b6236948ed88;Translation Urdu - Malayalam;translation-urdu-mal-4zp0;sub_junior;individual;1;upcoming;2025-11-27 13:23:46.77254+00;2025-11-27 13:23:46.77254+00;off_stage
+eec0f72b-72e1-42ab-ac57-b00d9aa640e7;Translation Arabic - Malayalam;translation-arabic-m-7f9y;sub_junior;individual;1;upcoming;2025-11-27 13:24:50.501667+00;2025-11-27 13:24:50.501667+00;off_stage
+b41d639b-a3aa-4444-ab2e-caf23e23665d;Translation Malayalam - Arabic;translation-malayala-ls1l;sub_junior;individual;1;upcoming;2025-11-27 13:25:38.478697+00;2025-11-27 13:25:38.478697+00;off_stage
+e21d8f77-fbea-46f5-b1a9-9cc5c01cf8c3;Essay Writing English;essay-writing-englis-tfgx;sub_junior;individual;1;upcoming;2025-11-27 13:28:00.183221+00;2025-11-27 13:28:00.183221+00;off_stage
+aa6cf1fd-a1ba-41c0-9304-9a3a0dff38a9;Story writing Arabic;story-writing-arabic-tcax;sub_junior;individual;1;upcoming;2025-11-27 13:30:02.967457+00;2025-11-27 13:30:02.967457+00;off_stage
+57cbb17d-cfd9-463e-88a0-f4f63bd42d80;News Report;news-report-ieom;sub_junior;individual;1;upcoming;2025-11-27 13:30:07.789099+00;2025-11-27 13:30:07.789099+00;off_stage
+9c5df60e-0ebe-45f3-a256-c344f19594a6;Story writing English;story-writing-englis-qr6f;junior;individual;1;upcoming;2025-11-27 13:37:05.504036+00;2025-11-27 13:37:05.504036+00;off_stage
+e98fafa9-911a-46dd-8798-4dd4bbd1ebed;News Report;news-report-3fco;junior;individual;1;upcoming;2025-11-27 13:39:28.394501+00;2025-11-27 13:39:28.394501+00;off_stage
+a2854f1a-f370-40c3-9d09-c32a332b5b75;Story writing Arabic;story-writing-arabic-efw0;junior;individual;1;upcoming;2025-11-27 13:42:19.598158+00;2025-11-27 13:42:19.598158+00;off_stage
+fd17ed7e-c20f-480c-819e-6616ff1d77e5;Essay writing Urdu;essay-writing-urdu-s8ba;junior;individual;1;upcoming;2025-11-27 13:44:45.440663+00;2025-11-27 13:44:45.440663+00;off_stage
+a7fc01bb-8f97-4756-84a2-983782d34853;Translation Arabic - English;translation-arabic-e-eda9;junior;individual;1;upcoming;2025-11-27 13:46:49.246796+00;2025-11-27 13:46:49.246796+00;off_stage
+4d3a1b2b-762a-461d-9051-c017a21c6b43;Essay writing English;essay-writing-englis-ub32;junior;individual;1;upcoming;2025-11-27 13:50:45.872195+00;2025-11-27 13:50:45.872195+00;off_stage
+97c5c195-08ca-44f6-b631-1a63d7a12a6c;Translation Urdu - Malayalam;translation-urdu-mal-zu5f;junior;individual;1;upcoming;2025-11-27 13:52:28.952826+00;2025-11-27 13:52:28.952826+00;off_stage
+795aa8bd-da5d-41e6-8f8e-6bec15140cd8;Poem writing Arabic;poem-writing-arabic-jrmb;junior;individual;1;upcoming;2025-11-27 13:55:05.157331+00;2025-11-27 13:55:05.157331+00;off_stage
+6f7561ba-7340-4552-b228-2735a23fa058;Essay writing Arabic;essay-writing-arabic-vm2p;junior;individual;1;upcoming;2025-11-27 13:58:07.011745+00;2025-11-27 13:58:07.011745+00;off_stage
+7d2eb451-bca5-43cc-8e71-60d2b811b455;Story writing Urdu;story-writing-urdu-9pcu;junior;individual;1;upcoming;2025-11-27 14:00:19.140567+00;2025-11-27 14:00:19.140567+00;off_stage
+a5375f27-1db2-4712-85fb-f129f126aeb7;Caption writing English;caption-writing-engl-cccf;sub_junior;individual;1;upcoming;2025-11-27 14:09:38.020451+00;2025-11-27 14:09:38.020451+00;off_stage
+ea4b0900-112a-43ae-893e-dfd1b788b822;Caption writing English;caption-writing-engl-q9tz;junior;individual;1;upcoming;2025-11-27 14:12:26.024641+00;2025-11-27 14:12:26.024641+00;off_stage
+91e1edd4-1ffc-409b-b56c-3fdfd53e0167;Poem writing English;poem-writing-english-slrv;senior;individual;1;upcoming;2025-11-27 14:55:55.260043+00;2025-11-27 14:55:55.260043+00;off_stage
+8c3e0c7c-c9b5-40ec-9229-45cd41cce980;Translation Urdu - Arabic;translation-urdu-ara-mzi2;senior;individual;1;upcoming;2025-11-27 15:05:02.707352+00;2025-11-27 15:05:02.707352+00;off_stage
+7da14a52-bcfd-4da8-a6b4-beb150f48868;Poem writing Arabic;poem-writing-arabic-lrmb;senior;individual;1;upcoming;2025-11-27 15:06:40.299221+00;2025-11-27 15:06:40.299221+00;off_stage
+1d32f775-27ac-432b-acd0-3c4c5fc737d7;Essay writing Urdu;essay-writing-urdu-byjn;senior;individual;1;upcoming;2025-11-27 15:09:14.201889+00;2025-11-27 15:09:14.201889+00;off_stage
+1d217f2a-f0fc-4e1e-b356-92b7cfc2e379;Story writing English;story-writing-englis-qv89;senior;individual;1;upcoming;2025-11-27 15:11:19.572753+00;2025-11-27 15:11:19.572753+00;off_stage
+e2840864-edf8-4681-b9e0-5de7a6304668;Story writing Arabic;story-writing-arabic-w2tc;senior;individual;1;upcoming;2025-11-27 15:15:21.646344+00;2025-11-27 15:15:21.646344+00;off_stage
+f973feac-5435-435b-97fc-50d419303eb6;Essay writing Arabic;essay-writing-arabic-m87f;senior;individual;1;upcoming;2025-11-27 15:17:41.932755+00;2025-11-27 15:17:41.932755+00;off_stage
+2b7b4117-6c3c-4a8c-aff2-bdbc3f7e3522;Word Clash English;word-clash-english-abfp;;group;1;upcoming;2025-11-27 16:36:13.348644+00;2025-11-27 16:36:13.348644+00;off_stage
+52afed14-1e90-4f4a-912f-cf59135e4180;Translation Malayalam - Arabic;translation-malayala-m1cu;junior;individual;1;upcoming;2025-11-27 17:01:28.513394+00;2025-11-27 17:01:28.513394+00;off_stage
+5fda92ac-6e47-42b3-be4e-4f1858cfae15;Essay writing Malayalam;essay-writing-malaya-awpc;junior;individual;1;upcoming;2025-11-27 17:04:04.478305+00;2025-11-27 17:04:04.478305+00;off_stage
+bc98feea-c1bc-4fcc-83f2-629b7ab557af;Caption writing Malayalm;caption-writing-mala-6wlo;junior;individual;1;upcoming;2025-11-27 17:06:13.223723+00;2025-11-27 17:06:13.223723+00;off_stage
+ac8eec0e-82fe-4a55-bee4-c798061de3d3;Story writing Urdu;story-writing-urdu-q2sd;senior;individual;1;upcoming;2025-11-27 17:08:26.129332+00;2025-11-27 17:08:26.129332+00;off_stage
+7e6d7a6b-4cdf-43ca-bfd7-f81987566053;Caption writing Arabic;caption-writing-arab-2l3o;senior;individual;1;upcoming;2025-11-27 17:10:46.821505+00;2025-11-27 17:10:46.821505+00;off_stage
+351c2e5e-dcf3-4484-89e6-617bf15fb9ac;Translation Arabic - English;translation-arabic-e-laiy;senior;individual;1;upcoming;2025-11-27 17:12:51.193723+00;2025-11-27 17:12:51.193723+00;off_stage
+d71a6355-991b-488c-9509-91e2e0d7fa32;Poem writing English;poem-writing-english-rt2t;senior;individual;1;upcoming;2025-11-27 17:14:21.438992+00;2025-11-27 17:14:21.438992+00;off_stage
+81034b07-1b89-45c0-ade9-8db01584eb71;slogan Making;slogan-making-3ied;senior;individual;1;upcoming;2025-11-27 17:17:46.783268+00;2025-11-27 17:17:46.783268+00;off_stage
+7d604035-8657-4808-8556-33d58265f1a1;Translation Malayalam - Urdu;translation-malayala-qec4;senior;individual;1;upcoming;2025-11-27 17:20:12.840102+00;2025-11-27 17:20:12.840102+00;off_stage
+706a9ff9-e38c-410c-88b8-bb32ba98f89c;News Paper Report;news-paper-report-ttb4;senior;individual;1;upcoming;2025-11-28 08:58:45.703991+00;2025-11-28 08:58:45.703991+00;off_stage
+9a0a6727-dd57-4e8f-a275-42a54dcb8e79;Editorial Writing;editorial-writing-w1xh;senior;individual;1;upcoming;2025-11-28 09:00:12.001377+00;2025-11-28 09:00:12.001377+00;off_stage
+82a6ad13-4d50-41b8-95ae-8c13da6f5f05;Essay writing English;essay-writing-englis-518i;senior;individual;1;upcoming;2025-11-28 09:07:10.371329+00;2025-11-28 09:07:10.371329+00;off_stage
+c9609cd8-e4e9-4489-a147-1421e51c7c24;Translation Malayalam - Arabic;translation-malayala-hqcp;senior;individual;1;upcoming;2025-11-28 09:09:06.294077+00;2025-11-28 09:09:06.294077+00;off_stage
