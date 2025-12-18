@@ -1,6 +1,6 @@
 
 const { Client } = require('pg');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 async function updateTeamsSchema() {

@@ -1,5 +1,5 @@
 const db = require('./src/db');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 async function migrateTeams() {
     try {

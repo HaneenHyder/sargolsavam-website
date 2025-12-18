@@ -1,7 +1,7 @@
 const db = require('../db');
 const xlsx = require('xlsx');
 const fs = require('fs');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 exports.getDashboardStats = async (req, res) => {
     try {

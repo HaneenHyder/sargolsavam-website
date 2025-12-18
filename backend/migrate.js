@@ -76,7 +76,7 @@ async function runMigration() {
         }
 
         // Create Admin User if not exists
-        const bcrypt = require('bcrypt');
+        const bcrypt = require('bcryptjs');
         const hash = await bcrypt.hash('admin123', 10);
         await client.query(`
         INSERT INTO admins (username, password_hash, role) 
