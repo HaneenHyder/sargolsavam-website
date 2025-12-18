@@ -75,6 +75,10 @@ const analyticsController = require('./src/controllers/analyticsController');
 app.post('/api/analytics', analyticsController.trackView);
 
 // Health Check
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: "healthy" });
+});
+
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
 });
