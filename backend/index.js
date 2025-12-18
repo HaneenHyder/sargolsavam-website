@@ -20,7 +20,11 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(helmet());
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000'], // Explicit origin for credentials
+    origin: [
+        'http://localhost:3000',
+        'http://127.0.0.1:3000',
+        'https://sargolsavam.azharululoom.net'
+    ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
@@ -30,10 +34,24 @@ app.use(cookieParser());
 // Request Logger
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    /*
     if (req.body && Object.keys(req.body).length > 0) {
         console.log('Request Body:', JSON.stringify(req.body));
     }
+    */
     next();
+});
+
+/* ========================= CPANEL HEALTH CHECK (VERY IMPORTANT) ========================= */
+app.get('/', (req, res) => {
+    res
+        .status(200)
+        .set('Content-Type', 'text/html; charset=utf-8')
+        .send('API is running');
+});
+
+app.head('/', (req, res) => {
+    res.status(200).end();
 });
 
 // Routes
