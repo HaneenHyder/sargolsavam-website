@@ -46,10 +46,11 @@ app.use((req, res, next) => {
 
 /* ========================= CPANEL HEALTH CHECK (VERY IMPORTANT) ========================= */
 app.get('/', (req, res) => {
-    res
-        .status(200)
-        .set('Content-Type', 'text/html; charset=utf-8')
-        .send('API is running');
+    res.json({
+        status: "ok",
+        service: "sargolsavam-backend",
+        uptime: process.uptime()
+    });
 });
 
 app.head('/', (req, res) => {
