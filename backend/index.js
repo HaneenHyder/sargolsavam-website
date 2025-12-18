@@ -64,6 +64,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/results', resultRoutes);
 app.use('/api/committee', committeeRoutes);
+app.use('/api/schedule', require('./src/routes/schedule'));
 app.use('/api/appeals', require('./src/routes/appeals'));
 app.use('/api/payments', require('./src/routes/payments'));
 

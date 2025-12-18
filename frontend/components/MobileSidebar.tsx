@@ -49,6 +49,13 @@ export default function MobileSidebar() {
                             Home
                         </Link>
                         <Link
+                            href="/schedule"
+                            onClick={closeSidebar}
+                            className="text-lg font-medium text-gray-700 hover:text-primary hover:bg-primary/5 px-4 py-3 rounded-lg transition-colors"
+                        >
+                            Schedule
+                        </Link>
+                        <Link
                             href="/results"
                             onClick={closeSidebar}
                             className="text-lg font-medium text-gray-700 hover:text-primary hover:bg-primary/5 px-4 py-3 rounded-lg transition-colors"

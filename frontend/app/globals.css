@@ -110,3 +110,56 @@
   position: relative;
   z-index: 2;
 }
+
+/* ===== Custom Scrollbar - Theme Matched ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, hsl(var(--primary-dark)), hsl(var(--primary)));
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary));
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: hsl(var(--primary-dark));
+}
+
+/* Hide scrollbar arrows/buttons */
+::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Firefox scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--primary)) transparent;
+}
+
+/* Hide scrollbar utility class - applied to html element */
+html.hide-scrollbar {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+}
+
+html.hide-scrollbar::-webkit-scrollbar {
+  display: none !important;
+}

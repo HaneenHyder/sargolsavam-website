@@ -145,20 +145,12 @@ export default function AdminDashboard() {
                 </Card>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="hover:bg-gray-50 transition-colors cursor-pointer">
                     <Link href="/admin/import">
                         <CardContent className="p-4 flex items-center gap-3">
                             <Upload size={20} className="text-gray-500" />
                             <span className="font-medium">Import Data</span>
-                        </CardContent>
-                    </Link>
-                </Card>
-                <Card className="hover:bg-gray-50 transition-colors cursor-pointer">
-                    <Link href="/admin/committee">
-                        <CardContent className="p-4 flex items-center gap-3">
-                            <Users size={20} className="text-gray-500" />
-                            <span className="font-medium">Manage Committee</span>
                         </CardContent>
                     </Link>
                 </Card>

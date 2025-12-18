@@ -101,12 +101,12 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                     Leaderboard
                 </Link>
                 <Link
-                    href="/admin/committee"
+                    href="/admin/schedule"
                     className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
                     onClick={() => setIsMobileMenuOpen(false)}
                 >
-                    <Users size={20} />
-                    Manage Committee
+                    <Calendar size={20} />
+                    Manage Schedule
                 </Link>
                 <Link
                     href="/admin/import"

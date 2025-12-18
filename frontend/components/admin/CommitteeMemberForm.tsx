@@ -48,6 +48,7 @@ export default function CommitteeMemberForm({ member, isOpen, onClose, onSave }:
             const res = await fetch(`${apiUrl}/committee/${member.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(data),
             });
 

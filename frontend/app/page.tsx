@@ -4,11 +4,22 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
 import { CountUp } from "@/components/ui/CountUp";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
     const [videoEnded, setVideoEnded] = useState(false);
 
+    // Hide scrollbar during video playback
+    useEffect(() => {
+        if (!videoEnded) {
+            document.documentElement.classList.add('hide-scrollbar');
+        } else {
+            document.documentElement.classList.remove('hide-scrollbar');
+        }
+        return () => {
+            document.documentElement.classList.remove('hide-scrollbar');
+        };
+    }, [videoEnded]);
     return (
         <div className="flex flex-col w-full">
             {/* Full Screen Video Intro */}
