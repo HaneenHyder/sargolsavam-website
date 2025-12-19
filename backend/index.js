@@ -2,9 +2,6 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
-if (process.env.NODE_ENV !== 'production') {
-    require('dotenv').config();
-}
 
 const authRoutes = require('./src/routes/auth');
 const eventRoutes = require('./src/routes/events');
@@ -15,9 +12,25 @@ const adminRoutes = require('./src/routes/admin');
 const uploadRoutes = require('./src/routes/uploads');
 const resultRoutes = require('./src/routes/results');
 const committeeRoutes = require('./src/routes/committee');
-
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+// Health Checks (MUST BE FIRST - Before Middleware)
+app.get('/', (req, res) => {
+    res.json({
+        status: "ok",
+        service: "sargolsavam-backend",
+        uptime: process.uptime()
+    });
+});
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: "healthy" });
+});
+
+app.head('/', (req, res) => {
+    res.status(200).end();
+});
 
 // Middleware
 app.use(helmet());
@@ -32,29 +45,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Request Logger
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-    /*
-    if (req.body && Object.keys(req.body).length > 0) {
-        console.log('Request Body:', JSON.stringify(req.body));
-    }
-    */
-    next();
-});
-
-/* ========================= CPANEL HEALTH CHECK (VERY IMPORTANT) ========================= */
-app.get('/', (req, res) => {
-    res.json({
-        status: "ok",
-        service: "sargolsavam-backend",
-        uptime: process.uptime()
-    });
-});
-
-app.head('/', (req, res) => {
-    res.status(200).end();
-});
+if ((process.env.NODE_ENV || '').trim() !== 'production') {
+    require('dotenv').config();
+}
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -73,11 +66,6 @@ app.use('/api/payments', require('./src/routes/payments'));
 // Public Analytics Route
 const analyticsController = require('./src/controllers/analyticsController');
 app.post('/api/analytics', analyticsController.trackView);
-
-// Health Check
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: "healthy" });
-});
 
 app.get('/api/health', (req, res) => {
     res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
