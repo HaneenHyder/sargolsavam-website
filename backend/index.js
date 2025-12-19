@@ -26,7 +26,14 @@ const uploadRoutes = require('./src/routes/uploads');
 const resultRoutes = require('./src/routes/results');
 const committeeRoutes = require('./src/routes/committee');
 const app = express();
-const PORT = process.env.PORT || 8080;
+
+// CRITICAL: Railway injects PORT - do NOT use fallback
+const PORT = process.env.PORT;
+
+if (!PORT) {
+    console.error('❌ PORT not provided by Railway');
+    process.exit(1);
+}
 
 // Health Checks (MUST BE FIRST - Before Middleware)
 // Railway requires simple 'OK' response
@@ -90,8 +97,8 @@ app.use((err, req, res, next) => {
 // Start server with error handling
 try {
     const server = app.listen(PORT, '0.0.0.0', () => {
-        console.log(`✅ Server running on port ${PORT}`);
-        console.log(`Environment: ${process.env.NODE_ENV}`);
+        console.log(`✅ Listening on Railway port ${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log(`Supabase URL configured: ${!!process.env.SUPABASE_URL}`);
     });
 
