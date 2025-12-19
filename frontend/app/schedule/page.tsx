@@ -4,12 +4,22 @@ import { useState, useEffect } from 'react';
 import { schedule as defaultSchedule, DaySchedule } from '@/data/schedule';
 import { Calendar, Clock, MapPin, Users, Sparkles, Search, X, Loader2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/Select";
 
 export default function SchedulePage() {
     const [scheduleData, setScheduleData] = useState<DaySchedule[]>(defaultSchedule);
     const [loading, setLoading] = useState(true);
     const [selectedDay, setSelectedDay] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string>("all");
+    const [selectedStage, setSelectedStage] = useState<string>("all");
+    const [selectedEventType, setSelectedEventType] = useState<string>("all");
 
     const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -49,16 +59,45 @@ export default function SchedulePage() {
         fetchSchedule();
     }, [API_URL]);
 
-    // Filter events based on search query
+    // Filter events based on search query and dropdowns
+    const getEventType = (item: string) => {
+        const lowerItem = item.toLowerCase();
+        if (lowerItem.includes('song') || lowerItem.includes('pattu') || lowerItem.includes('qawwali') || lowerItem.includes('ensemble')) return 'Song';
+        if (lowerItem.includes('recitation')) return 'Recitation';
+        if (lowerItem.includes('poetry')) return 'Poetry';
+        if (lowerItem.includes('speech') || lowerItem.includes('talk') || lowerItem.includes('monologue') || lowerItem.includes('storytelling') || lowerItem.includes('reading') || lowerItem.includes('translation')) return 'Speech/Story';
+        if (lowerItem.includes('ceremony')) return 'Ceremony';
+        return 'Other';
+    };
+
     const getFilteredEvents = () => {
-        if (!searchQuery.trim()) {
-            return scheduleData[selectedDay].events;
+        let events = scheduleData[selectedDay].events;
+
+        // Filter by Category
+        if (selectedCategory !== 'all') {
+            events = events.filter(e => e.category === selectedCategory);
         }
-        const query = searchQuery.toLowerCase();
-        return scheduleData[selectedDay].events.filter(event =>
-            event.item.toLowerCase().includes(query) ||
-            event.category.toLowerCase().includes(query)
-        );
+
+        // Filter by Stage
+        if (selectedStage !== 'all') {
+            events = events.filter(e => e.stage === selectedStage);
+        }
+
+        // Filter by Event Type
+        if (selectedEventType !== 'all') {
+            events = events.filter(e => getEventType(e.item) === selectedEventType);
+        }
+
+        // Filter by Search Query
+        if (searchQuery.trim()) {
+            const query = searchQuery.toLowerCase();
+            events = events.filter(event =>
+                event.item.toLowerCase().includes(query) ||
+                event.category.toLowerCase().includes(query)
+            );
+        }
+
+        return events;
     };
 
     const getCategoryColor = (category: string) => {
@@ -108,6 +147,50 @@ export default function SchedulePage() {
                             </div>
                         </button>
                     ))}
+                </div>
+
+                {/* Filters */}
+                <div className="max-w-4xl mx-auto mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                        <SelectTrigger className="bg-white">
+                            <SelectValue placeholder="Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Categories</SelectItem>
+                            <SelectItem value="Senior">Senior</SelectItem>
+                            <SelectItem value="Junior">Junior</SelectItem>
+                            <SelectItem value="Sub Junior">Sub Junior</SelectItem>
+                            <SelectItem value="Group">Group</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <Select value={selectedStage} onValueChange={setSelectedStage}>
+                        <SelectTrigger className="bg-white">
+                            <SelectValue placeholder="Stage" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Stages</SelectItem>
+                            <SelectItem value="1">Stage 1</SelectItem>
+                            <SelectItem value="2">Stage 2</SelectItem>
+                            <SelectItem value="3">Stage 3</SelectItem>
+                            <SelectItem value="4">Stage 4</SelectItem>
+                            <SelectItem value="5">Stage 5</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <Select value={selectedEventType} onValueChange={setSelectedEventType}>
+                        <SelectTrigger className="bg-white">
+                            <SelectValue placeholder="Event Type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Event Types</SelectItem>
+                            <SelectItem value="Song">Song</SelectItem>
+                            <SelectItem value="Recitation">Recitation</SelectItem>
+                            <SelectItem value="Poetry">Poetry</SelectItem>
+                            <SelectItem value="Speech/Story">Speech & Story</SelectItem>
+                            <SelectItem value="Ceremony">Ceremony</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 {/* Search Bar */}
