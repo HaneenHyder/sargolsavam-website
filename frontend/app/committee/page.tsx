@@ -42,7 +42,7 @@ export default function CommitteePage() {
                 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
                 console.log('Fetching committee from:', apiUrl);
 
-                const res = await fetch(`${apiUrl}/committee`);
+                const res = await fetch(`${apiUrl}/api/committee`);
 
                 if (!res.ok) {
                     throw new Error('Failed to fetch committee members');
