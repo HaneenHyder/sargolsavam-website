@@ -1,7 +1,8 @@
-import Link from "next/link";
-import MemberCard from "@/components/committee/MemberCard";
+'use client';
 
-export const dynamic = 'force-dynamic';
+import { useState, useEffect } from "react";
+import MemberCard from "@/components/committee/MemberCard";
+import { Loader2 } from "lucide-react";
 
 interface Member {
     id: string;
@@ -12,26 +13,8 @@ interface Member {
     image: string;
 }
 
-async function getCommitteeMembers(): Promise<Member[]> {
-    try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/committee`, {
-            cache: 'no-store'
-        });
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch committee members');
-        }
-
-        return res.json();
-    } catch (error) {
-        console.error("Error loading committee members:", error);
-        return [];
-    }
-}
-
 const ORDERED_NAMES = [
     "Abdul Ahad Nadwi",
-
     "Hanan AP",
     "VA Sajadh",
     "Haneen Hyder PK",
@@ -48,29 +31,57 @@ const ORDERED_NAMES = [
     "Ajmal Noushad"
 ];
 
-export default async function CommitteePage() {
-    let members = await getCommitteeMembers();
+export default function CommitteePage() {
+    const [members, setMembers] = useState<Member[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    // Sort members based on the predefined order
-    members = members.filter(m => m.name !== 'Nayeef Panayikulam')
-        .sort((a, b) => {
-            const indexA = ORDERED_NAMES.indexOf(a.name);
-            const indexB = ORDERED_NAMES.indexOf(b.name);
+    useEffect(() => {
+        const fetchMembers = async () => {
+            try {
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                console.log('Fetching committee from:', apiUrl);
 
-            // If both are in the list, sort by index
-            if (indexA !== -1 && indexB !== -1) {
-                return indexA - indexB;
+                const res = await fetch(`${apiUrl}/committee`);
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch committee members');
+                }
+
+                let data: Member[] = await res.json();
+
+                // Filter and Sort
+                data = data.filter(m => m.name !== 'Nayeef Panayikulam')
+                    .sort((a, b) => {
+                        const indexA = ORDERED_NAMES.indexOf(a.name);
+                        const indexB = ORDERED_NAMES.indexOf(b.name);
+
+                        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                        if (indexA !== -1) return -1;
+                        if (indexB !== -1) return 1;
+                        return 0;
+                    });
+
+                setMembers(data);
+            } catch (err) {
+                console.error("Error loading committee members:", err);
+                setError('Failed to load committee members.');
+            } finally {
+                setLoading(false);
             }
+        };
 
-            // If only A is in the list, it comes first
-            if (indexA !== -1) return -1;
+        fetchMembers();
+    }, []);
 
-            // If only B is in the list, it comes first
-            if (indexB !== -1) return 1;
-
-            // If neither is in the list, keep original order (or sort alphabetically if preferred)
-            return 0;
-        });
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+                <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
+                <p className="text-gray-500">Loading committee members...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-12 py-8">
@@ -90,9 +101,15 @@ export default async function CommitteePage() {
                 ))}
             </div>
 
-            {members.length === 0 && (
+            {members.length === 0 && !error && (
                 <div className="text-center py-12 text-gray-500">
                     <p>No committee members found.</p>
+                </div>
+            )}
+
+            {error && (
+                <div className="text-center py-12 text-red-500">
+                    <p>{error}</p>
                 </div>
             )}
         </div>
