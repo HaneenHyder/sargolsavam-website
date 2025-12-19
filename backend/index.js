@@ -165,7 +165,7 @@ try {
 // ============================================
 app.use((err, req, res, next) => {
     console.error('❌ Error Handler Caught:', err.stack);
-    res.status(500).json({ 
+    res.status(500).json({
         error: 'Something went wrong!',
         message: process.env.NODE_ENV !== 'production' ? err.message : undefined
     });
