@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Trophy, Medal, Award } from "lucide-react";
+import { Trophy, Medal, Award, ShieldCheck } from "lucide-react";
 import { formatCategory } from "@/lib/utils";
 
 interface Result {
@@ -100,7 +100,7 @@ const Results = () => {
                         Event Results
                     </h1>
                     <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-                        Published results showing winners and their grades
+                        Official results published by the Sargolsavam Committee
                     </p>
                     <div className="h-1 w-20 bg-primary mx-auto rounded-full"></div>
                 </div>
@@ -180,6 +180,18 @@ const Results = () => {
                     </div>
                 )}
             </div>
+
+            {/* Trust Indicator Footer */}
+            {!loading && Object.keys(groupedResults).length > 0 && (
+                <div className="py-8 text-center text-gray-500 border-t mt-12">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                        <ShieldCheck size={18} className="text-green-600" />
+                        <span className="font-medium text-gray-700">Official Verification</span>
+                    </div>
+                    <p className="text-sm">Results are final and approved by the jury.</p>
+                    <p className="text-xs text-gray-400 mt-1">All results are prepared based on jury evaluation and verified by the official results committee.</p>
+                </div>
+            )}
         </div>
     );
 };
