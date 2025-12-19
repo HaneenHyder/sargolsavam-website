@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { schedule as defaultSchedule, DaySchedule } from '@/data/schedule';
-import { Calendar, Clock, MapPin, Users, Sparkles, Search, X, Loader2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Sparkles, Search, X, Loader2, ScrollText, ShieldCheck, Receipt } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import Link from 'next/link';
+import { getCategoryColor } from '@/lib/utils';
 import {
     Select,
     SelectContent,
@@ -98,14 +101,6 @@ export default function SchedulePage() {
         }
 
         return events;
-    };
-
-    const getCategoryColor = (category: string) => {
-        if (category === 'Senior') return 'bg-blue-100 text-blue-700';
-        if (category === 'Junior') return 'bg-green-100 text-green-700';
-        if (category === 'Sub Junior') return 'bg-purple-100 text-purple-700';
-        if (category === 'Group') return 'bg-orange-100 text-orange-700';
-        return 'bg-gray-100 text-gray-700';
     };
 
     const isBreakEvent = (item: string) => {
@@ -338,6 +333,32 @@ export default function SchedulePage() {
                             <div className="w-4 h-4 rounded-full bg-orange-100 border-2 border-orange-700"></div>
                             <span className="text-sm text-gray-600">Group</span>
                         </div>
+                    </div>
+                </div>
+
+                {/* Policy Footer */}
+                <div className="max-w-5xl mx-auto mt-12 pt-8 border-t border-gray-200">
+                    <div className="flex flex-wrap justify-center items-center gap-6">
+                        <Link href="/terms">
+                            <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-primary/5 gap-2 px-4 h-9">
+                                <ScrollText className="w-4 h-4" />
+                                <span>Terms & Conditions</span>
+                            </Button>
+                        </Link>
+
+                        <Link href="/privacy">
+                            <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-primary/5 gap-2 px-4 h-9">
+                                <ShieldCheck className="w-4 h-4" />
+                                <span>Privacy Policy</span>
+                            </Button>
+                        </Link>
+
+                        <Link href="/policy">
+                            <Button variant="ghost" className="text-gray-500 hover:text-primary hover:bg-primary/5 gap-2 px-4 h-9">
+                                <Receipt className="w-4 h-4" />
+                                <span>Refund Policy</span>
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

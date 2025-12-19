@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
-import { Trophy, Medal, Award, ShieldCheck } from "lucide-react";
-import { formatCategory } from "@/lib/utils";
+import { Trophy, Medal, Award, ShieldCheck, Users } from "lucide-react";
+import { formatCategory, getCategoryColor } from "@/lib/utils";
 
 interface Result {
     id: string;
@@ -117,7 +117,8 @@ const Results = () => {
                                     <h2 className="text-2xl font-bold">{event.eventName}</h2>
                                     <Badge variant="outline">{event.eventType}</Badge>
                                     {event.category && (
-                                        <Badge variant="secondary">
+                                        <Badge className={`flex items-center gap-1.5 ${getCategoryColor(event.category)} hover:${getCategoryColor(event.category)}`}>
+                                            <Users size={12} />
                                             {formatCategory(event.category)}
                                         </Badge>
                                     )}

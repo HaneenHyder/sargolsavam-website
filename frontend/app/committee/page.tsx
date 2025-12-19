@@ -90,7 +90,7 @@ export default function CommitteePage() {
                     Organizing Committee
                 </h1>
                 <p className="text-gray-600 max-w-2xl mx-auto text-lg">
-                    The dedicated team working behind the scenes to make Sargolsavam 2025-26 a grand success.
+                    The committed individuals guiding, coordinating, and executing Sargolsavam 2025–26.
                 </p>
                 <div className="h-1 w-20 bg-primary mx-auto rounded-full"></div>
             </div>
@@ -112,6 +112,10 @@ export default function CommitteePage() {
                     <p>{error}</p>
                 </div>
             )}
+
+            <div className="text-center text-sm text-gray-500 mt-12 py-8 border-t max-w-3xl mx-auto">
+                <p>Each member of the organizing committee contributed actively to planning, coordination, and successful execution of the festival.</p>
+            </div>
         </div>
     );
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/Card";
 import { CountUp } from "@/components/ui/CountUp";
 import { useState, useEffect } from "react";
+import { ScrollText, ShieldCheck, Receipt } from "lucide-react";
 
 export default function Home() {
     const [videoEnded, setVideoEnded] = useState(false);
@@ -118,6 +119,27 @@ export default function Home() {
                     <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
                         <span className="text-primary font-medium">Sargolsavam</span> is the annual cultural arts festival of <span className="text-primary font-medium">Azharul Uloom College of Islamic and Linguistic Studies</span>, serving as a vibrant platform for students to explore, express, and enhance their creative talents across a wide range of artistic disciplines. The festival encourages students to discover their abilities in art, literature, and performance while providing an environment that nurtures imagination, innovation, and artistic excellence. Through healthy competition and collaborative participation, <span className="text-primary font-medium">Sargolsavam</span> helps build confidence, teamwork, and a strong sense of unity among students. It celebrates diversity in art and culture, promotes mutual respect, and inspires students to communicate ideas and emotions through creative expression. More than a celebration, <span className="text-primary font-medium">Sargolsavam</span> stands as a space where talent is refined, voices are amplified, and creativity becomes a shared experience that strengthens both individual growth and the collective spirit of the campus.
                     </p>
+
+                    <div className="flex flex-wrap justify-center gap-4 pt-8">
+                        <Link href="/terms">
+                            <Button variant="outline" className="h-auto py-3 px-6 text-gray-600 hover:text-primary hover:border-primary/30 hover:bg-white hover:shadow-md transition-all duration-300 gap-2.5 rounded-xl border-gray-200 bg-white/50 backdrop-blur-sm group">
+                                <ScrollText className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                <span className="font-medium">Terms & Conditions</span>
+                            </Button>
+                        </Link>
+                        <Link href="/privacy">
+                            <Button variant="outline" className="h-auto py-3 px-6 text-gray-600 hover:text-primary hover:border-primary/30 hover:bg-white hover:shadow-md transition-all duration-300 gap-2.5 rounded-xl border-gray-200 bg-white/50 backdrop-blur-sm group">
+                                <ShieldCheck className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                <span className="font-medium">Privacy Policy</span>
+                            </Button>
+                        </Link>
+                        <Link href="/policy">
+                            <Button variant="outline" className="h-auto py-3 px-6 text-gray-600 hover:text-primary hover:border-primary/30 hover:bg-white hover:shadow-md transition-all duration-300 gap-2.5 rounded-xl border-gray-200 bg-white/50 backdrop-blur-sm group">
+                                <Receipt className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                                <span className="font-medium">Refund Policy</span>
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
             </section>
         </div>
