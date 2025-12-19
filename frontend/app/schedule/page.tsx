@@ -16,13 +16,28 @@ export default function SchedulePage() {
     // Load from API on mount
     useEffect(() => {
         const fetchSchedule = async () => {
+            console.log('DEBUG: API_URL is', API_URL);
             try {
-                const res = await fetch(`${API_URL}/api/schedule`);
+                const targetUrl = `${API_URL}/api/schedule`;
+                console.log('DEBUG: Fetching', targetUrl);
+
+                const res = await fetch(targetUrl);
+                console.log('DEBUG: Response Status:', res.status, res.statusText);
+
                 if (res.ok) {
-                    const data = await res.json();
+                    const text = await res.text();
+                    console.log('DEBUG: Response Body:', text);
+
+                    if (!text) {
+                        throw new Error('Empty response body');
+                    }
+
+                    const data = JSON.parse(text);
                     if (data && data.length > 0) {
                         setScheduleData(data);
                     }
+                } else {
+                    console.error('DEBUG: Response not OK');
                 }
             } catch (err) {
                 console.error('Failed to fetch schedule, using default:', err);
