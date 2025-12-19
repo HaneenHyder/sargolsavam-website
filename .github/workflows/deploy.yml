@@ -43,7 +43,7 @@ jobs:
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
       ORG_ID: ${{ secrets.ORG_ID }}
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      RENDER_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - name: Deploy to Vercel (Frontend)
         uses: amondnet/vercel-action@v25
@@ -54,6 +54,11 @@ jobs:
           working-directory: ./frontend
           vercel-args: '--prod'
       
-      - name: Deploy to Render (Backend)
-        if: success() && env.RENDER_HOOK != ''
-        run: curl -X POST $RENDER_HOOK
+      - name: Deploy to Railway (Backend)
+        if: success()
+        run: |
+          npm i -g @railway/cli
+          railway up --detach
+        working-directory: ./backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
