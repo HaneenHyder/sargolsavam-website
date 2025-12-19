@@ -17,7 +17,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: '24.x'
     - run: npm ci
     - run: npm test
 
@@ -31,7 +31,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: '24.x'
     - run: npm ci
     - run: npm run build
 
