@@ -11,7 +11,7 @@ export default function SchedulePage() {
     const [selectedDay, setSelectedDay] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
     // Load from API on mount
     useEffect(() => {

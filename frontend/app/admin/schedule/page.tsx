@@ -33,7 +33,7 @@ export default function AdminSchedulePage() {
     const [editingEvent, setEditingEvent] = useState<ScheduleEvent | null>(null);
     const [editingId, setEditingId] = useState<number | null>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
     // Fetch schedule from API
     const fetchSchedule = async () => {
@@ -56,7 +56,7 @@ export default function AdminSchedulePage() {
 
     useEffect(() => {
         fetchSchedule();
-    }, []);
+    }, [API_URL]);
 
     // Open modal for new event
     const openAddModal = () => {
