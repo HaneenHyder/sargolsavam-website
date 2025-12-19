@@ -12,8 +12,8 @@ export default function AnalyticsTracker() {
                 // Don't track admin pages
                 if (pathname?.startsWith('/admin')) return;
 
-                // Use relative path for proxy
-                await fetch('/api/analytics', {
+                // Use absolute path
+                await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/analytics`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

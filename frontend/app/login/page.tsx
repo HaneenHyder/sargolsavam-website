@@ -31,7 +31,8 @@ export default function LoginPage() {
 
             // Use absolute URL or env var
             // Use absolute URL or env var
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            // Use absolute URL or env var
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const res = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

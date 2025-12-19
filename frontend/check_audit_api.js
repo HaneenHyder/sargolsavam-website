@@ -1,7 +1,8 @@
 // const fetch = require('node-fetch'); // Native fetch in Node 18+
 
 async function checkApi() {
-    const apiUrl = 'http://localhost:8080/api/admin/auditlogs';
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+    const apiUrl = `${API_BASE_URL}/api/admin/auditlogs`;
 
     try {
         console.log(`Fetching from ${apiUrl}...`);

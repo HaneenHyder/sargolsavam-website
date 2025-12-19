@@ -26,7 +26,7 @@ export default function AdminCommitteePage() {
 
     const fetchMembers = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const res = await fetch(`${API_URL}/api/committee`, { cache: 'no-store' });
             if (res.ok) {
                 const data = await res.json();
@@ -75,7 +75,7 @@ export default function AdminCommitteePage() {
 
         // Save to backend
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             await fetch(`${API_URL}/api/committee/reorder`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },

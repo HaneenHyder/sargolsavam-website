@@ -35,7 +35,7 @@ export default function AppealForm({ isOpen, onClose }: AppealFormProps) {
 
         try {
             // Force relative path to ensure proxy usage
-            const apiUrl = '/api';
+            const apiUrl = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api`;
 
             // 1. Create Order
             const orderRes = await fetch(`${apiUrl}/payments/order`, {

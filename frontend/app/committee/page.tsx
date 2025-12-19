@@ -39,7 +39,7 @@ export default function CommitteePage() {
     useEffect(() => {
         const fetchMembers = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+                const apiUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
                 console.log('Fetching committee from:', apiUrl);
 
                 const res = await fetch(`${apiUrl}/api/committee`);

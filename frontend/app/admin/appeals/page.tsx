@@ -30,7 +30,7 @@ export default function AppealsPage() {
 
     const fetchAppeals = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const res = await fetch(`${API_URL}/api/appeals`, {
                 credentials: 'include',
             });
@@ -47,7 +47,7 @@ export default function AppealsPage() {
 
     const handleStatusUpdate = async (id: string, newStatus: string, refundStatus?: string) => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const body: { status: string; refund_status?: string } = { status: newStatus };
             if (refundStatus) body.refund_status = refundStatus;
 

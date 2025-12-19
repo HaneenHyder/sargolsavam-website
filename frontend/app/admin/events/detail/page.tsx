@@ -30,7 +30,7 @@ function EventDetailInternal() {
             return;
         }
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
         fetch(`${API_URL}/api/events/${id}`)
             .then(res => {
                 if (!res.ok) throw new Error('Event not found');

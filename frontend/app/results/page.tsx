@@ -43,7 +43,7 @@ const Results = () => {
 
     const fetchResults = async () => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/results`);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/results`);
             if (!res.ok) throw new Error('Failed to fetch results');
             const data: Result[] = await res.json();
 

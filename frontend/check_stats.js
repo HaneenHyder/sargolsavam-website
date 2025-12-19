@@ -1,7 +1,8 @@
 // const fetch = require('node-fetch');
 
 async function checkStatsApi() {
-    const apiUrl = 'http://localhost:8080/api/admin/stats';
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+    const apiUrl = `${API_BASE_URL}/api/admin/stats`;
 
     try {
         console.log(`Fetching from ${apiUrl}...`);

@@ -32,7 +32,7 @@ function TeamInternal() {
             return;
         }
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
         fetch(`${API_URL}/api/teams/${code}`)
             .then(res => {
                 if (!res.ok) throw new Error('Team not found');

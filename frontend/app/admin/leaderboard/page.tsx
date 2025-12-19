@@ -861,7 +861,7 @@ export default function LeaderboardPage() {
     const fetchData = async (isBackground = false) => {
         try {
             if (!isBackground) setLoading(true);
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
             const token = localStorage.getItem('token');
             const headers: HeadersInit = token ? { 'Authorization': `Bearer ${token}` } : {};

@@ -27,7 +27,7 @@ export default function CaptainAppealsPage() {
 
     const fetchMyAppeals = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const res = await fetch(`${API_URL}/api/appeals/my-appeals`, {
                 credentials: 'include',
             });

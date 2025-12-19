@@ -22,7 +22,7 @@ export default function AuditLogsPage() {
     const fetchLogs = async () => {
         setLoading(true);
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const token = localStorage.getItem('token');
             const res = await fetch(`${API_URL}/api/admin/auditlogs`, {
                 credentials: 'include',

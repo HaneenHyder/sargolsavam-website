@@ -37,7 +37,7 @@ export default function AnalyticsPage() {
 
         const fetchStats = async () => {
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_URL;
+                const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
                 // Helper to normalize if needed, though we expect API_URL to be base
                 const baseUrl = API_URL;
 

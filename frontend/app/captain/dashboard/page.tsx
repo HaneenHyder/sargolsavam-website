@@ -60,7 +60,7 @@ const CaptainDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             // Use absolute URL or env var
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             console.log(`[Dashboard] Fetching from: ${API_URL}/api/teams/dashboard`);
             const token = localStorage.getItem('token');
             const res = await fetch(`${API_URL}/api/teams/dashboard`, {

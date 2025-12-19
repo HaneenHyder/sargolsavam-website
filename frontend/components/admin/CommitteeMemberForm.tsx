@@ -44,7 +44,7 @@ export default function CommitteeMemberForm({ member, isOpen, onClose, onSave }:
         };
 
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const res = await fetch(`${API_URL}/api/committee/${member.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
