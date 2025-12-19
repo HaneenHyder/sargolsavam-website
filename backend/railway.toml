@@ -1,0 +1,11 @@
+[service]
+type = "web"
+
+[deploy]
+startCommand = "npm start"
+
+[networking]
+servicePort = 8080
+
+[healthcheck]
+path = "/"
