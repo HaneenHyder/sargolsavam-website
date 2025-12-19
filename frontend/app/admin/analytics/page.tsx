@@ -37,10 +37,9 @@ export default function AnalyticsPage() {
 
         const fetchStats = async () => {
             try {
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-                const baseUrl = apiUrl.endsWith('/api')
-                    ? apiUrl.slice(0, -4)
-                    : apiUrl;
+                const API_URL = process.env.NEXT_PUBLIC_API_URL;
+                // Helper to normalize if needed, though we expect API_URL to be base
+                const baseUrl = API_URL;
 
                 const response = await fetch(`${baseUrl}/api/admin/analytics`, {
                     credentials: 'include'

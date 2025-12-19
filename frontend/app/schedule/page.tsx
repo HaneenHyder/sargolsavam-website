@@ -11,13 +11,13 @@ export default function SchedulePage() {
     const [selectedDay, setSelectedDay] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     // Load from API on mount
     useEffect(() => {
         const fetchSchedule = async () => {
             try {
-                const res = await fetch(`${apiUrl}/schedule`);
+                const res = await fetch(`${API_URL}/api/schedule`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.length > 0) {
@@ -32,7 +32,7 @@ export default function SchedulePage() {
             }
         };
         fetchSchedule();
-    }, [apiUrl]);
+    }, [API_URL]);
 
     // Filter events based on search query
     const getFilteredEvents = () => {

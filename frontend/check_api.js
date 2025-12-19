@@ -1,7 +1,9 @@
 // const fetch = require('node-fetch'); // Native fetch in Node 18+
 
 async function checkApi() {
-    const apiUrl = 'http://localhost:5000/api';
+    // For local check script, we can default to 8080 or read env if comfortable, 
+    // but usually scripts run outside next env. Let's point to 8080.
+    const apiUrl = 'http://localhost:8080/api';
 
     try {
         console.log(`Fetching candidates from ${apiUrl}/candidates...`);

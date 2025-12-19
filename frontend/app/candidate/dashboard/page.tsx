@@ -10,7 +10,7 @@ import { Trophy, User, Users as UsersIcon, Award, LogOut } from "lucide-react";
 import { useAuth } from "@/context/AuthContext"; // Adjust path if needed
 
 // Use absolute URL or env var
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface Result {
     id: string;
@@ -53,7 +53,7 @@ const CandidateDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/candidates/dashboard`, {
+            const res = await fetch(`${API_URL}/api/candidates/dashboard`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 },

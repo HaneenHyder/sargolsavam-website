@@ -32,8 +32,8 @@ function TeamInternal() {
             return;
         }
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-        fetch(`${apiUrl}/teams/${code}`)
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        fetch(`${API_URL}/api/teams/${code}`)
             .then(res => {
                 if (!res.ok) throw new Error('Team not found');
                 return res.json();

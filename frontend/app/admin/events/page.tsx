@@ -120,10 +120,10 @@ export default function UnifiedEventManagement() {
 
     const fetchData = async () => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const [eventsRes, candidatesRes] = await Promise.all([
-                fetch(`${apiUrl}/events`, { credentials: 'include' }).then(res => res.json()),
-                fetch(`${apiUrl}/candidates`, { credentials: 'include' }).then(res => res.json()),
+                fetch(`${API_URL}/api/events`, { credentials: 'include' }).then(res => res.json()),
+                fetch(`${API_URL}/api/candidates`, { credentials: 'include' }).then(res => res.json()),
             ]);
 
             // Sort candidates by chest number numerically
@@ -143,8 +143,8 @@ export default function UnifiedEventManagement() {
 
     const fetchPublishedResults = async () => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            const res = await fetch(`${apiUrl}/results`, { credentials: 'include' });
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const res = await fetch(`${API_URL}/api/results`, { credentials: 'include' });
             if (!res.ok) throw new Error(`Failed to fetch results: ${res.status}`);
             const data = await res.json();
             setPublishedResults(data || []);
@@ -156,8 +156,8 @@ export default function UnifiedEventManagement() {
 
     const fetchEventParticipants = async (eventId: string) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            const data = await fetch(`${apiUrl}/participants/event/${eventId}`, { credentials: 'include' }).then(res => res.json());
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const data = await fetch(`${API_URL}/api/participants/event/${eventId}`, { credentials: 'include' }).then(res => res.json());
             // Transform data to match interface if needed
             // Backend returns joined data, assume it matches or adapt here
             // Backend returns: { id, event_id, candidate_id, team_code, status, candidates: { ... } }
@@ -192,9 +192,9 @@ export default function UnifiedEventManagement() {
         // Code generation is handled by backend if empty, but we can send empty code
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/events`, {
+            const res = await fetch(`${API_URL}/api/events`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -236,9 +236,9 @@ export default function UnifiedEventManagement() {
     const executeDeleteEvent = async (id: string) => {
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/events/${id}`, {
+            const res = await fetch(`${API_URL}/api/events/${id}`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: {
@@ -298,9 +298,9 @@ export default function UnifiedEventManagement() {
             }));
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/participants/event/${selectedEvent.id}`, {
+            const res = await fetch(`${API_URL}/api/participants/event/${selectedEvent.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -323,9 +323,9 @@ export default function UnifiedEventManagement() {
 
     const handleRemoveParticipant = async (participantId: string) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/participants/${participantId}`, {
+            const res = await fetch(`${API_URL}/api/participants/${participantId}`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: {
@@ -398,9 +398,9 @@ export default function UnifiedEventManagement() {
         }
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/results`, {
+            const res = await fetch(`${API_URL}/api/results`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -430,9 +430,9 @@ export default function UnifiedEventManagement() {
     const executePublishEventResults = async (eventId: string) => {
         setPublishingId(eventId);
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/results/publish`, {
+            const res = await fetch(`${API_URL}/api/results/publish`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -481,7 +481,7 @@ export default function UnifiedEventManagement() {
 
     const executeUnpublishEvent = async (event: Event) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
             // We need to send all fields for update
             const payload = {
@@ -492,7 +492,7 @@ export default function UnifiedEventManagement() {
                 status: 'Pending'
             };
 
-            const res = await fetch(`${apiUrl}/events/${event.id}`, {
+            const res = await fetch(`${API_URL}/api/events/${event.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -539,9 +539,9 @@ export default function UnifiedEventManagement() {
         }
 
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/results/${resultId}`, {
+            const res = await fetch(`${API_URL}/api/results/${resultId}`, {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: {

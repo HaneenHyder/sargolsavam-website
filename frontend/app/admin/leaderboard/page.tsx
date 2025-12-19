@@ -861,16 +861,16 @@ export default function LeaderboardPage() {
     const fetchData = async (isBackground = false) => {
         try {
             if (!isBackground) setLoading(true);
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
             const token = localStorage.getItem('token');
             const headers: HeadersInit = token ? { 'Authorization': `Bearer ${token}` } : {};
 
             const [resultsRes, candidatesRes, teamsRes, detailedRes] = await Promise.all([
-                fetch(`${apiUrl}/results`, { headers }).then(res => res.json()),
-                fetch(`${apiUrl}/candidates`, { headers }).then(res => res.json()),
-                fetch(`${apiUrl}/teams`, { headers }).then(res => res.json()),
-                fetch(`${apiUrl}/admin/leaderboard/detailed`, {
+                fetch(`${API_URL}/api/results`, { headers }).then(res => res.json()),
+                fetch(`${API_URL}/api/candidates`, { headers }).then(res => res.json()),
+                fetch(`${API_URL}/api/teams`, { headers }).then(res => res.json()),
+                fetch(`${API_URL}/api/admin/leaderboard/detailed`, {
                     headers,
                     credentials: 'include'
                 }).then(res => res.json())

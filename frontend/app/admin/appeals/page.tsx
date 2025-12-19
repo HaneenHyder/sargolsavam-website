@@ -30,8 +30,8 @@ export default function AppealsPage() {
 
     const fetchAppeals = async () => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            const res = await fetch(`${apiUrl}/appeals`, {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const res = await fetch(`${API_URL}/api/appeals`, {
                 credentials: 'include',
             });
             if (!res.ok) throw new Error('Failed to fetch appeals');
@@ -47,11 +47,11 @@ export default function AppealsPage() {
 
     const handleStatusUpdate = async (id: string, newStatus: string, refundStatus?: string) => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
             const body: { status: string; refund_status?: string } = { status: newStatus };
             if (refundStatus) body.refund_status = refundStatus;
 
-            const res = await fetch(`${apiUrl}/appeals/${id}/status`, {
+            const res = await fetch(`${API_URL}/api/appeals/${id}/status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

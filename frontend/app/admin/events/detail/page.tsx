@@ -30,8 +30,8 @@ function EventDetailInternal() {
             return;
         }
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-        fetch(`${apiUrl}/events/${id}`)
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        fetch(`${API_URL}/api/events/${id}`)
             .then(res => {
                 if (!res.ok) throw new Error('Event not found');
                 return res.json();
@@ -56,8 +56,8 @@ function EventDetailInternal() {
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl font-bold">{event.name}</h1>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${event.status === 'published' ? 'bg-green-100 text-green-800' :
-                        event.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
+                    event.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                        'bg-gray-100 text-gray-800'
                     }`}>
                     {event.status.toUpperCase()}
                 </span>

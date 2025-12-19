@@ -37,8 +37,8 @@ function CandidateInternal() {
             return;
         }
 
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-        fetch(`${apiUrl}/candidates/${chest_no}`)
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        fetch(`${API_URL}/api/candidates/${chest_no}`)
             .then(res => {
                 if (!res.ok) throw new Error('Candidate not found');
                 return res.json();

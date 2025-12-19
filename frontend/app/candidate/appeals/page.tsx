@@ -27,8 +27,8 @@ export default function CandidateAppealsPage() {
 
     const fetchMyAppeals = async () => {
         try {
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            const res = await fetch(`${apiUrl}/appeals/my-appeals`, {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const res = await fetch(`${API_URL}/api/appeals/my-appeals`, {
                 credentials: 'include',
             });
             if (!res.ok) throw new Error('Failed to fetch appeals');

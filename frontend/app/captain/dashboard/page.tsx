@@ -60,10 +60,10 @@ const CaptainDashboard = () => {
     const fetchDashboardData = async () => {
         try {
             // Use absolute URL or env var
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
-            console.log(`[Dashboard] Fetching from: ${apiUrl}/teams/dashboard`);
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            console.log(`[Dashboard] Fetching from: ${API_URL}/api/teams/dashboard`);
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/teams/dashboard`, {
+            const res = await fetch(`${API_URL}/api/teams/dashboard`, {
                 credentials: 'include',
                 headers: {
                     'Authorization': `Bearer ${token}`

@@ -1,7 +1,7 @@
 // const fetch = require('node-fetch');
 
 async function checkStatsApi() {
-    const apiUrl = 'http://localhost:5000/api/admin/stats';
+    const apiUrl = 'http://localhost:8080/api/admin/stats';
 
     try {
         console.log(`Fetching from ${apiUrl}...`);

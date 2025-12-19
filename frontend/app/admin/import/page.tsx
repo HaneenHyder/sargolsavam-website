@@ -19,7 +19,8 @@ export default function ImportPage() {
         formData.append('file', file);
 
         try {
-            const res = await fetch('http://localhost:5000/api/admin/import-candidates', {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL;
+            const res = await fetch(`${API_URL}/api/admin/import-candidates`, {
                 method: 'POST',
                 body: formData // Content-Type header skipped for FormData to let browser set boundary
             });

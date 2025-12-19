@@ -33,13 +33,13 @@ export default function AdminSchedulePage() {
     const [editingEvent, setEditingEvent] = useState<ScheduleEvent | null>(null);
     const [editingId, setEditingId] = useState<number | null>(null);
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     // Fetch schedule from API
     const fetchSchedule = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${apiUrl}/schedule`);
+            const res = await fetch(`${API_URL}/api/schedule`);
             if (res.ok) {
                 const data = await res.json();
                 setScheduleData(data);
@@ -87,7 +87,7 @@ export default function AdminSchedulePage() {
 
             if (editingId) {
                 // Update existing
-                const res = await fetch(`${apiUrl}/schedule/events/${editingId}`, {
+                const res = await fetch(`${API_URL}/api/schedule/events/${editingId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export default function AdminSchedulePage() {
             } else {
                 // Add new
                 const dayId = scheduleData[selectedDay]?.id;
-                const res = await fetch(`${apiUrl}/schedule/events`, {
+                const res = await fetch(`${API_URL}/api/schedule/events`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export default function AdminSchedulePage() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${apiUrl}/schedule/events/${eventId}`, {
+            const res = await fetch(`${API_URL}/api/schedule/events/${eventId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` },
                 credentials: 'include'
