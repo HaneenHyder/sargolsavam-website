@@ -16,7 +16,9 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Health Checks (MUST BE FIRST - Before Middleware)
+// Health Checks (MUST BE FIRST - Before Middleware)
 app.get('/', (req, res) => {
+    console.log('Health Check: Root endpoint hit');
     res.json({
         status: "ok",
         service: "sargolsavam-backend",
@@ -25,6 +27,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/health', (req, res) => {
+    console.log('Health Check: /health endpoint hit');
     res.status(200).json({ status: "healthy" });
 });
 
@@ -77,7 +80,7 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Something went wrong!' });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Environment: ${process.env.NODE_ENV}`);
     console.log(`Supabase URL configured: ${!!process.env.SUPABASE_URL}`);
