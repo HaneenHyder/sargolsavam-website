@@ -1,6 +1,8 @@
 import Link from "next/link";
 import MemberCard from "@/components/committee/MemberCard";
 
+export const dynamic = 'force-dynamic';
+
 interface Member {
     id: string;
     name: string;
