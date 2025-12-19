@@ -46,8 +46,11 @@ jobs:
       RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.x'
       - name: Deploy to Vercel (Frontend)
-        working-directory: ./frontend
         env:
           VERCEL_ORG_ID: ${{ secrets.ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.PROJECT_ID }}
