@@ -994,7 +994,7 @@ export default function UnifiedEventManagement() {
                     <Card className="md:col-span-1 p-6">
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">Events List</h3>
-                            <Button
+                            {/* <Button
                                 variant="danger"
                                 size="sm"
                                 onClick={handleDeleteAllEvents}
@@ -1003,7 +1003,7 @@ export default function UnifiedEventManagement() {
                             >
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Delete All
-                            </Button>
+                            </Button> */}
                         </div>
 
                         <div className="space-y-3 mb-4">

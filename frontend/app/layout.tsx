@@ -8,6 +8,8 @@ import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 
+import SmoothScroll from "@/components/SmoothScroll";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -31,8 +33,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className="scroll-smooth">
             <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
+                <SmoothScroll />
                 <AuthProvider>
                     <AnalyticsTracker />
                     <HeaderWrapper />
