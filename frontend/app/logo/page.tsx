@@ -52,6 +52,21 @@ export default function LogoPage() {
                     </div>
                 </section>
 
+                {/* SECTION: BRAND VIDEO */}
+                <section className="w-full">
+                    <div className="relative w-full aspect-video rounded-2xl shadow-xl overflow-hidden border border-gray-100 bg-black">
+                        <video
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="w-full h-full object-cover"
+                        >
+                            <source src="/assets/videos/intro.mp4" type="video/mp4" />
+                        </video>
+                    </div>
+                </section>
+
                 {/* SECTION 2: BRAND ASSETS */}
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
 

@@ -10,6 +10,19 @@ import { ScrollText, ShieldCheck, Receipt } from "lucide-react";
 export default function Home() {
     const [videoEnded, setVideoEnded] = useState(false);
 
+    useEffect(() => {
+        // Check session storage on mount
+        const hasSeenIntro = sessionStorage.getItem('hasSeenIntro');
+        if (hasSeenIntro) {
+            setVideoEnded(true);
+        }
+    }, []);
+
+    const handleVideoEnd = () => {
+        setVideoEnded(true);
+        sessionStorage.setItem('hasSeenIntro', 'true');
+    };
+
     // Hide scrollbar during video playback
     useEffect(() => {
         if (!videoEnded) {
@@ -21,19 +34,20 @@ export default function Home() {
             document.documentElement.classList.remove('hide-scrollbar');
         };
     }, [videoEnded]);
+
     return (
         <div className="flex flex-col w-full">
             {/* Full Screen Video Intro */}
             <div
                 className={`fixed inset-0 z-[9999] bg-black transition-opacity duration-1000 ${videoEnded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-                onClick={() => setVideoEnded(true)}
-                onTouchStart={() => setVideoEnded(true)}
+                onClick={handleVideoEnd}
+                onTouchStart={handleVideoEnd}
             >
                 <video
                     autoPlay
                     muted
                     playsInline
-                    onEnded={() => setVideoEnded(true)}
+                    onEnded={handleVideoEnd}
                     className="w-full h-full object-cover"
                 >
                     <source src="/assets/videos/intro.mp4" type="video/mp4" />

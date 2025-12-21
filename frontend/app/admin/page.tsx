@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import Link from 'next/link';
-import { Trophy, Users, Calendar, LogOut, BarChart3, List, Upload } from 'lucide-react';
+import { Trophy, Users, Calendar, LogOut, BarChart3, List, Upload, Home } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AdminDashboard() {
@@ -53,6 +53,11 @@ export default function AdminDashboard() {
                     </p>
                 </div>
                 <div className="flex gap-2">
+                    <Link href="/">
+                        <Button variant="outline" size="sm" className="gap-2">
+                            <Home size={16} /> Home
+                        </Button>
+                    </Link>
                     <Button variant="outline" onClick={fetchStats} size="sm">
                         Refresh
                     </Button>
@@ -101,9 +106,25 @@ export default function AdminDashboard() {
                         {loadingStats ? (
                             <div className="h-8 w-24 bg-gray-200 animate-pulse rounded" />
                         ) : (
-                            <div className="text-2xl font-bold text-green-600">{stats.publishedResults}</div>
+                            <div>
+                                <div className="text-2xl font-bold text-green-600">{stats.publishedResults}</div>
+                                {stats.totalEvents > 0 && (
+                                    <div className="mt-3">
+                                        <div className="flex items-center justify-between text-xs mb-1">
+                                            <span className="text-gray-500">Progress</span>
+                                            <span className="font-medium text-green-700">{Math.round((stats.publishedResults / stats.totalEvents) * 100)}%</span>
+                                        </div>
+                                        <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+                                            <div
+                                                className="bg-green-500 h-1.5 rounded-full transition-all duration-1000 ease-out"
+                                                style={{ width: `${(stats.publishedResults / stats.totalEvents) * 100}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         )}
-                        <p className="text-xs text-gray-500 mt-1">Events declared</p>
+                        <p className="text-xs text-gray-500 mt-2">Events declared out of {stats.totalEvents}</p>
                     </CardContent>
                 </Card>
             </div>
