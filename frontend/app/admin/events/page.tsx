@@ -1235,7 +1235,10 @@ export default function UnifiedEventManagement() {
                                                                     checked={selectedParticipants.includes(candidate.id)}
                                                                     onCheckedChange={() => handleToggleParticipant(candidate.id)}
                                                                 />
-                                                                <label className="flex-1 cursor-pointer text-sm">
+                                                                <label
+                                                                    className="flex-1 cursor-pointer text-sm"
+                                                                    onClick={() => handleToggleParticipant(candidate.id)}
+                                                                >
                                                                     {candidate.chest_no} - {candidate.name} ({candidate.team_code})
                                                                 </label>
                                                             </div>

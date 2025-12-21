@@ -80,6 +80,13 @@ export default function MobileSidebar() {
                         >
                             Committee
                         </Link>
+                        <Link
+                            href="/logo"
+                            onClick={closeSidebar}
+                            className="text-lg font-medium text-gray-700 hover:text-primary hover:bg-primary/5 px-4 py-3 rounded-lg transition-colors"
+                        >
+                            Logo
+                        </Link>
                         <div className="pt-4 mt-auto">
                             <Link href="/login" onClick={closeSidebar}>
                                 <Button className="w-full text-lg h-12">

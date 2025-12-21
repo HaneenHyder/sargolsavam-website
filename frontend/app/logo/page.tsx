@@ -21,7 +21,7 @@ export default function LogoPage() {
                                 src="/assets/logo/logo.jpeg"
                                 alt="Sargolsavam Logo"
                                 fill
-                                className="object-contain p-4"
+                                className="object-contain p-4 rounded-full"
                             />
                         </div>
                     </div>
