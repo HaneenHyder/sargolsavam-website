@@ -274,6 +274,42 @@ export default function UnifiedEventManagement() {
         }
     };
 
+    const handleDeleteAllEvents = () => {
+        requestConfirmation(
+            "Delete ALL Events",
+            "Are you sure you want to delete ALL events? This will also delete all participants and results. This action CANNOT be undone.",
+            () => executeDeleteAllEvents()
+        );
+    };
+
+    const executeDeleteAllEvents = async () => {
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/api/events`, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || 'Failed to delete all events');
+            }
+
+            const data = await res.json();
+            toast.success(`Deleted ${data.deletedEvents} events and ${data.deletedParticipants} participants`);
+            setSelectedEvent(null);
+            fetchData();
+            fetchPublishedResults();
+        } catch (error: any) {
+            console.error("Error deleting all events:", error);
+            toast.error(error.message || "Failed to delete all events");
+        }
+    };
+
     const handleEditClick = (event: Event) => {
         setEditingEvent(event);
         setEditForm({
@@ -895,7 +931,19 @@ export default function UnifiedEventManagement() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Card className="md:col-span-1 p-6">
-                        <h3 className="text-lg font-semibold mb-4">Events List</h3>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold">Events List</h3>
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={handleDeleteAllEvents}
+                                disabled={events.length === 0}
+                                title="Delete All Events"
+                            >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete All
+                            </Button>
+                        </div>
 
                         <div className="space-y-3 mb-4">
                             <div className="relative">

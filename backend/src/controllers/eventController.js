@@ -78,3 +78,29 @@ exports.deleteEvent = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.deleteAllEvents = async (req, res) => {
+    const client = await db.pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        // Delete participants first due to FK constraint
+        const participantsRes = await client.query('DELETE FROM participants');
+
+        // Delete events
+        const eventsRes = await client.query('DELETE FROM events');
+
+        await client.query('COMMIT');
+
+        res.json({
+            message: 'All events deleted successfully',
+            deletedEvents: eventsRes.rowCount,
+            deletedParticipants: participantsRes.rowCount
+        });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        res.status(500).json({ error: err.message });
+    } finally {
+        client.release();
+    }
+};
