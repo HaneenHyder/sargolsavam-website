@@ -5,8 +5,9 @@ import { usePathname } from 'next/navigation';
 export default function MainWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
     const isAdmin = pathname?.startsWith('/admin');
+    const isLogoPage = pathname?.startsWith('/logo');
 
-    if (isAdmin) {
+    if (isAdmin || isLogoPage) {
         return <main className="flex-1">{children}</main>;
     }
 

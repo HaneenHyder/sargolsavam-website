@@ -1,9 +1,24 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
 import { Facebook, Youtube, Instagram } from 'lucide-react';
+import { Modal } from '@/components/ui/Modal';
+import DeveloperCard from '@/components/DeveloperCard';
 
 export default function Footer() {
+    const [isDevModalOpen, setIsDevModalOpen] = useState(false);
+
     return (
         <footer className="footer-section">
+            <Modal
+                isOpen={isDevModalOpen}
+                onClose={() => setIsDevModalOpen(false)}
+                title="Developer Profile"
+            >
+                <DeveloperCard />
+            </Modal>
+
             <div className="container mx-auto px-4">
                 <div className="footer-content pt-5 pb-5">
                     <div className="flex flex-col lg:flex-row justify-between gap-8 lg:gap-20">
@@ -55,7 +70,13 @@ export default function Footer() {
                     <div className="flex flex-col lg:flex-row justify-between items-center text-center lg:text-left">
                         <div className="copyright-text mb-4 lg:mb-0">
                             <p className="text-gray-400 text-sm">
-                                &copy; 2025 Sargolsavam <span className="mx-2">|</span> <a href="https://www.linkedin.com/in/haneenhyder/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Developed by Haneen Hyder PK</a>
+                                &copy; 2025 Sargolsavam <span className="mx-2">|</span>
+                                <button
+                                    onClick={() => setIsDevModalOpen(true)}
+                                    className="hover:text-primary transition-colors cursor-pointer bg-transparent border-none p-0 inline font-inherit"
+                                >
+                                    Developed by Haneen Hyder PK
+                                </button>
                             </p>
                         </div>
                         <div className="footer-menu">
