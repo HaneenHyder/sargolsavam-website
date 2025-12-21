@@ -6,7 +6,7 @@ import UploadSchedule from './UploadSchedule';
 import MessageList from './MessageList';
 import Link from 'next/link';
 
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://heartfelt-unity.up.railway.app';
 
 export default function WhatsAppPage() {
     const [messages, setMessages] = useState([]);

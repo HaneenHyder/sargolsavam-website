@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://heartfelt-unity.up.railway.app';
 
 export default function UploadSchedule({ onUploadSuccess }: { onUploadSuccess: () => void }) {
     const [message, setMessage] = useState('');
