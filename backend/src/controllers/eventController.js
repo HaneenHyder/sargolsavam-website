@@ -1,4 +1,5 @@
 const db = require('../db');
+const bcrypt = require('bcryptjs');
 
 exports.getAllEvents = async (req, res) => {
     try {
@@ -80,9 +81,30 @@ exports.deleteEvent = async (req, res) => {
 };
 
 exports.deleteAllEvents = async (req, res) => {
+    const { password } = req.body;
+
+    if (!password) {
+        return res.status(400).json({ error: 'Password is required' });
+    }
+
     const client = await db.pool.connect();
     try {
         await client.query('BEGIN');
+
+        // Verify admin password
+        const adminId = req.user.id;
+        const { rows: adminRows } = await client.query('SELECT password_hash FROM admins WHERE id = $1', [adminId]);
+
+        if (adminRows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Admin not found' });
+        }
+
+        const validPassword = await bcrypt.compare(password, adminRows[0].password_hash);
+        if (!validPassword) {
+            await client.query('ROLLBACK');
+            return res.status(401).json({ error: 'Invalid password' });
+        }
 
         // Delete participants first due to FK constraint
         const participantsRes = await client.query('DELETE FROM participants');

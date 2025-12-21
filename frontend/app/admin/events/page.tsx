@@ -117,6 +117,11 @@ export default function UnifiedEventManagement() {
         event_type: "Onstage",
     });
 
+    // Auth Modal State for sensitive actions
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+    const [authPassword, setAuthPassword] = useState("");
+    const [authAction, setAuthAction] = useState<(() => void) | null>(null);
+
     // Filter states
     const [eventSearchQuery, setEventSearchQuery] = useState("");
     const [eventFilterCategory, setEventFilterCategory] = useState("All");
@@ -275,14 +280,10 @@ export default function UnifiedEventManagement() {
     };
 
     const handleDeleteAllEvents = () => {
-        requestConfirmation(
-            "Delete ALL Events",
-            "Are you sure you want to delete ALL events? This will also delete all participants and results. This action CANNOT be undone.",
-            () => executeDeleteAllEvents()
-        );
+        setIsAuthModalOpen(true);
     };
 
-    const executeDeleteAllEvents = async () => {
+    const executeDeleteAllEvents = async (password: string) => {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const token = localStorage.getItem('token');
@@ -290,8 +291,10 @@ export default function UnifiedEventManagement() {
                 method: 'DELETE',
                 credentials: 'include',
                 headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ password })
             });
 
             if (!res.ok) {
@@ -302,6 +305,8 @@ export default function UnifiedEventManagement() {
             const data = await res.json();
             toast.success(`Deleted ${data.deletedEvents} events and ${data.deletedParticipants} participants`);
             setSelectedEvent(null);
+            setIsAuthModalOpen(false);
+            setAuthPassword("");
             fetchData();
             fetchPublishedResults();
         } catch (error: any) {
@@ -763,6 +768,7 @@ export default function UnifiedEventManagement() {
                 footer={null}
             >
                 <form onSubmit={handleUpdateEvent} className="space-y-4">
+                    {/* ... form content ... */}
                     <div>
                         <Label htmlFor="edit-name">Event Name</Label>
                         <Input
@@ -772,7 +778,11 @@ export default function UnifiedEventManagement() {
                             required
                         />
                     </div>
-
+                    {/* Re-rendering existing fields just to keep context, but actually I need to preserve them. 
+                       Wait, multi_replace replaces the BLOCK. The target block was short in my previous read? 
+                       No, I need to be careful not to delete the form content if I matched the outer block.
+                       Actually I will append the AuthModal AFTER the EditModal.
+                    */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <Label htmlFor="edit-item_type">Item Type</Label>
@@ -834,6 +844,57 @@ export default function UnifiedEventManagement() {
                         <Button type="submit">Update Event</Button>
                     </div>
                 </form>
+            </Modal>
+
+            {/* Auth Modal */}
+            <Modal
+                isOpen={isAuthModalOpen}
+                onClose={() => {
+                    setIsAuthModalOpen(false);
+                    setAuthPassword("");
+                }}
+                title="Confirm Action"
+                footer={null}
+            >
+                <div className="space-y-4">
+                    <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded-md text-sm">
+                        <p className="font-semibold flex items-center gap-2">
+                            <Trash2 className="h-4 w-4" /> Warning: Destructive Action
+                        </p>
+                        <p className="mt-1">
+                            You are about to delete ALL events. This action cannot be undone.
+                            Please enter your admin password to confirm.
+                        </p>
+                    </div>
+                    <div>
+                        <Label htmlFor="auth-password">Admin Password</Label>
+                        <Input
+                            id="auth-password"
+                            type="password"
+                            value={authPassword}
+                            onChange={(e) => setAuthPassword(e.target.value)}
+                            placeholder="Enter password..."
+                        />
+                    </div>
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setIsAuthModalOpen(false);
+                                setAuthPassword("");
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            disabled={!authPassword}
+                            onClick={() => executeDeleteAllEvents(authPassword)}
+                        >
+                            Confirm Delete
+                        </Button>
+                    </div>
+                </div>
             </Modal>
 
             <div className="space-y-6">
@@ -934,7 +995,7 @@ export default function UnifiedEventManagement() {
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="text-lg font-semibold">Events List</h3>
                             <Button
-                                variant="destructive"
+                                variant="danger"
                                 size="sm"
                                 onClick={handleDeleteAllEvents}
                                 disabled={events.length === 0}
