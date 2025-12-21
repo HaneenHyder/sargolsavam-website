@@ -153,13 +153,7 @@ try {
     console.error('❌ Error loading payments routes:', error.message);
 }
 
-try {
-    const whatsappRoutes = require('./src/routes/whatsappRoutes');
-    app.use('/api/whatsapp', whatsappRoutes);
-    console.log('✅ WhatsApp routes loaded');
-} catch (error) {
-    console.error('❌ Error loading whatsapp routes:', error.message);
-}
+
 
 // Public Analytics Route
 try {
