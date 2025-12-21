@@ -134,6 +134,14 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                     Appeals
                 </Link>
                 */}
+                <Link
+                    href="/admin/whatsapp"
+                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                >
+                    <Users size={20} />
+                    WhatsApp Messaging
+                </Link>
             </nav>
             <div className="p-4 border-t">
                 <button

@@ -6,10 +6,11 @@ const cookieParser = require('cookie-parser');
 const app = express();
 
 // CRITICAL: Railway requires PORT environment variable
-const PORT = process.env.PORT;
+// CRITICAL: Railway requires PORT environment variable
+const PORT = process.env.PORT || 5000;
 
 if (!PORT) {
-    console.error('❌ PORT not provided by Railway');
+    console.error('❌ PORT not provided');
     process.exit(1);
 }
 
@@ -149,6 +150,14 @@ try {
     console.log('✅ Payments routes loaded');
 } catch (error) {
     console.error('❌ Error loading payments routes:', error.message);
+}
+
+try {
+    const whatsappRoutes = require('./src/routes/whatsappRoutes');
+    app.use('/api/whatsapp', whatsappRoutes);
+    console.log('✅ WhatsApp routes loaded');
+} catch (error) {
+    console.error('❌ Error loading whatsapp routes:', error.message);
 }
 
 // Public Analytics Route
