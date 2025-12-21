@@ -60,7 +60,7 @@ exports.getDashboardData = async (req, res) => {
             FROM participants r
             JOIN events e ON r.event_id = e.id
             LEFT JOIN candidates c ON r.candidate_id = c.id
-            WHERE r.team_code = $1 AND r.status = 'Winner' AND e.status = 'Declared'
+            WHERE r.team_code = $1 AND (r.status = 'Winner' OR r.status = 'Absent') AND e.status = 'Declared'
             ORDER BY e.name
         `, [teamCode]);
 

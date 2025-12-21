@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Youtube, Instagram } from 'lucide-react';
 import { Modal } from '@/components/ui/Modal';
 import DeveloperCard from '@/components/DeveloperCard';
@@ -24,8 +25,19 @@ export default function Footer() {
                     <div className="flex flex-col lg:flex-row justify-between gap-8 lg:gap-20">
                         <div className="mb-8 lg:mb-0 lg:w-1/2">
                             <div className="footer-widget">
-                                <div className="footer-logo mb-1">
-                                    <Link href="/" className="text-3xl font-bold text-white font-achiko">SARGOLSAVAM</Link>
+                                <div className="footer-logo mb-4">
+                                    <Link href="/" className="flex items-center gap-3">
+                                        <div className="relative w-16 h-16">
+                                            <div className="absolute inset-0 rounded-full border-2 border-primary/20 animate-pulse"></div>
+                                            <Image
+                                                src="/assets/logo/logo.jpeg"
+                                                alt="Sargolsavam Logo"
+                                                fill
+                                                className="object-cover rounded-full border-2 border-white shadow-lg"
+                                            />
+                                        </div>
+                                        <span className="text-3xl font-bold text-white font-achiko">SARGOLSAVAM</span>
+                                    </Link>
                                 </div>
                                 <div className="footer-text mb-6">
                                     <p className="text-gray-400 text-sm leading-7">

@@ -232,7 +232,9 @@ const CandidateDashboard = () => {
                                                 </Badge>
                                             </td>
                                             <td className="py-4 px-4 whitespace-nowrap">
-                                                {result.position ? (
+                                                {result.status === 'Absent' ? (
+                                                    <span className="text-muted-foreground">Absent</span>
+                                                ) : result.position ? (
                                                     <Badge className={getPositionBadge(result.position)}>
                                                         {result.position === 1 ? '1st' : result.position === 2 ? '2nd' : '3rd'}
                                                     </Badge>
@@ -241,7 +243,9 @@ const CandidateDashboard = () => {
                                                 )}
                                             </td>
                                             <td className="py-4 px-4 whitespace-nowrap">
-                                                {result.grade ? (
+                                                {result.status === 'Absent' ? (
+                                                    <span className="text-muted-foreground">Absent</span>
+                                                ) : result.grade ? (
                                                     <Badge className={getGradeBadge(result.grade)}>
                                                         Grade {result.grade}
                                                     </Badge>

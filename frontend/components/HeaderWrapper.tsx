@@ -5,7 +5,7 @@ import Header from './Header';
 
 export default function HeaderWrapper() {
     const pathname = usePathname();
-    const isExcluded = pathname?.startsWith('/admin') || pathname?.startsWith('/logo');
+    const isExcluded = pathname?.startsWith('/admin');
 
     if (isExcluded) {
         return null;

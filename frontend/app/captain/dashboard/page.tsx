@@ -105,7 +105,8 @@ const CaptainDashboard = () => {
         );
     }
 
-    const getPositionBadge = (position: number) => {
+    const getPositionBadge = (position: number | null) => {
+        if (!position) return "bg-muted text-muted-foreground";
         const styles = {
             1: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
             2: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
@@ -258,14 +259,22 @@ const CaptainDashboard = () => {
                                                     )}
                                                 </td>
                                                 <td className="py-4 px-4 whitespace-nowrap">
-                                                    <Badge className={getPositionBadge(result.position)}>
-                                                        {result.position === 1 ? '1st' : result.position === 2 ? '2nd' : '3rd'}
-                                                    </Badge>
+                                                    {(result as any).status === 'Absent' ? (
+                                                        <Badge variant="outline" className="border-red-200 text-red-600 bg-red-50">Absent</Badge>
+                                                    ) : (
+                                                        <Badge className={getPositionBadge(result.position)}>
+                                                            {result.position === 1 ? '1st' : result.position === 2 ? '2nd' : '3rd'}
+                                                        </Badge>
+                                                    )}
                                                 </td>
                                                 <td className="py-4 px-4 whitespace-nowrap">
-                                                    <Badge className={getGradeBadge(result.grade)}>
-                                                        Grade {result.grade}
-                                                    </Badge>
+                                                    {(result as any).status === 'Absent' ? (
+                                                        <span className="text-muted-foreground">-</span>
+                                                    ) : (
+                                                        <Badge className={getGradeBadge(result.grade)}>
+                                                            Grade {result.grade}
+                                                        </Badge>
+                                                    )}
                                                 </td>
                                             </tr>
                                         ))}

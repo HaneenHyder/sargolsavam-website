@@ -1,14 +1,10 @@
 
+import Image from 'next/image';
+
 export default function LogoPage() {
     return (
         <div className="bg-gray-50 text-gray-800 antialiased selection:bg-primary selection:text-white min-h-screen">
-            {/* Navigation / Header */}
-            <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
-                <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <div className="font-bold text-lg tracking-wider text-primary-dark font-achiko">SARGOLSAVAM</div>
-                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-widest hidden sm:block">Azharul Uloom Arts Fest 2025-26</div>
-                </div>
-            </nav>
+
 
             {/* Main Content Wrapper */}
             <main className="max-w-5xl mx-auto px-6 py-12 space-y-24">
@@ -20,21 +16,13 @@ export default function LogoPage() {
                     <div className="relative group">
                         <div className="absolute -inset-1 bg-theme-gradient rounded-full opacity-20 blur transition duration-500 group-hover:opacity-40"></div>
                         <div className="relative w-48 h-48 sm:w-64 sm:h-64 bg-white rounded-full shadow-xl flex items-center justify-center border-4 border-white p-6">
-                            {/* SVG Icon */}
-                            <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-lg" fill="none" strokeWidth="0">
-                                <defs>
-                                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style={{ stopColor: '#381A64', stopOpacity: 1 }} />
-                                        <stop offset="100%" style={{ stopColor: '#8842C9', stopOpacity: 1 }} />
-                                    </linearGradient>
-                                </defs>
-                                {/* Abstract Pen Nib Base */}
-                                <path d="M50 85 C45 85 40 80 40 70 L50 60 L60 70 C60 80 55 85 50 85 Z" fill="url(#grad1)" />
-                                {/* Abstract S Strokes rising */}
-                                <path d="M50 60 C30 50 30 30 50 20 C70 30 70 50 50 60" stroke="url(#grad1)" strokeWidth="6" strokeLinecap="round" fill="none" />
-                                <path d="M45 25 C35 35 35 45 50 55" stroke="url(#grad1)" strokeWidth="3" strokeLinecap="round" opacity="0.6" />
-                                <path d="M55 25 C65 35 65 45 50 55" stroke="url(#grad1)" strokeWidth="3" strokeLinecap="round" opacity="0.6" />
-                            </svg>
+                            {/* Actual Logo Image */}
+                            <Image
+                                src="/assets/logo/logo.jpeg"
+                                alt="Sargolsavam Logo"
+                                fill
+                                className="object-contain p-4"
+                            />
                         </div>
                     </div>
 
