@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/Badge";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Textarea } from "@/components/ui/Textarea";
-import { Plus, Trash2, Trophy, Users, Edit, ListOrdered } from "lucide-react";
+import { Plus, Trash2, Trophy, Users, Edit, ListOrdered, Search, Filter, X } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Modal } from "@/components/ui/Modal";
@@ -106,6 +106,12 @@ export default function UnifiedEventManagement() {
     });
 
     const [publishingId, setPublishingId] = useState<string | null>(null);
+
+    // Filter states
+    const [eventSearchQuery, setEventSearchQuery] = useState("");
+    const [eventFilterCategory, setEventFilterCategory] = useState("All");
+    const [eventFilterType, setEventFilterType] = useState("All");
+    const [eventFilterStage, setEventFilterStage] = useState("All");
 
     useEffect(() => {
         fetchData();
@@ -748,8 +754,76 @@ export default function UnifiedEventManagement() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <Card className="md:col-span-1 p-6">
                         <h3 className="text-lg font-semibold mb-4">Events List</h3>
+
+                        <div className="space-y-3 mb-4">
+                            <div className="relative">
+                                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search events..."
+                                    value={eventSearchQuery}
+                                    onChange={(e) => setEventSearchQuery(e.target.value)}
+                                    className="pl-8"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-2">
+                                <Select value={eventFilterCategory} onValueChange={setEventFilterCategory}>
+                                    <SelectTrigger className="h-8 text-xs">
+                                        <SelectValue placeholder="Cat" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="All">All Cats</SelectItem>
+                                        <SelectItem value="Sub Junior">Sub Jr</SelectItem>
+                                        <SelectItem value="Junior">Junior</SelectItem>
+                                        <SelectItem value="Senior">Senior</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Select value={eventFilterType} onValueChange={setEventFilterType}>
+                                    <SelectTrigger className="h-8 text-xs">
+                                        <SelectValue placeholder="Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="All">All Types</SelectItem>
+                                        <SelectItem value="Individual">Indiv.</SelectItem>
+                                        <SelectItem value="Group">Group</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <Select value={eventFilterStage} onValueChange={setEventFilterStage}>
+                                    <SelectTrigger className="h-8 text-xs">
+                                        <SelectValue placeholder="Stage" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="All">All Stages</SelectItem>
+                                        <SelectItem value="Onstage">On Stage</SelectItem>
+                                        <SelectItem value="Offstage">Off Stage</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            {(eventSearchQuery || eventFilterCategory !== "All" || eventFilterType !== "All" || eventFilterStage !== "All") && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="w-full h-6 text-xs text-muted-foreground"
+                                    onClick={() => {
+                                        setEventSearchQuery("");
+                                        setEventFilterCategory("All");
+                                        setEventFilterType("All");
+                                        setEventFilterStage("All");
+                                    }}
+                                >
+                                    <X className="h-3 w-3 mr-1" /> Clear Filters
+                                </Button>
+                            )}
+                        </div>
+
                         <div className="space-y-2 max-h-[600px] overflow-y-auto">
-                            {events.map(event => (
+                            {events.filter(event => {
+                                const matchesSearch = event.name.toLowerCase().includes(eventSearchQuery.toLowerCase()) ||
+                                    (event.code && event.code.toLowerCase().includes(eventSearchQuery.toLowerCase()));
+                                const matchesCategory = eventFilterCategory === "All" || event.category === eventFilterCategory;
+                                const matchesType = eventFilterType === "All" || event.item_type === eventFilterType;
+                                const matchesStage = eventFilterStage === "All" || event.event_type === eventFilterStage;
+                                return matchesSearch && matchesCategory && matchesType && matchesStage;
+                            }).map(event => (
                                 <div
                                     key={event.id}
                                     className={`p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedEvent?.id === event.id
