@@ -36,7 +36,8 @@ app.use(helmet());
 app.use(cors({
     origin: [
         /\.vercel\.app$/,
-        "https://sargolsavam.azharululoom.net"
+        "https://sargolsavam.azharululoom.net",
+        "http://localhost:3000"
     ],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
