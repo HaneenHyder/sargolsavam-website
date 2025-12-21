@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import HeaderWrapper from "@/components/HeaderWrapper";
+import MainWrapper from "@/components/MainWrapper";
 import FooterWrapper from "@/components/FooterWrapper";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
@@ -34,10 +35,10 @@ export default function RootLayout({
             <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
                 <AuthProvider>
                     <AnalyticsTracker />
-                    <Header />
-                    <main className="flex-1 container mx-auto px-4 py-8">
+                    <HeaderWrapper />
+                    <MainWrapper>
                         {children}
-                    </main>
+                    </MainWrapper>
                     <FooterWrapper />
                     <Toaster />
                 </AuthProvider>
