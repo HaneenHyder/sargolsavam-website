@@ -107,6 +107,16 @@ export default function UnifiedEventManagement() {
 
     const [publishingId, setPublishingId] = useState<string | null>(null);
 
+    // Edit Event State
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+    const [editForm, setEditForm] = useState({
+        name: "",
+        item_type: "Individual",
+        category: "",
+        event_type: "Onstage",
+    });
+
     // Filter states
     const [eventSearchQuery, setEventSearchQuery] = useState("");
     const [eventFilterCategory, setEventFilterCategory] = useState("All");
@@ -261,6 +271,57 @@ export default function UnifiedEventManagement() {
         } catch (error: any) {
             console.error("Error deleting event:", error);
             toast.error(error.message || "Failed to delete event");
+        }
+    };
+
+    const handleEditClick = (event: Event) => {
+        setEditingEvent(event);
+        setEditForm({
+            name: event.name,
+            item_type: event.item_type,
+            category: event.category || "",
+            event_type: event.event_type,
+        });
+        setIsEditModalOpen(true);
+    };
+
+    const handleUpdateEvent = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingEvent) return;
+
+        // Validate category for individual events
+        if (editForm.item_type === "Individual" && !editForm.category) {
+            toast.error("Please select a category for individual events");
+            return;
+        }
+
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/api/events/${editingEvent.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include',
+                body: JSON.stringify(editForm)
+            });
+
+            if (!res.ok) throw new Error('Failed to update event');
+
+            toast.success("Event updated successfully");
+            setIsEditModalOpen(false);
+            setEditingEvent(null);
+            fetchData(); // Refresh list headers
+
+            // Update selected event if it matches
+            if (selectedEvent?.id === editingEvent.id) {
+                setSelectedEvent(prev => prev ? { ...prev, ...editForm, category: editForm.category || null } : null);
+            }
+        } catch (error: any) {
+            console.error("Error updating event:", error);
+            toast.error(error.message || "Failed to update event");
         }
     };
 
@@ -658,6 +719,87 @@ export default function UnifiedEventManagement() {
                 <p className="text-muted-foreground">{confirmation.message}</p>
             </Modal>
 
+            {/* Edit Event Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                title="Edit Event"
+                footer={null}
+            >
+                <form onSubmit={handleUpdateEvent} className="space-y-4">
+                    <div>
+                        <Label htmlFor="edit-name">Event Name</Label>
+                        <Input
+                            id="edit-name"
+                            value={editForm.name}
+                            onChange={e => setEditForm({ ...editForm, name: e.target.value })}
+                            required
+                        />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <Label htmlFor="edit-item_type">Item Type</Label>
+                            <Select
+                                value={editForm.item_type}
+                                onValueChange={value => setEditForm({ ...editForm, item_type: value })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Individual">Individual</SelectItem>
+                                    <SelectItem value="Group">Group</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div>
+                            <Label htmlFor="edit-event_type">Stage Type</Label>
+                            <Select
+                                value={editForm.event_type}
+                                onValueChange={value => setEditForm({ ...editForm, event_type: value })}
+                            >
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Onstage">On Stage</SelectItem>
+                                    <SelectItem value="Offstage">Off Stage</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </div>
+
+                    {editForm.item_type === "Individual" && (
+                        <div>
+                            <Label htmlFor="edit-category">Category</Label>
+                            <Select
+                                value={editForm.category}
+                                onValueChange={value => setEditForm({ ...editForm, category: value })}
+                                required
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Sub Junior">Sub Junior</SelectItem>
+                                    <SelectItem value="Junior">Junior</SelectItem>
+                                    <SelectItem value="Senior">Senior</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    )}
+
+                    <div className="flex justify-end gap-2 mt-4">
+                        <Button type="button" variant="outline" onClick={() => setIsEditModalOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button type="submit">Update Event</Button>
+                    </div>
+                </form>
+            </Modal>
+
             <div className="space-y-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                     <div className="flex-1 text-center sm:text-left">
@@ -833,17 +975,31 @@ export default function UnifiedEventManagement() {
                                     onClick={() => setSelectedEvent(event)}
                                 >
                                     <div className="flex justify-between items-start mb-2">
-                                        <h4 className="font-medium">{event.name}</h4>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDeleteEvent(event.id);
-                                            }}
-                                        >
-                                            <Trash2 className="h-4 w-4 text-destructive" />
-                                        </Button>
+                                        <h4 className="font-medium mr-2">{event.name}</h4>
+                                        <div className="flex shrink-0">
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                className="h-8 w-8 p-0"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleEditClick(event);
+                                                }}
+                                            >
+                                                <Edit className="h-4 w-4 text-primary" />
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                className="h-8 w-8 p-0"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleDeleteEvent(event.id);
+                                                }}
+                                            >
+                                                <Trash2 className="h-4 w-4 text-destructive" />
+                                            </Button>
+                                        </div>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
                                         <Badge variant="outline" className={getStatusBadge(event.status)}>
