@@ -629,7 +629,7 @@ export default function JudgesNotificationPage() {
                                         size="sm"
                                         className="gap-2"
                                         style={notificationStatus[judge.name] === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
-                                        disabled={!judge.phone}
+                                        disabled={!judge.phone || notificationStatus[judge.name] === 'Send'}
                                     >
                                         <Send size={14} />
                                         {notificationStatus[judge.name] === 'Send' ? 'Notified' : 'Notify Judge'}
@@ -671,7 +671,7 @@ export default function JudgesNotificationPage() {
                                                     size="sm"
                                                     className="gap-1 text-xs w-full"
                                                     style={dayStatus === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
-                                                    disabled={!judge.phone || eventCount === 0}
+                                                    disabled={!judge.phone || eventCount === 0 || dayStatus === 'Send'}
                                                 >
                                                     <Send size={12} />
                                                     {dayStatus === 'Send' ? 'Notified' : `Notify ${day}`}
@@ -734,7 +734,7 @@ export default function JudgesNotificationPage() {
                                                             size="sm"
                                                             className="gap-1 text-xs px-2 py-1"
                                                             style={currentStatus === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
-                                                            disabled={!judge.phone}
+                                                            disabled={!judge.phone || currentStatus === 'Send'}
                                                         >
                                                             <Send size={12} />
                                                             {currentStatus === 'Send' ? 'Notified' : 'Notify'}
@@ -768,7 +768,7 @@ export default function JudgesNotificationPage() {
                                         size="sm"
                                         className="gap-2"
                                         style={{ backgroundColor: '#16a34a', color: 'white' }}
-                                        disabled={!judge.phone}
+                                        disabled={!judge.phone || thankYouStatus[judge.name] === 'Send'}
                                     >
                                         <Send size={14} />
                                         {thankYouStatus[judge.name] === 'Send' ? 'Notified' : 'Send Thank You'}
