@@ -767,7 +767,7 @@ export default function JudgesNotificationPage() {
                                         onClick={() => handleThankYouNotify(judge.name, judge.phone)}
                                         size="sm"
                                         className="gap-2"
-                                        style={{ backgroundColor: '#16a34a', color: 'white' }}
+                                        style={thankYouStatus[judge.name] === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
                                         disabled={!judge.phone || thankYouStatus[judge.name] === 'Send'}
                                     >
                                         <Send size={14} />
