@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Bell, Send, Users, Calendar, Phone } from 'lucide-react';
+import { Users, Calendar, Phone } from 'lucide-react';
 
 // Helper function to format date
 const formatDate = (dateString: string): string => {
@@ -370,63 +370,19 @@ const judgesSchedule = [
 ];
 
 export default function JudgesNotificationPage() {
-    const [message, setMessage] = useState('');
-    const [selectedJudge, setSelectedJudge] = useState<string>('all');
-    const [isSending, setIsSending] = useState(false);
-    const [lastSent, setLastSent] = useState<Date | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredJudges = judgesSchedule.filter(judge =>
         judge.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const handleSendNotification = async () => {
-        if (!message.trim()) {
-            alert('Please enter a message');
-            return;
-        }
-
-        setIsSending(true);
-        try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-            const token = localStorage.getItem('token');
-
-            const response = await fetch(`${API_URL}/api/admin/judges/notify`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    message,
-                    judgeName: selectedJudge === 'all' ? null : selectedJudge
-                })
-            });
-
-            if (response.ok) {
-                alert('Notification sent successfully to judges!');
-                setMessage('');
-                setLastSent(new Date());
-            } else {
-                const error = await response.json();
-                alert(`Failed to send notification: ${error.error || 'Unknown error'}`);
-            }
-        } catch (error) {
-            console.error('Error sending notification:', error);
-            alert('Failed to send notification. Please try again.');
-        } finally {
-            setIsSending(false);
-        }
-    };
-
     return (
         <div className="space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold tracking-tight">Judges Schedule & Notification</h1>
+                <h1 className="text-3xl font-bold tracking-tight">Judges Schedule</h1>
                 <p className="text-gray-500 text-sm mt-1">
-                    View judge schedules and send notifications
-                    {lastSent && <span className="ml-2 text-xs opacity-75">Last sent: {lastSent.toLocaleString()}</span>}
+                    View judge event schedules and assignments
                 </p>
             </div>
 
@@ -457,58 +413,7 @@ export default function JudgesNotificationPage() {
                 </Card>
             </div>
 
-            {/* Notification Form */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Bell size={20} />
-                        Send Notification
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {/* Judge Selection */}
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Select Judge</label>
-                        <select
-                            value={selectedJudge}
-                            onChange={(e) => setSelectedJudge(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                        >
-                            <option value="all">All Judges</option>
-                            {judgesSchedule.map((judge, idx) => (
-                                <option key={idx} value={judge.name}>{judge.name}</option>
-                            ))}
-                        </select>
-                    </div>
 
-                    {/* Message Input */}
-                    <div>
-                        <label className="block text-sm font-medium mb-2">Message</label>
-                        <textarea
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Enter your notification message for judges..."
-                            rows={6}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                            {message.length} characters
-                        </p>
-                    </div>
-
-                    {/* Send Button */}
-                    <div className="flex justify-end">
-                        <Button
-                            onClick={handleSendNotification}
-                            disabled={isSending || !message.trim()}
-                            className="gap-2"
-                        >
-                            <Send size={16} />
-                            {isSending ? 'Sending...' : 'Send Notification'}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
 
             {/* Search Bar */}
             <div>
