@@ -74,6 +74,13 @@ export default function MobileSidebar() {
                             Results
                         </Link>
                         <Link
+                            href="/teams"
+                            onClick={closeSidebar}
+                            className="text-lg font-medium text-gray-700 hover:text-primary hover:bg-primary/5 px-4 py-3 rounded-lg transition-colors"
+                        >
+                            Teams
+                        </Link>
+                        <Link
                             href="/committee"
                             onClick={closeSidebar}
                             className="text-lg font-medium text-gray-700 hover:text-primary hover:bg-primary/5 px-4 py-3 rounded-lg transition-colors"

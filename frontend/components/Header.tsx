@@ -22,6 +22,7 @@ export default function Header() {
                     <Link href="/" className="text-gray-600 hover:text-primary transition-colors">Home</Link>
                     <Link href="/schedule" className="text-gray-600 hover:text-primary transition-colors">Schedule</Link>
                     <Link href="/results" className="text-gray-600 hover:text-primary transition-colors">Results</Link>
+                    <Link href="/teams" className="text-gray-600 hover:text-primary transition-colors">Teams</Link>
                     <Link href="/committee" className="text-gray-600 hover:text-primary transition-colors">Committee</Link>
                     <Link href="/logo" className="text-gray-600 hover:text-primary transition-colors">Logo</Link>
                     <Link href="/login" className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors">
