@@ -504,15 +504,51 @@ With respect,
             return;
         }
 
-        const eventsList = dayEvents.map(({ event }: any) => event.event).join('\n- ');
-        // TODO: Implement actual notification logic (SMS/WhatsApp)
-        alert(`Notification sent to ${judge.name} at ${judge.phone}\n${day} Events:\n- ${eventsList}`);
+        // Format phone number
+        const formattedPhone = judge.phone.replace(/\D/g, '');
 
-        // Update day status to 'Notified'
+        // Get date from first event
+        const firstEvent = dayEvents[0].event;
+        const dateMatch = firstEvent.date.match(/(\d+)\s+(\w+)\s+(\d+)/);
+        const formattedDate = dateMatch ? `${dateMatch[1]} ${dateMatch[2]} ${dateMatch[3]}` : firstEvent.date;
+
+        // Generate numbered event list
+        const numberEmojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+        const eventList = dayEvents.map(({ event }: any, idx: number) => {
+            const emoji = numberEmojis[idx] || `${idx + 1}.`;
+            return `${emoji} ${event.event} — ${event.category}
+🕓 ${event.time}
+📍 ${event.stage}`;
+        }).join('\n\n');
+
+        // Morning Schedule Template (Template 1)
+        const message = `Assalamu Alaikum *${judge.name}*,
+
+Good morning 🌤️
+This is an official update from the *Sargolsavam 2025–26 Organizing Committee*.
+
+Below is your judging schedule for *${day}, ${formattedDate}*:
+
+${eventList}
+
+⏱️ Kindly report at the respective venue *15 minutes prior* to the first assigned event.
+
+📌 _This is a system-generated reminder to ensure smooth coordination._
+
+Thank you for your valuable support and cooperation.
+
+— *Sargolsavam 2025–26 Organizing Committee*`;
+
+        // URL encode and open WhatsApp
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+
+        // Update day status to 'Send'
         const dayKey = `${judge.name}-${day}`;
         setDayNotificationStatus(prev => ({
             ...prev,
-            [dayKey]: 'Notified'
+            [dayKey]: 'Send'
         }));
 
         // Also update all events for that day
@@ -520,7 +556,7 @@ With respect,
             const eventKey = `${judge.name}-${index}`;
             setEventNotificationStatus(prev => ({
                 ...prev,
-                [eventKey]: 'Notified'
+                [eventKey]: 'Send'
             }));
         });
     };
