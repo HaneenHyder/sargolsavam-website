@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/Card";
-import { User, Phone, Instagram } from 'lucide-react';
+import { User, Phone } from 'lucide-react';
 
 interface Member {
     id: string;
@@ -80,7 +80,22 @@ export default function MemberCard({ member }: { member: Member }) {
                             className="p-3 rounded-full bg-pink-100 hover:bg-pink-600 hover:text-white transition-all duration-300 group"
                             aria-label={`Instagram ${member.name}`}
                         >
-                            <Instagram size={24} className="text-pink-600 group-hover:text-white" />
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className="text-pink-600 group-hover:text-white"
+                            >
+                                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                            </svg>
                         </a>
                     )}
                 </div>
