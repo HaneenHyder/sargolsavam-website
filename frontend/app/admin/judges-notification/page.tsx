@@ -611,7 +611,7 @@ export default function JudgesNotificationPage() {
                             <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
-                                        <label className="text-sm font-medium text-gray-700">Notification Status:</label>
+                                        <span className="text-sm font-semibold text-gray-700">🔔 Notification Status:</span>
                                         <select
                                             value={notificationStatus[judge.name] || 'Pending'}
                                             onChange={(e) => handleStatusChange(judge.name, e.target.value)}
@@ -636,9 +636,8 @@ export default function JudgesNotificationPage() {
                                 </div>
                             </div>
 
-                            {/* Day-Level Notification Controls */}
                             <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                <h3 className="text-sm font-semibold text-gray-700 mb-3">Notify by Day</h3>
+                                <h3 className="text-sm font-semibold text-gray-700 mb-3">📅 Notify by Day</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                     {['Day 1', 'Day 2', 'Day 3'].map((day) => {
                                         const dayKey = `${judge.name}-${day}`;
@@ -649,7 +648,7 @@ export default function JudgesNotificationPage() {
                                         return (
                                             <div key={day} className="flex flex-col gap-2 p-3 bg-white rounded border border-gray-200">
                                                 <div className="flex items-center justify-between">
-                                                    <span className="text-sm font-semibold text-gray-700">{day}</span>
+                                                    <span className="text-sm font-semibold text-gray-700">📆 {day}</span>
                                                     <span className="text-xs text-gray-500">{eventCount} event{eventCount !== 1 ? 's' : ''}</span>
                                                 </div>
                                                 <select
@@ -687,8 +686,8 @@ export default function JudgesNotificationPage() {
                                             <th className="text-left py-2 px-3 font-semibold">Stage</th>
                                             <th className="text-left py-2 px-3 font-semibold">Event</th>
                                             <th className="text-left py-2 px-3 font-semibold">Category</th>
-                                            <th className="text-left py-2 px-3 font-semibold">Status</th>
-                                            <th className="text-center py-2 px-3 font-semibold">Notify</th>
+                                            <th className="text-left py-2 px-3 font-semibold">📋 Status</th>
+                                            <th className="text-center py-2 px-3 font-semibold">🔔 Notify</th>
                                         </tr>
                                     </thead>
                                     <tbody>
