@@ -103,8 +103,11 @@ export default function CommitteePage() {
             </div>
 
             {members.length === 0 && !error && (
-                <div className="text-center py-12 text-gray-500">
-                    <p>No committee members found.</p>
+                <div className="text-center py-12 text-gray-500 flex flex-col items-center gap-4">
+                    <p className="text-xl font-medium">No committee members found.</p>
+                    <p className="text-sm max-w-md">
+                        The committee list is currently empty. This might be due to a database connection issue or pending data synchronization.
+                    </p>
                 </div>
             )}
 
