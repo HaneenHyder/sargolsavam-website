@@ -645,6 +645,9 @@ export default function JudgesNotificationPage() {
                                         const dayEvents = getEventsByDay(judge, day);
                                         const eventCount = dayEvents.length;
 
+                                        // Only show days with events
+                                        if (eventCount === 0) return null;
+
                                         return (
                                             <div key={day} className="flex flex-col gap-2 p-3 bg-white rounded border border-gray-200">
                                                 <div className="flex items-center justify-between">
