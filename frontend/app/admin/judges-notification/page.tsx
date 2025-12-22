@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Users, Calendar, Phone, Send } from 'lucide-react';
@@ -404,6 +404,61 @@ export default function JudgesNotificationPage() {
         return initialStatus;
     });
 
+    // Track thank you notification status for each judge
+    const [thankYouStatus, setThankYouStatus] = useState<{ [key: string]: string }>(() => {
+        const initialStatus: { [key: string]: string } = {};
+        judgesSchedule.forEach(judge => {
+            initialStatus[judge.name] = 'Pending';
+        });
+        return initialStatus;
+    });
+
+    // Persistence: Load state from localStorage on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const loadState = (key: string, setter: (value: any) => void) => {
+                const saved = localStorage.getItem(key);
+                if (saved) {
+                    try {
+                        setter(JSON.parse(saved));
+                    } catch (e) {
+                        console.error(`Error parsing ${key} from localStorage`, e);
+                    }
+                }
+            };
+
+            loadState('judgeNotificationStatus', setNotificationStatus);
+            loadState('eventNotificationStatus', setEventNotificationStatus);
+            loadState('dayNotificationStatus', setDayNotificationStatus);
+            loadState('thankYouStatus', setThankYouStatus);
+        }
+    }, []);
+
+    // Persistence: Save state to localStorage on change
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('judgeNotificationStatus', JSON.stringify(notificationStatus));
+        }
+    }, [notificationStatus]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('eventNotificationStatus', JSON.stringify(eventNotificationStatus));
+        }
+    }, [eventNotificationStatus]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('dayNotificationStatus', JSON.stringify(dayNotificationStatus));
+        }
+    }, [dayNotificationStatus]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('thankYouStatus', JSON.stringify(thankYouStatus));
+        }
+    }, [thankYouStatus]);
+
     // Memoize filtered judges to prevent recalculation on every render
     const filteredJudges = useMemo(() =>
         judgesSchedule.filter(judge =>
@@ -596,14 +651,7 @@ Thank you for your valuable support and cooperation.
         }));
     };
 
-    // Track thank you notification status for each judge
-    const [thankYouStatus, setThankYouStatus] = useState<{ [key: string]: string }>(() => {
-        const initialStatus: { [key: string]: string } = {};
-        judgesSchedule.forEach(judge => {
-            initialStatus[judge.name] = 'Pending';
-        });
-        return initialStatus;
-    });
+
 
     // Handle thank you notification
     const handleThankYouNotify = (judgeName: string, phone: string) => {
