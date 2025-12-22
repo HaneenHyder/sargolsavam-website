@@ -95,6 +95,11 @@ export default function Home() {
                                 Committee
                             </Button>
                         </Link>
+                        <Link href="/stages">
+                            <Button variant="outline" size="lg" className="text-lg px-8 h-12 bg-white/80 backdrop-blur-sm hover:bg-white/90 hover:text-primary border-primary/20">
+                                Stages
+                            </Button>
+                        </Link>
                         <Link href="/login">
                             <Button variant="secondary" size="lg" className="text-lg px-8 h-12 shadow-lg">
                                 Login

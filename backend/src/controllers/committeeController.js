@@ -12,14 +12,14 @@ exports.getAllCommitteeMembers = async (req, res) => {
 
 exports.updateCommitteeMember = async (req, res) => {
     const { id } = req.params;
-    const { name, role, department, email, phone, image } = req.body;
+    const { name, role, department, email, phone, image, instagram } = req.body;
 
     try {
         const result = await db.query(
             `UPDATE committee_members 
-             SET name = $1, role = $2, department = $3, email = $4, phone = $5, image = $6
-             WHERE id = $7 RETURNING *`,
-            [name, role, department, email, phone, image, id]
+             SET name = $1, role = $2, department = $3, email = $4, phone = $5, image = $6, instagram = $7
+             WHERE id = $8 RETURNING *`,
+            [name, role, department, email, phone, image, instagram, id]
         );
 
         if (result.rows.length === 0) {

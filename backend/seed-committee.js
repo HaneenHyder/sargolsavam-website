@@ -44,15 +44,16 @@ async function seed() {
 
                 // Insert
                 await client.query(
-                    `INSERT INTO committee_members (name, role, department, email, phone, image)
-                     VALUES ($1, $2, $3, $4, $5, $6)`,
+                    `INSERT INTO committee_members (name, role, department, email, phone, image, instagram)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
                     [
                         member.name,
                         member.role,
                         member.department,
                         member.email,
                         member.phone,
-                        imagePath
+                        imagePath,
+                        member.instagram || null
                     ]
                 );
             }

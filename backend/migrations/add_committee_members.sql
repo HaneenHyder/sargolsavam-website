@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS committee_members (
     department VARCHAR(100),
     email VARCHAR(100),
     phone VARCHAR(20),
-    image TEXT
+    image TEXT,
+    instagram TEXT
 );
