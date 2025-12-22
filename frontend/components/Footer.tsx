@@ -56,6 +56,7 @@ export default function Footer() {
                                 </div>
                                 <ul className="grid grid-cols-2 gap-3">
                                     <li><Link href="/" className="text-gray-400 hover:text-primary text-sm capitalize">Home</Link></li>
+                                    <li><Link href="/teams" className="text-gray-400 hover:text-primary text-sm capitalize">Teams</Link></li>
                                     <li><Link href="/schedule" className="text-gray-400 hover:text-primary text-sm capitalize">Schedule</Link></li>
                                     <li><Link href="/results" className="text-gray-400 hover:text-primary text-sm capitalize">Results</Link></li>
                                     <li><Link href="/committee" className="text-gray-400 hover:text-primary text-sm capitalize">Committee</Link></li>
