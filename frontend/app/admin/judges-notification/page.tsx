@@ -627,7 +627,7 @@ export default function JudgesNotificationPage() {
                                     <Button
                                         onClick={() => handleNotify(judge.name, judge.phone)}
                                         size="sm"
-                                        className={`gap-2 ${notificationStatus[judge.name] === 'Send' ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                                        className={`gap-2 ${notificationStatus[judge.name] === 'Send' ? '!bg-green-600 hover:!bg-green-700 !text-white' : ''}`}
                                         disabled={!judge.phone}
                                     >
                                         <Send size={14} />
@@ -668,7 +668,7 @@ export default function JudgesNotificationPage() {
                                                 <Button
                                                     onClick={() => handleDayNotify(judge, day)}
                                                     size="sm"
-                                                    className={`gap-1 text-xs w-full ${dayStatus === 'Send' ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                                                    className={`gap-1 text-xs w-full ${dayStatus === 'Send' ? '!bg-green-600 hover:!bg-green-700 !text-white' : ''}`}
                                                     disabled={!judge.phone || eventCount === 0}
                                                 >
                                                     <Send size={12} />
@@ -730,7 +730,7 @@ export default function JudgesNotificationPage() {
                                                         <Button
                                                             onClick={() => handleEventNotify(judge.name, judge.phone, itemIdx, item.event, item.date, item.time)}
                                                             size="sm"
-                                                            className={`gap-1 text-xs px-2 py-1 ${currentStatus === 'Send' ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                                                            className={`gap-1 text-xs px-2 py-1 ${currentStatus === 'Send' ? '!bg-green-600 hover:!bg-green-700 !text-white' : ''}`}
                                                             disabled={!judge.phone}
                                                         >
                                                             <Send size={12} />
@@ -763,7 +763,7 @@ export default function JudgesNotificationPage() {
                                     <Button
                                         onClick={() => handleThankYouNotify(judge.name, judge.phone)}
                                         size="sm"
-                                        className={`gap-2 ${thankYouStatus[judge.name] === 'Send' ? 'bg-green-600 hover:bg-green-700' : 'bg-green-600 hover:bg-green-700'}`}
+                                        className={`gap-2 ${thankYouStatus[judge.name] === 'Send' ? '!bg-green-600 hover:!bg-green-700 !text-white' : 'bg-green-600 hover:bg-green-700'}`}
                                         disabled={!judge.phone}
                                     >
                                         <Send size={14} />
