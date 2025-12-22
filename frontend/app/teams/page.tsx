@@ -51,7 +51,7 @@ const teams: Team[] = [
     {
         id: "intisar",
         name: "Intisar",
-        description: "The triumph of people who turned every massacre into greater resolve, every destroyed home into a promise of return, and every martyr into a guarantee that Palestine will be free from the river to the sea.",
+        description: "The triumph of a people who turned every massacre into resolve, every destroyed home into a promise of return, and martyrdom into certainty.",
         icon: Trophy,
         gradient: "from-amber-400 to-yellow-600",
         shadow: "shadow-amber-500/20",
