@@ -60,6 +60,7 @@ export default function Footer() {
                                     <li><Link href="/schedule" className="text-gray-400 hover:text-primary text-sm capitalize">Schedule</Link></li>
                                     <li><Link href="/results" className="text-gray-400 hover:text-primary text-sm capitalize">Results</Link></li>
                                     <li><Link href="/committee" className="text-gray-400 hover:text-primary text-sm capitalize">Committee</Link></li>
+                                    <li><Link href="/stages" className="text-gray-400 hover:text-primary text-sm capitalize">Stages</Link></li>
                                     <li><Link href="/logo" className="text-gray-400 hover:text-primary text-sm capitalize">Logo</Link></li>
                                     <li><Link href="/#about" className="text-gray-400 hover:text-primary text-sm capitalize">About</Link></li>
                                 </ul>
