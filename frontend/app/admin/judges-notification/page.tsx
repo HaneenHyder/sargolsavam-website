@@ -392,6 +392,18 @@ export default function JudgesNotificationPage() {
         return initialStatus;
     });
 
+    // Track notification status for each day (per judge)
+    const [dayNotificationStatus, setDayNotificationStatus] = useState<{ [key: string]: string }>(() => {
+        const initialStatus: { [key: string]: string } = {};
+        judgesSchedule.forEach(judge => {
+            ['Day 1', 'Day 2', 'Day 3'].forEach(day => {
+                const dayKey = `${judge.name}-${day}`;
+                initialStatus[dayKey] = 'Pending';
+            });
+        });
+        return initialStatus;
+    });
+
     const filteredJudges = judgesSchedule.filter(judge =>
         judge.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -439,6 +451,60 @@ export default function JudgesNotificationPage() {
         setEventNotificationStatus(prev => ({
             ...prev,
             [eventKey]: newStatus
+        }));
+    };
+
+    // Get events for a specific day for a judge
+    const getEventsByDay = (judge: any, day: string) => {
+        return judge.schedule.filter((event: any, idx: number) => {
+            const formattedDate = formatDate(event.date);
+            return formattedDate.startsWith(day);
+        }).map((event: any, _: number) => {
+            // Find original index
+            const originalIdx = judge.schedule.findIndex((e: any) => e === event);
+            return { event, index: originalIdx };
+        });
+    };
+
+    // Handle day-level notification
+    const handleDayNotify = (judge: any, day: string) => {
+        if (!judge.phone) {
+            alert(`No phone number available for ${judge.name}`);
+            return;
+        }
+        const dayEvents = getEventsByDay(judge, day);
+        if (dayEvents.length === 0) {
+            alert(`No events scheduled for ${day} for ${judge.name}`);
+            return;
+        }
+
+        const eventsList = dayEvents.map(({ event }: any) => event.event).join('\n- ');
+        // TODO: Implement actual notification logic (SMS/WhatsApp)
+        alert(`Notification sent to ${judge.name} at ${judge.phone}\n${day} Events:\n- ${eventsList}`);
+
+        // Update day status to 'Notified'
+        const dayKey = `${judge.name}-${day}`;
+        setDayNotificationStatus(prev => ({
+            ...prev,
+            [dayKey]: 'Notified'
+        }));
+
+        // Also update all events for that day
+        dayEvents.forEach(({ index }: any) => {
+            const eventKey = `${judge.name}-${index}`;
+            setEventNotificationStatus(prev => ({
+                ...prev,
+                [eventKey]: 'Notified'
+            }));
+        });
+    };
+
+    // Handle day-level status change
+    const handleDayStatusChange = (judgeName: string, day: string, newStatus: string) => {
+        const dayKey = `${judgeName}-${day}`;
+        setDayNotificationStatus(prev => ({
+            ...prev,
+            [dayKey]: newStatus
         }));
     };
 
@@ -539,6 +605,49 @@ export default function JudgesNotificationPage() {
                                 </div>
                             </div>
 
+                            {/* Day-Level Notification Controls */}
+                            <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <h3 className="text-sm font-semibold text-gray-700 mb-3">Notify by Day</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    {['Day 1', 'Day 2', 'Day 3'].map((day) => {
+                                        const dayKey = `${judge.name}-${day}`;
+                                        const dayStatus = dayNotificationStatus[dayKey] || 'Pending';
+                                        const dayEvents = getEventsByDay(judge, day);
+                                        const eventCount = dayEvents.length;
+
+                                        return (
+                                            <div key={day} className="flex flex-col gap-2 p-3 bg-white rounded border border-gray-200">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-sm font-semibold text-gray-700">{day}</span>
+                                                    <span className="text-xs text-gray-500">{eventCount} event{eventCount !== 1 ? 's' : ''}</span>
+                                                </div>
+                                                <select
+                                                    value={dayStatus}
+                                                    onChange={(e) => handleDayStatusChange(judge.name, day, e.target.value)}
+                                                    className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${dayStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
+                                                            dayStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                                'bg-green-50 border-green-300 text-green-700'
+                                                        }`}
+                                                >
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Notified">Notified</option>
+                                                    <option value="Confirmed">Confirmed</option>
+                                                </select>
+                                                <Button
+                                                    onClick={() => handleDayNotify(judge, day)}
+                                                    size="sm"
+                                                    className="gap-1 text-xs w-full"
+                                                    disabled={!judge.phone || eventCount === 0}
+                                                >
+                                                    <Send size={12} />
+                                                    Notify {day}
+                                                </Button>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead>
@@ -565,9 +674,9 @@ export default function JudgesNotificationPage() {
                                                     <td className="py-2 px-3">{item.event}</td>
                                                     <td className="py-2 px-3">
                                                         <span className={`px-2 py-1 rounded text-xs font-medium ${item.category === 'SNR' ? 'bg-blue-100 text-blue-700' :
-                                                                item.category === 'JNR' ? 'bg-green-100 text-green-700' :
-                                                                    item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
-                                                                        'bg-orange-100 text-orange-700'
+                                                            item.category === 'JNR' ? 'bg-green-100 text-green-700' :
+                                                                item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
+                                                                    'bg-orange-100 text-orange-700'
                                                             }`}>
                                                             {item.category}
                                                         </span>
@@ -577,8 +686,8 @@ export default function JudgesNotificationPage() {
                                                             value={currentStatus}
                                                             onChange={(e) => handleEventStatusChange(judge.name, itemIdx, e.target.value)}
                                                             className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${currentStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                                    currentStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                                        'bg-green-50 border-green-300 text-green-700'
+                                                                currentStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                                    'bg-green-50 border-green-300 text-green-700'
                                                                 }`}
                                                         >
                                                             <option value="Pending">Pending</option>
