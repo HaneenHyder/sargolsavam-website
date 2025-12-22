@@ -1175,7 +1175,7 @@ export default function UnifiedEventManagement() {
                             )}
                         </div>
 
-                        <div className="space-y-2 max-h-[600px] overflow-y-auto">
+                        <div className="space-y-2 max-h-[600px] overflow-y-auto overscroll-y-contain">
                             {events.filter(event => {
                                 const matchesSearch = event.name.toLowerCase().includes(eventSearchQuery.toLowerCase()) ||
                                     (event.code && event.code.toLowerCase().includes(eventSearchQuery.toLowerCase()));
