@@ -123,29 +123,31 @@ export default function TeamsPage() {
                                     </div>
 
                                     {/* Leaders Section */}
-                                    <div className="w-full pt-6 border-t border-white/20">
-                                        <div className="grid grid-cols-3 gap-2">
-                                            {team.leaders.map((leader, i) => (
-                                                <div key={i} className="flex flex-col items-center text-center space-y-2">
-                                                    <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 shadow-md">
-                                                        <img
-                                                            src={leader.image}
-                                                            alt={leader.name}
-                                                            className="w-full h-full object-cover"
-                                                        />
+                                    {team.leaders && (
+                                        <div className="w-full pt-6 border-t border-white/20">
+                                            <div className="grid grid-cols-3 gap-2">
+                                                {team.leaders.map((leader, i) => (
+                                                    <div key={i} className="flex flex-col items-center text-center space-y-2">
+                                                        <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-white/30 shadow-md">
+                                                            <img
+                                                                src={leader.image}
+                                                                alt={leader.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-0.5">
+                                                            <p className="text-[10px] uppercase tracking-wider font-semibold text-white/60">
+                                                                {leader.role}
+                                                            </p>
+                                                            <p className="text-xs font-medium text-white leading-tight">
+                                                                {leader.name.split(' ')[0]}<br />{leader.name.split(' ')[1]}
+                                                            </p>
+                                                        </div>
                                                     </div>
-                                                    <div className="space-y-0.5">
-                                                        <p className="text-[10px] uppercase tracking-wider font-semibold text-white/60">
-                                                            {leader.role}
-                                                        </p>
-                                                        <p className="text-xs font-medium text-white leading-tight">
-                                                            {leader.name.split(' ')[0]}<br />{leader.name.split(' ')[1]}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                 </CardContent>
                             </Card>
