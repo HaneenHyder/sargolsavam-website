@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Users, Calendar, Phone, Send } from 'lucide-react';
+import { Users, Calendar, Phone } from 'lucide-react';
 
 // Helper function to format date
 const formatDate = (dateString: string): string => {
@@ -371,39 +371,10 @@ const judgesSchedule = [
 
 export default function JudgesNotificationPage() {
     const [searchQuery, setSearchQuery] = useState('');
-    const [notificationStatus, setNotificationStatus] = useState<{ [key: string]: string }>(() => {
-        // Initialize all judges with 'Pending' status
-        const initialStatus: { [key: string]: string } = {};
-        judgesSchedule.forEach(judge => {
-            initialStatus[judge.name] = 'Pending';
-        });
-        return initialStatus;
-    });
 
     const filteredJudges = judgesSchedule.filter(judge =>
         judge.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    const handleNotify = (judgeName: string, phone: string) => {
-        if (!phone) {
-            alert(`No phone number available for ${judgeName}`);
-            return;
-        }
-        // TODO: Implement actual notification logic (SMS/WhatsApp)
-        alert(`Notification sent to ${judgeName} at ${phone}`);
-        // Update status to 'Notified'
-        setNotificationStatus(prev => ({
-            ...prev,
-            [judgeName]: 'Notified'
-        }));
-    };
-
-    const handleStatusChange = (judgeName: string, newStatus: string) => {
-        setNotificationStatus(prev => ({
-            ...prev,
-            [judgeName]: newStatus
-        }));
-    };
 
     return (
         <div className="space-y-6">
@@ -472,36 +443,6 @@ export default function JudgesNotificationPage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            {/* Notification Control Row */}
-                            <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <label className="text-sm font-medium text-gray-700">Notification Status:</label>
-                                        <select
-                                            value={notificationStatus[judge.name] || 'Pending'}
-                                            onChange={(e) => handleStatusChange(judge.name, e.target.value)}
-                                            className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${notificationStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                    notificationStatus[judge.name] === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                        'bg-green-50 border-green-300 text-green-700'
-                                                }`}
-                                        >
-                                            <option value="Pending">Pending</option>
-                                            <option value="Notified">Notified</option>
-                                            <option value="Confirmed">Confirmed</option>
-                                        </select>
-                                    </div>
-                                    <Button
-                                        onClick={() => handleNotify(judge.name, judge.phone)}
-                                        size="sm"
-                                        className="gap-2"
-                                        disabled={!judge.phone}
-                                    >
-                                        <Send size={14} />
-                                        Notify Judge
-                                    </Button>
-                                </div>
-                            </div>
-
                             <div className="overflow-x-auto">
                                 <table className="w-full text-sm">
                                     <thead>
