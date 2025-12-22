@@ -12,7 +12,6 @@ const teams = [
         icon: Shield,
         gradient: "from-emerald-500 to-teal-700",
         shadow: "shadow-emerald-500/20",
-        bg: "bg-emerald-50"
     },
     {
         id: "thoofan",
@@ -21,7 +20,6 @@ const teams = [
         icon: Flame,
         gradient: "from-red-500 to-orange-700",
         shadow: "shadow-red-500/20",
-        bg: "bg-red-50"
     },
     {
         id: "inthisar",
@@ -30,7 +28,6 @@ const teams = [
         icon: Trophy,
         gradient: "from-amber-400 to-yellow-600",
         shadow: "shadow-amber-500/20",
-        bg: "bg-amber-50"
     }
 ];
 
@@ -71,29 +68,27 @@ export default function TeamsPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: index * 0.2 + 0.3 }}
                         >
-                            <Card className={`h-full border-0 overflow-hidden group hover:scale-105 transition-all duration-500 ${team.shadow} shadow-xl bg-white`}>
-                                {/* Header Background */}
-                                <div className={`h-32 bg-gradient-to-br ${team.gradient} relative overflow-hidden`}>
-                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
-                                    {/* Abstract Pattern overlay */}
-                                    <div className="absolute inset-0 opacity-20 mix-blend-overlay"
-                                        style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '16px 16px' }}>
-                                    </div>
-
-                                    {/* Icon */}
-                                    <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-20 h-20 bg-white rounded-2xl rotate-45 flex items-center justify-center shadow-lg z-10 group-hover:rotate-0 transition-transform duration-500">
-                                        <team.icon className={`w-10 h-10 ${team.gradient.split(' ')[1].replace('to-', 'text-')} -rotate-45 group-hover:rotate-0 transition-transform duration-500`} />
-                                    </div>
+                            <Card className={`h-full border-0 overflow-hidden relative group hover:scale-[1.02] transition-all duration-500 ${team.shadow} shadow-xl bg-gradient-to-br ${team.gradient}`}>
+                                {/* Abstract Pattern overlay */}
+                                <div className="absolute inset-0 opacity-10 mix-blend-overlay"
+                                    style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}>
                                 </div>
 
-                                <CardContent className="pt-14 pb-8 px-6 text-center space-y-4">
-                                    <h2 className="text-2xl font-bold text-slate-900 font-achiko tracking-wide">
-                                        {team.name}
-                                    </h2>
-                                    <div className={`w-12 h-1 mx-auto rounded-full bg-gradient-to-r ${team.gradient}`} />
-                                    <p className="text-slate-600 leading-relaxed font-light">
-                                        {team.description}
-                                    </p>
+                                <CardContent className="h-full flex flex-col items-center justify-center p-8 text-center space-y-8 relative z-10">
+                                    {/* Icon with Glass effect */}
+                                    <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl rotate-45 flex items-center justify-center shadow-lg group-hover:rotate-0 transition-transform duration-500 border border-white/20">
+                                        <team.icon className="w-10 h-10 text-white -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
+                                    </div>
+
+                                    <div className="space-y-4 w-full">
+                                        <h2 className="text-3xl font-bold text-white font-achiko tracking-wide drop-shadow-sm">
+                                            {team.name}
+                                        </h2>
+                                        <div className="w-16 h-1 mx-auto rounded-full bg-white/40" />
+                                        <p className="text-white/90 leading-relaxed font-light text-lg">
+                                            {team.description}
+                                        </p>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </motion.div>
