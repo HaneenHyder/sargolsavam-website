@@ -456,18 +456,42 @@ With respect,
     };
 
     // Handle per-event notification
-    const handleEventNotify = (judgeName: string, phone: string, eventIdx: number, eventName: string, date: string, time: string) => {
+    const handleEventNotify = (judgeName: string, phone: string, eventIdx: number, eventName: string, date: string, time: string, stage: string, category: string) => {
         if (!phone) {
             alert(`No phone number available for ${judgeName}`);
             return;
         }
+
+        // Format phone number
+        const formattedPhone = phone.replace(/\D/g, '');
+
+        // Pre-Event Reminder Template (Template 2)
+        const message = `Assalamu Alaikum *${judgeName}*,
+
+⏰ This is a gentle reminder for your upcoming judging assignment:
+
+🎤 *${eventName}*
+Category: ${category}
+🕒 Time: ${time}
+📍 Stage: ${stage}
+
+Kindly proceed to the venue at your convenience.
+
+📌 _This is a system-generated reminder._
+
+With thanks,
+— *Sargolsavam 2025–26 Organizing Committee*`;
+
+        // URL encode and open WhatsApp
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+
+        // Update event status to 'Send'
         const eventKey = `${judgeName}-${eventIdx}`;
-        // TODO: Implement actual notification logic (SMS/WhatsApp)
-        alert(`Notification sent to ${judgeName} at ${phone}\nEvent: ${eventName}\nDate: ${formatDate(date)}\nTime: ${time}`);
-        // Update event status to 'Notified'
         setEventNotificationStatus(prev => ({
             ...prev,
-            [eventKey]: 'Notified'
+            [eventKey]: 'Send'
         }));
     };
 
@@ -792,7 +816,7 @@ Thank you for your valuable support and cooperation.
                                                     </td>
                                                     <td className="py-2 px-3 text-center">
                                                         <Button
-                                                            onClick={() => handleEventNotify(judge.name, judge.phone, itemIdx, item.event, item.date, item.time)}
+                                                            onClick={() => handleEventNotify(judge.name, judge.phone, itemIdx, item.event, item.date, item.time, item.stage, item.category)}
                                                             size="sm"
                                                             className="gap-1 text-xs px-2 py-1"
                                                             style={currentStatus === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
