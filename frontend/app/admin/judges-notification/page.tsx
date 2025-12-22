@@ -609,8 +609,27 @@ Thank you for your valuable support and cooperation.
             alert(`No phone number available for ${judgeName}`);
             return;
         }
-        // TODO: Implement actual notification logic (SMS/WhatsApp)
-        alert(`Thank you message sent to ${judgeName} at ${phone}\n\nMessage: "Thank you for your valuable time and dedication as a judge for Sargolsavam 2025!"`);
+
+        // Format phone number
+        const formattedPhone = phone.replace(/\D/g, '');
+
+        // Final Thank-You Template (Template 3)
+        const message = `Assalamu Alaikum *${judgeName}*,
+
+On behalf of *Azharul Uloom College of Islamic and Linguistic Studies* and the *Sargolsavam 2025–26 Organizing Committee*, we extend our heartfelt gratitude for your dedicated service as a judge.
+
+Your time, fairness, and encouragement have greatly contributed to the success of the festival and the confidence of our students.
+
+We sincerely thank you for your valuable support.
+
+With warm regards,
+— *Sargolsavam 2025–26 Organizing Committee*`;
+
+        // URL encode and open WhatsApp
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+
         // Update status to 'Send'
         setThankYouStatus(prev => ({
             ...prev,
