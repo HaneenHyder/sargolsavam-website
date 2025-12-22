@@ -30,9 +30,9 @@ const teams: Team[] = [
         gradient: "from-emerald-500 to-teal-700",
         shadow: "shadow-emerald-500/20",
         leaders: [
-            { name: "Umar Mukthar", role: "Captain", image: "/team-leaders/umar_mukthar.jpg" },
-            { name: "Ayman Abdullah", role: "Vice Captain", image: "/team-leaders/ayman_abdullah.jpg" },
-            { name: "Faheemul Haque", role: "Mentor", image: "/team-leaders/faheemul_haque.jpg" }
+            { name: "Althaf", role: "Captain", image: "/team-leaders/sumud/captain.jpg" },
+            { name: "Nibras", role: "Vice Captain", image: "/team-leaders/sumud/vice.jpg" },
+            { name: "Souban Salim", role: "Mentor", image: "/team-leaders/sumud/mentor.jpg" }
         ]
     },
     {
@@ -51,7 +51,7 @@ const teams: Team[] = [
     {
         id: "intisar",
         name: "Intisar",
-        description: "The triumph of a people who turned every massacre into resolve, every destroyed home into a promise of return, and martyrdom into certainty.",
+        description: "The triumph of a people who turned every massacre into resolve, every destroyed home into a promise of return, and martyrdom into unbreakable certainty forever.",
         icon: Trophy,
         gradient: "from-amber-400 to-yellow-600",
         shadow: "shadow-amber-500/20",
@@ -78,7 +78,7 @@ export default function TeamsPage() {
                             Sargolsavam 2025-26
                         </span>
                         <h1 className="text-4xl md:text-6xl font-bold font-achiko text-slate-900 tracking-tight">
-                            Our <span className="text-primary">Teams</span>
+                            <span className="text-primary">Teams</span>
                         </h1>
                     </motion.div>
                     <motion.p
