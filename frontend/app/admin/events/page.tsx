@@ -1337,7 +1337,7 @@ export default function UnifiedEventManagement() {
                                                             onChange={e => setChestNumberFilter(e.target.value)}
                                                         />
                                                     </div>
-                                                    <div className="border rounded-lg p-4 max-h-[300px] overflow-y-auto">
+                                                    <div className="border rounded-lg p-4 max-h-[300px] overflow-y-auto overscroll-y-contain">
                                                         {availableCandidates.map(candidate => (
                                                             <div key={candidate.id} className="flex items-center space-x-2 py-2">
                                                                 <Checkbox
