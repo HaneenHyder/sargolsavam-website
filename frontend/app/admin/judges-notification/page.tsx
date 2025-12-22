@@ -61,7 +61,7 @@ const judgesSchedule = [
     },
     {
         name: "ABDUL VAHID NADWI",
-        phone: "+91 97464 20638",
+        phone: "+91 73884 49398",
         schedule: [
             { date: "Monday 22 December 2025", time: "8:30-9:30 PM", stage: "Stage 3", event: "കവിതാലാപനം അറബി", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "6:00-7:45 AM", stage: "Stage 1", event: "ഖുർആൻ പാരായണം", category: "SNR" },
@@ -226,7 +226,7 @@ const judgesSchedule = [
         ]
     },
     {
-        name: "MUHAMMED JAMAL USTHAD",
+        name: "JAMAL USTHAD",
         phone: "+91 96051 31336",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 3", event: "പ്രസംഗം ഇംഗ്ലീഷ്", category: "SNR" },
