@@ -19,10 +19,14 @@ const pool = new Pool({
 const COMMITTEE_JSON_PATH = path.join(__dirname, '../frontend/content/committee.json');
 const MIGRATION_PATH = path.join(__dirname, 'migrations/add_committee_members.sql');
 
-async function seed() {
+async function seed(externalClient) {
     try {
-        console.log('🔌 Connecting to database...');
-        const client = await pool.connect();
+        if (externalClient) {
+            console.log('Using shared DB client for committee...');
+        } else {
+            console.log('🔌 Connecting to database...');
+        }
+        const client = externalClient || await pool.connect();
 
         try {
             console.log('🏗️ Running migration (Creating table if needed)...');
@@ -61,13 +65,21 @@ async function seed() {
             console.log('✅ DONE! Committee members seeded successfully.');
 
         } finally {
-            client.release();
+            if (!externalClient) {
+                client.release();
+            }
         }
     } catch (err) {
         console.error('❌ Error seeding data:', err);
     } finally {
-        await pool.end();
+        if (!externalClient) {
+            await pool.end();
+        }
     }
 }
 
-seed();
+module.exports = seed;
+
+if (require.main === module) {
+    seed();
+}
