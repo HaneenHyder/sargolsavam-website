@@ -3,8 +3,25 @@
 import { motion } from "framer-motion";
 import { Users, Flame, Trophy, Shield } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/Card";
+import Image from "next/image";
 
-const teams = [
+interface TeamLeader {
+    role: string;
+    name: string;
+    image: string;
+}
+
+interface Team {
+    id: string;
+    name: string;
+    description: string;
+    icon: any;
+    gradient: string;
+    shadow: string;
+    leaders?: TeamLeader[];
+}
+
+const teams: Team[] = [
     {
         id: "sumud",
         name: "Sumud",
@@ -26,9 +43,9 @@ const teams = [
         gradient: "from-red-500 to-orange-700",
         shadow: "shadow-red-500/20",
         leaders: [
-            { name: "Umar Mukthar", role: "Captain", image: "/team-leaders/umar_mukthar.jpg" },
-            { name: "Ayman Abdullah", role: "Vice Captain", image: "/team-leaders/ayman_abdullah.jpg" },
-            { name: "Faheemul Haque", role: "Mentor", image: "/team-leaders/faheemul_haque.jpg" }
+            { role: "Captain", name: "Ashik", image: "/team-leaders/thoofan/captain.jpg" },
+            { role: "Vice Captain", name: "Mihad Ihsan", image: "/team-leaders/thoofan/vice.jpg" },
+            { role: "Mentor", name: "Adil ameen", image: "/team-leaders/thoofan/mentor.jpg" },
         ]
     },
     {
@@ -129,12 +146,13 @@ export default function TeamsPage() {
                                             ))}
                                         </div>
                                     </div>
+
                                 </CardContent>
                             </Card>
                         </motion.div>
                     ))}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
