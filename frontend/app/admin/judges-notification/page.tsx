@@ -5,6 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Bell, Send, Users, Calendar, Phone } from 'lucide-react';
 
+// Helper function to format date
+const formatDate = (dateString: string): string => {
+    if (dateString.includes("Monday 22")) return "Day 1 - 22 Dec";
+    if (dateString.includes("Tuesday 23")) return "Day 2 - 23 Dec";
+    if (dateString.includes("Wednesday 24")) return "Day 3 - 24 Dec";
+    // Handle the incorrect "Tuesday 22" entries (should be Monday 22)
+    if (dateString.includes("Tuesday 22")) return "Day 1 - 22 Dec";
+    return dateString;
+};
+
 // Judge schedule data
 const judgesSchedule = [
     {
@@ -542,15 +552,15 @@ export default function JudgesNotificationPage() {
                                     <tbody>
                                         {judge.schedule.map((item, itemIdx) => (
                                             <tr key={itemIdx} className="border-b hover:bg-gray-50">
-                                                <td className="py-2 px-3">{item.date}</td>
+                                                <td className="py-2 px-3">{formatDate(item.date)}</td>
                                                 <td className="py-2 px-3">{item.time}</td>
                                                 <td className="py-2 px-3">{item.stage}</td>
                                                 <td className="py-2 px-3">{item.event}</td>
                                                 <td className="py-2 px-3">
                                                     <span className={`px-2 py-1 rounded text-xs font-medium ${item.category === 'SNR' ? 'bg-blue-100 text-blue-700' :
-                                                            item.category === 'JNR' ? 'bg-green-100 text-green-700' :
-                                                                item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
-                                                                    'bg-orange-100 text-orange-700'
+                                                        item.category === 'JNR' ? 'bg-green-100 text-green-700' :
+                                                            item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
+                                                                'bg-orange-100 text-orange-700'
                                                         }`}>
                                                         {item.category}
                                                     </span>
