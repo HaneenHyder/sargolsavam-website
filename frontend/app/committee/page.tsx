@@ -11,6 +11,7 @@ interface Member {
     email: string;
     phone: string;
     image: string;
+    instagram?: string;
 }
 
 const ORDERED_NAMES = [
