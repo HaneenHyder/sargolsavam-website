@@ -413,12 +413,38 @@ export default function JudgesNotificationPage() {
             alert(`No phone number available for ${judgeName}`);
             return;
         }
-        // TODO: Implement actual notification logic (SMS/WhatsApp)
-        alert(`Notification sent to ${judgeName} at ${phone}`);
-        // Update status to 'Notified'
+
+        // Format phone number (remove +, spaces, and any non-digit characters)
+        const formattedPhone = phone.replace(/\D/g, '');
+
+        // Initial Information & Consent Message Template
+        const message = `Assalamu Alaikum *${judgeName}*,
+
+Warm greetings from the *Sargolsavam 2025–26 Organizing Committee* 🌿
+
+We sincerely thank you for graciously accepting our invitation to serve as a judge for Sargolsavam 2025–26. Your presence and expertise are invaluable to our students and the success of the festival.
+
+📌 Kindly note:
+• Official updates and reminders related to your judging duties will be shared via *WhatsApp*.
+• These messages are *system-generated* for accuracy and timely coordination.
+• No promotional or unnecessary messages will be sent.
+
+We truly appreciate your cooperation and support.
+
+With respect,
+— *Sargolsavam 2025–26 Organizing Committee*`;
+
+        // URL encode the message
+        const encodedMessage = encodeURIComponent(message);
+
+        // Open WhatsApp with the message
+        const whatsappUrl = `https://wa.me/${formattedPhone}?text=${encodedMessage}`;
+        window.open(whatsappUrl, '_blank');
+
+        // Update status to 'Send'
         setNotificationStatus(prev => ({
             ...prev,
-            [judgeName]: 'Notified'
+            [judgeName]: 'Send'
         }));
     };
 
