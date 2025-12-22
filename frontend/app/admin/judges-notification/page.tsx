@@ -621,7 +621,7 @@ export default function JudgesNotificationPage() {
                                                 }`}
                                         >
                                             <option value="Pending">Pending</option>
-                                            <option value="Notified">Notified</option>
+                                            <option value="Send">Send</option>
                                         </select>
                                     </div>
                                     <Button
@@ -660,7 +660,7 @@ export default function JudgesNotificationPage() {
                                                         }`}
                                                 >
                                                     <option value="Pending">Pending</option>
-                                                    <option value="Notified">Notified</option>
+                                                    <option value="Send">Send</option>
                                                 </select>
                                                 <Button
                                                     onClick={() => handleDayNotify(judge, day)}
@@ -720,7 +720,7 @@ export default function JudgesNotificationPage() {
                                                                 }`}
                                                         >
                                                             <option value="Pending">Pending</option>
-                                                            <option value="Notified">Notified</option>
+                                                            <option value="Send">Send</option>
                                                         </select>
                                                     </td>
                                                     <td className="py-2 px-3 text-center">
