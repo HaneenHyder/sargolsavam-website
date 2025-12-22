@@ -48,7 +48,7 @@ const judgesSchedule = [
     },
     {
         name: "ABDUL SHAREEF NADWI",
-        phone: "",
+        phone: "+91 94004 27270",
         schedule: [
             { date: "Monday 22 December 2025", time: "4:30-5:30 PM", stage: "Stage 2", event: "അറബി ഗാനം", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "11:00-12:00 PM", stage: "Stage 3", event: "ലൈവ് ട്രാൻസലേഷൻ(Urdu-Mala)", category: "SNR" },
@@ -279,7 +279,7 @@ const judgesSchedule = [
     },
     {
         name: "ALTHAF SIR",
-        phone: "",
+        phone: "91 81578 90936",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "2:15-3:15 PM", stage: "Stage 2", event: "ഇസ്ലാമിക് ഗാനം", category: "SJR" },
             { date: "Tuesday 23 December 2025", time: "3:15- 4:15 PM", stage: "Stage 2", event: "ഇസ്ലാമിക് ഗാനം", category: "SNR" },
@@ -291,7 +291,7 @@ const judgesSchedule = [
     },
     {
         name: "HARIS NENMARA",
-        phone: "Haris Nemmara",
+        phone: "+91 81290 59309",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "8:30-9:45 PM", stage: "Stage 1", event: "സംഗീതശില്പം", category: "group" }
         ]
