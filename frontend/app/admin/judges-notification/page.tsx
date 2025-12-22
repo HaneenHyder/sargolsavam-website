@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Users, Calendar, Phone, Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { Users, Calendar, Phone, Send } from 'lucide-react';
 
 // Helper function to format date
 const formatDate = (dateString: string): string => {
@@ -404,9 +404,11 @@ export default function JudgesNotificationPage() {
         return initialStatus;
     });
 
-    const filteredJudges = judgesSchedule.filter(judge =>
-        judge.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    // Memoize filtered judges to prevent recalculation on every render
+    const filteredJudges = useMemo(() =>
+        judgesSchedule.filter(judge =>
+            judge.name.toLowerCase().includes(searchQuery.toLowerCase())
+        ), [searchQuery]);
 
     const handleNotify = (judgeName: string, phone: string) => {
         if (!phone) {
@@ -504,17 +506,17 @@ With thanks,
         }));
     };
 
-    // Get events for a specific day for a judge
-    const getEventsByDay = (judge: any, day: string) => {
-        return judge.schedule.filter((event: any, idx: number) => {
+    // Get events for a specific day for a judge (memoized for performance)
+    const getEventsByDay = useCallback((judge: any, day: string) => {
+        return judge.schedule.filter((event: any) => {
             const formattedDate = formatDate(event.date);
             return formattedDate.startsWith(day);
-        }).map((event: any, _: number) => {
+        }).map((event: any) => {
             // Find original index
             const originalIdx = judge.schedule.findIndex((e: any) => e === event);
             return { event, index: originalIdx };
         });
-    };
+    }, []);
 
     // Handle day-level notification
     const handleDayNotify = (judge: any, day: string) => {
@@ -645,53 +647,6 @@ With warm regards,
         }));
     };
 
-    // UI State for collapsible cards and tabs
-    const [expandedJudge, setExpandedJudge] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<{ [key: string]: string }>({});
-
-    // Get active tab for a judge (default to 'initial')
-    const getActiveTab = (judgeName: string) => activeTab[judgeName] || 'initial';
-
-    // Set active tab for a judge
-    const handleTabChange = (judgeName: string, tab: string) => {
-        setActiveTab(prev => ({ ...prev, [judgeName]: tab }));
-    };
-
-    // Toggle card expansion
-    const toggleExpand = (judgeName: string) => {
-        setExpandedJudge(prev => prev === judgeName ? null : judgeName);
-    };
-
-    // Calculate status summary for a judge
-    const getStatusSummary = (judge: any) => {
-        const initialSent = notificationStatus[judge.name] === 'Send';
-        const thankYouSent = thankYouStatus[judge.name] === 'Send';
-
-        // Count days notified
-        let daysNotified = 0;
-        let totalDays = 0;
-        ['Day 1', 'Day 2', 'Day 3'].forEach(day => {
-            const dayEvents = getEventsByDay(judge, day);
-            if (dayEvents.length > 0) {
-                totalDays++;
-                if (dayNotificationStatus[`${judge.name}-${day}`] === 'Send') {
-                    daysNotified++;
-                }
-            }
-        });
-
-        // Count events notified
-        let eventsNotified = 0;
-        const totalEvents = judge.schedule.length;
-        judge.schedule.forEach((_: any, idx: number) => {
-            if (eventNotificationStatus[`${judge.name}-${idx}`] === 'Send') {
-                eventsNotified++;
-            }
-        });
-
-        return { initialSent, thankYouSent, daysNotified, totalDays, eventsNotified, totalEvents };
-    };
-
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -745,265 +700,192 @@ With warm regards,
             {/* Judge Schedules */}
             <div className="space-y-6">
                 <h2 className="text-2xl font-bold">Judge Schedules</h2>
-                {filteredJudges.map((judge, idx) => {
-                    const isExpanded = expandedJudge === judge.name;
-                    const status = getStatusSummary(judge);
-                    const currentTab = getActiveTab(judge.name);
-
-                    return (
-                        <Card key={idx} className="overflow-hidden">
-                            {/* Clickable Header for Expand/Collapse */}
-                            <CardHeader
-                                className="cursor-pointer hover:bg-gray-50 transition-colors"
-                                onClick={() => toggleExpand(judge.name)}
-                            >
-                                <CardTitle className="flex items-center justify-between">
+                {filteredJudges.map((judge, idx) => (
+                    <Card key={idx}>
+                        <CardHeader>
+                            <CardTitle className="flex items-center justify-between">
+                                <span>{judge.name}</span>
+                                {judge.phone && (
+                                    <span className="text-sm font-normal text-gray-500 flex items-center gap-2">
+                                        <Phone size={14} />
+                                        {judge.phone}
+                                    </span>
+                                )}
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {/* Notification Control Row */}
+                            <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
-                                        <span className="text-lg font-bold">{judge.name}</span>
-                                        {judge.phone && (
-                                            <span className="text-sm font-normal text-gray-500 flex items-center gap-1">
-                                                <Phone size={14} />
-                                                {judge.phone}
-                                            </span>
-                                        )}
+                                        <span className="text-sm font-semibold text-gray-700">🔔 Notification Status:</span>
+                                        <select
+                                            value={notificationStatus[judge.name] || 'Pending'}
+                                            onChange={(e) => handleStatusChange(judge.name, e.target.value)}
+                                            className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${notificationStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
+                                                notificationStatus[judge.name] === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                    'bg-green-50 border-green-300 text-green-700'
+                                                }`}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="Send">Send</option>
+                                        </select>
                                     </div>
-                                    <div className="flex items-center gap-3">
-                                        {/* Status Badges */}
-                                        <div className="flex items-center gap-2 text-xs">
-                                            <span className={`px-2 py-1 rounded-full ${status.initialSent ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                🔔 {status.initialSent ? '✓' : '⏳'}
-                                            </span>
-                                            <span className={`px-2 py-1 rounded-full ${status.daysNotified === status.totalDays && status.totalDays > 0 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                📅 {status.daysNotified}/{status.totalDays}
-                                            </span>
-                                            <span className={`px-2 py-1 rounded-full ${status.eventsNotified === status.totalEvents ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                📋 {status.eventsNotified}/{status.totalEvents}
-                                            </span>
-                                            <span className={`px-2 py-1 rounded-full ${status.thankYouSent ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                                💚 {status.thankYouSent ? '✓' : '⏳'}
-                                            </span>
-                                        </div>
-                                        {/* Expand/Collapse Icon */}
-                                        {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                                    </div>
-                                </CardTitle>
-                            </CardHeader>
+                                    <Button
+                                        onClick={() => handleNotify(judge.name, judge.phone)}
+                                        size="sm"
+                                        className="gap-2"
+                                        style={notificationStatus[judge.name] === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
+                                        disabled={!judge.phone || notificationStatus[judge.name] === 'Send'}
+                                    >
+                                        <Send size={14} />
+                                        {notificationStatus[judge.name] === 'Send' ? 'Notified' : 'Notify Judge'}
+                                    </Button>
+                                </div>
+                            </div>
 
-                            {/* Collapsible Content */}
-                            {isExpanded && (
-                                <CardContent>
-                                    {/* Tab Navigation */}
-                                    <div className="flex gap-1 mb-4 border-b">
-                                        <button
-                                            onClick={() => handleTabChange(judge.name, 'initial')}
-                                            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${currentTab === 'initial' ? 'bg-gray-100 text-gray-800 border-b-2 border-gray-800' : 'text-gray-500 hover:text-gray-700'}`}
-                                        >
-                                            🔔 Initial
-                                        </button>
-                                        <button
-                                            onClick={() => handleTabChange(judge.name, 'days')}
-                                            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${currentTab === 'days' ? 'bg-blue-100 text-blue-800 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                                        >
-                                            📅 Days
-                                        </button>
-                                        <button
-                                            onClick={() => handleTabChange(judge.name, 'events')}
-                                            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${currentTab === 'events' ? 'bg-purple-100 text-purple-800 border-b-2 border-purple-600' : 'text-gray-500 hover:text-gray-700'}`}
-                                        >
-                                            📋 Events
-                                        </button>
-                                        <button
-                                            onClick={() => handleTabChange(judge.name, 'thankyou')}
-                                            className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${currentTab === 'thankyou' ? 'bg-green-100 text-green-800 border-b-2 border-green-600' : 'text-gray-500 hover:text-gray-700'}`}
-                                        >
-                                            💚 Thank You
-                                        </button>
-                                    </div>
+                            <div className="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <h3 className="text-sm font-semibold text-gray-700 mb-3">📅 Notify by Day</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                    {['Day 1', 'Day 2', 'Day 3'].map((day) => {
+                                        const dayKey = `${judge.name}-${day}`;
+                                        const dayStatus = dayNotificationStatus[dayKey] || 'Pending';
+                                        const dayEvents = getEventsByDay(judge, day);
+                                        const eventCount = dayEvents.length;
 
-                                    {/* Tab Content: Initial Message */}
-                                    {currentTab === 'initial' && (
-                                        <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-sm font-semibold text-gray-700">🔔 Notification Status:</span>
-                                                    <select
-                                                        value={notificationStatus[judge.name] || 'Pending'}
-                                                        onChange={(e) => handleStatusChange(judge.name, e.target.value)}
-                                                        className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${notificationStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                            notificationStatus[judge.name] === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                                'bg-green-50 border-green-300 text-green-700'
-                                                            }`}
-                                                    >
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="Send">Send</option>
-                                                    </select>
+                                        // Only show days with events
+                                        if (eventCount === 0) return null;
+
+                                        return (
+                                            <div key={day} className="flex flex-col gap-2 p-3 bg-white rounded border border-gray-200">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-sm font-semibold text-gray-700">📆 {day}</span>
+                                                    <span className="text-xs text-gray-500">{eventCount} event{eventCount !== 1 ? 's' : ''}</span>
                                                 </div>
-                                                <Button
-                                                    onClick={() => handleNotify(judge.name, judge.phone)}
-                                                    size="sm"
-                                                    className="gap-2"
-                                                    style={notificationStatus[judge.name] === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
-                                                    disabled={!judge.phone || notificationStatus[judge.name] === 'Send'}
+                                                <select
+                                                    value={dayStatus}
+                                                    onChange={(e) => handleDayStatusChange(judge.name, day, e.target.value)}
+                                                    className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${dayStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
+                                                        dayStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                            'bg-green-50 border-green-300 text-green-700'
+                                                        }`}
                                                 >
-                                                    <Send size={14} />
-                                                    {notificationStatus[judge.name] === 'Send' ? 'Notified' : 'Notify Judge'}
+                                                    <option value="Pending">Pending</option>
+                                                    <option value="Send">Send</option>
+                                                </select>
+                                                <Button
+                                                    onClick={() => handleDayNotify(judge, day)}
+                                                    size="sm"
+                                                    className="gap-1 text-xs w-full"
+                                                    style={dayStatus === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
+                                                    disabled={!judge.phone || eventCount === 0 || dayStatus === 'Send'}
+                                                >
+                                                    <Send size={12} />
+                                                    {dayStatus === 'Send' ? 'Notified' : `Notify ${day}`}
                                                 </Button>
                                             </div>
-                                        </div>
-                                    )}
+                                        );
+                                    })}
+                                </div>
+                            </div>
 
-                                    {/* Tab Content: Days Schedule */}
-                                    {currentTab === 'days' && (
-                                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                                            <h3 className="text-sm font-semibold text-gray-700 mb-3">📅 Notify by Day</h3>
-                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                                {['Day 1', 'Day 2', 'Day 3'].map((day) => {
-                                                    const dayKey = `${judge.name}-${day}`;
-                                                    const dayStatus = dayNotificationStatus[dayKey] || 'Pending';
-                                                    const dayEvents = getEventsByDay(judge, day);
-                                                    const eventCount = dayEvents.length;
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-sm">
+                                    <thead>
+                                        <tr className="border-b">
+                                            <th className="text-left py-2 px-3 font-semibold">Date</th>
+                                            <th className="text-left py-2 px-3 font-semibold">Time</th>
+                                            <th className="text-left py-2 px-3 font-semibold">Stage</th>
+                                            <th className="text-left py-2 px-3 font-semibold">Event</th>
+                                            <th className="text-left py-2 px-3 font-semibold">Category</th>
+                                            <th className="text-left py-2 px-3 font-semibold">📋 Status</th>
+                                            <th className="text-center py-2 px-3 font-semibold">🔔 Notify</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {judge.schedule.map((item, itemIdx) => {
+                                            const eventKey = `${judge.name}-${itemIdx}`;
+                                            const currentStatus = eventNotificationStatus[eventKey] || 'Pending';
 
-                                                    // Only show days with events
-                                                    if (eventCount === 0) return null;
+                                            return (
+                                                <tr key={itemIdx} className="border-b hover:bg-gray-50">
+                                                    <td className="py-2 px-3">{formatDate(item.date)}</td>
+                                                    <td className="py-2 px-3">{item.time}</td>
+                                                    <td className="py-2 px-3">{item.stage}</td>
+                                                    <td className="py-2 px-3">{item.event}</td>
+                                                    <td className="py-2 px-3">
+                                                        <span className={`px-2 py-1 rounded text-xs font-medium ${item.category === 'SNR' ? 'bg-blue-100 text-blue-700' :
+                                                            item.category === 'JNR' ? 'bg-green-100 text-green-700' :
+                                                                item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
+                                                                    'bg-orange-100 text-orange-700'
+                                                            }`}>
+                                                            {item.category}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-2 px-3">
+                                                        <select
+                                                            value={currentStatus}
+                                                            onChange={(e) => handleEventStatusChange(judge.name, itemIdx, e.target.value)}
+                                                            className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${currentStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
+                                                                currentStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                                    'bg-green-50 border-green-300 text-green-700'
+                                                                }`}
+                                                        >
+                                                            <option value="Pending">Pending</option>
+                                                            <option value="Send">Send</option>
+                                                        </select>
+                                                    </td>
+                                                    <td className="py-2 px-3 text-center">
+                                                        <Button
+                                                            onClick={() => handleEventNotify(judge.name, judge.phone, itemIdx, item.event, item.date, item.time, item.stage, item.category)}
+                                                            size="sm"
+                                                            className="gap-1 text-xs px-2 py-1"
+                                                            style={currentStatus === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
+                                                            disabled={!judge.phone || currentStatus === 'Send'}
+                                                        >
+                                                            <Send size={12} />
+                                                            {currentStatus === 'Send' ? 'Notified' : 'Notify'}
+                                                        </Button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
 
-                                                    return (
-                                                        <div key={day} className="flex flex-col gap-2 p-3 bg-white rounded border border-gray-200">
-                                                            <div className="flex items-center justify-between">
-                                                                <span className="text-sm font-semibold text-gray-700">📆 {day}</span>
-                                                                <span className="text-xs text-gray-500">{eventCount} event{eventCount !== 1 ? 's' : ''}</span>
-                                                            </div>
-                                                            <select
-                                                                value={dayStatus}
-                                                                onChange={(e) => handleDayStatusChange(judge.name, day, e.target.value)}
-                                                                className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${dayStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                                    dayStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                                        'bg-green-50 border-green-300 text-green-700'
-                                                                    }`}
-                                                            >
-                                                                <option value="Pending">Pending</option>
-                                                                <option value="Send">Send</option>
-                                                            </select>
-                                                            <Button
-                                                                onClick={() => handleDayNotify(judge, day)}
-                                                                size="sm"
-                                                                className="gap-1 text-xs w-full"
-                                                                style={dayStatus === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
-                                                                disabled={!judge.phone || eventCount === 0 || dayStatus === 'Send'}
-                                                            >
-                                                                <Send size={12} />
-                                                                {dayStatus === 'Send' ? 'Notified' : `Notify ${day}`}
-                                                            </Button>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Tab Content: Events */}
-                                    {currentTab === 'events' && (
-                                        <div className="overflow-x-auto">
-                                            <table className="w-full text-sm">
-                                                <thead>
-                                                    <tr className="border-b">
-                                                        <th className="text-left py-2 px-3 font-semibold">Date</th>
-                                                        <th className="text-left py-2 px-3 font-semibold">Time</th>
-                                                        <th className="text-left py-2 px-3 font-semibold">Stage</th>
-                                                        <th className="text-left py-2 px-3 font-semibold">Event</th>
-                                                        <th className="text-left py-2 px-3 font-semibold">Category</th>
-                                                        <th className="text-left py-2 px-3 font-semibold">📋 Status</th>
-                                                        <th className="text-center py-2 px-3 font-semibold">🔔 Notify</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {judge.schedule.map((item, itemIdx) => {
-                                                        const eventKey = `${judge.name}-${itemIdx}`;
-                                                        const currentStatus = eventNotificationStatus[eventKey] || 'Pending';
-
-                                                        return (
-                                                            <tr key={itemIdx} className="border-b hover:bg-gray-50">
-                                                                <td className="py-2 px-3">{formatDate(item.date)}</td>
-                                                                <td className="py-2 px-3">{item.time}</td>
-                                                                <td className="py-2 px-3">{item.stage}</td>
-                                                                <td className="py-2 px-3">{item.event}</td>
-                                                                <td className="py-2 px-3">
-                                                                    <span className={`px-2 py-1 rounded text-xs font-medium ${item.category === 'SNR' ? 'bg-blue-100 text-blue-700' :
-                                                                        item.category === 'JNR' ? 'bg-green-100 text-green-700' :
-                                                                            item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
-                                                                                'bg-orange-100 text-orange-700'
-                                                                        }`}>
-                                                                        {item.category}
-                                                                    </span>
-                                                                </td>
-                                                                <td className="py-2 px-3">
-                                                                    <select
-                                                                        value={currentStatus}
-                                                                        onChange={(e) => handleEventStatusChange(judge.name, itemIdx, e.target.value)}
-                                                                        className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${currentStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                                            currentStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                                                'bg-green-50 border-green-300 text-green-700'
-                                                                            }`}
-                                                                    >
-                                                                        <option value="Pending">Pending</option>
-                                                                        <option value="Send">Send</option>
-                                                                    </select>
-                                                                </td>
-                                                                <td className="py-2 px-3 text-center">
-                                                                    <Button
-                                                                        onClick={() => handleEventNotify(judge.name, judge.phone, itemIdx, item.event, item.date, item.time, item.stage, item.category)}
-                                                                        size="sm"
-                                                                        className="gap-1 text-xs px-2 py-1"
-                                                                        style={currentStatus === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
-                                                                        disabled={!judge.phone || currentStatus === 'Send'}
-                                                                    >
-                                                                        <Send size={12} />
-                                                                        {currentStatus === 'Send' ? 'Notified' : 'Notify'}
-                                                                    </Button>
-                                                                </td>
-                                                            </tr>
-                                                        );
-                                                    })}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    )}
-
-                                    {/* Tab Content: Thank You */}
-                                    {currentTab === 'thankyou' && (
-                                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                                <div className="flex items-center gap-3">
-                                                    <span className="text-sm font-semibold text-gray-700">💚 Thank You Message:</span>
-                                                    <select
-                                                        value={thankYouStatus[judge.name] || 'Pending'}
-                                                        onChange={(e) => handleThankYouStatusChange(judge.name, e.target.value)}
-                                                        className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${thankYouStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                            'bg-blue-50 border-blue-300 text-blue-700'
-                                                            }`}
-                                                    >
-                                                        <option value="Pending">Pending</option>
-                                                        <option value="Send">Send</option>
-                                                    </select>
-                                                </div>
-                                                <Button
-                                                    onClick={() => handleThankYouNotify(judge.name, judge.phone)}
-                                                    size="sm"
-                                                    className="gap-2"
-                                                    style={thankYouStatus[judge.name] === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
-                                                    disabled={!judge.phone || thankYouStatus[judge.name] === 'Send'}
-                                                >
-                                                    <Send size={14} />
-                                                    {thankYouStatus[judge.name] === 'Send' ? 'Notified' : 'Send Thank You'}
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            )}
-                        </Card>
-                    );
-                })}
+                            {/* Thank You Notification Row */}
+                            <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm font-semibold text-gray-700">💚 Thank You Message:</span>
+                                        <select
+                                            value={thankYouStatus[judge.name] || 'Pending'}
+                                            onChange={(e) => handleThankYouStatusChange(judge.name, e.target.value)}
+                                            className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${thankYouStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
+                                                'bg-blue-50 border-blue-300 text-blue-700'
+                                                }`}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="Send">Send</option>
+                                        </select>
+                                    </div>
+                                    <Button
+                                        onClick={() => handleThankYouNotify(judge.name, judge.phone)}
+                                        size="sm"
+                                        className="gap-2"
+                                        style={thankYouStatus[judge.name] === 'Send' ? { backgroundColor: '#16a34a', color: 'white' } : {}}
+                                        disabled={!judge.phone || thankYouStatus[judge.name] === 'Send'}
+                                    >
+                                        <Send size={14} />
+                                        {thankYouStatus[judge.name] === 'Send' ? 'Notified' : 'Send Thank You'}
+                                    </Button>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
-        </div >
+        </div>
     );
 }
