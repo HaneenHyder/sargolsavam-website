@@ -380,6 +380,18 @@ export default function JudgesNotificationPage() {
         return initialStatus;
     });
 
+    // Track notification status for each event
+    const [eventNotificationStatus, setEventNotificationStatus] = useState<{ [key: string]: string }>(() => {
+        const initialStatus: { [key: string]: string } = {};
+        judgesSchedule.forEach(judge => {
+            judge.schedule.forEach((_, idx) => {
+                const eventKey = `${judge.name}-${idx}`;
+                initialStatus[eventKey] = 'Pending';
+            });
+        });
+        return initialStatus;
+    });
+
     const filteredJudges = judgesSchedule.filter(judge =>
         judge.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -402,6 +414,31 @@ export default function JudgesNotificationPage() {
         setNotificationStatus(prev => ({
             ...prev,
             [judgeName]: newStatus
+        }));
+    };
+
+    // Handle per-event notification
+    const handleEventNotify = (judgeName: string, phone: string, eventIdx: number, eventName: string, date: string, time: string) => {
+        if (!phone) {
+            alert(`No phone number available for ${judgeName}`);
+            return;
+        }
+        const eventKey = `${judgeName}-${eventIdx}`;
+        // TODO: Implement actual notification logic (SMS/WhatsApp)
+        alert(`Notification sent to ${judgeName} at ${phone}\nEvent: ${eventName}\nDate: ${formatDate(date)}\nTime: ${time}`);
+        // Update event status to 'Notified'
+        setEventNotificationStatus(prev => ({
+            ...prev,
+            [eventKey]: 'Notified'
+        }));
+    };
+
+    // Handle per-event status change
+    const handleEventStatusChange = (judgeName: string, eventIdx: number, newStatus: string) => {
+        const eventKey = `${judgeName}-${eventIdx}`;
+        setEventNotificationStatus(prev => ({
+            ...prev,
+            [eventKey]: newStatus
         }));
     };
 
@@ -481,8 +518,8 @@ export default function JudgesNotificationPage() {
                                             value={notificationStatus[judge.name] || 'Pending'}
                                             onChange={(e) => handleStatusChange(judge.name, e.target.value)}
                                             className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${notificationStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                    notificationStatus[judge.name] === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                        'bg-green-50 border-green-300 text-green-700'
+                                                notificationStatus[judge.name] === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                    'bg-green-50 border-green-300 text-green-700'
                                                 }`}
                                         >
                                             <option value="Pending">Pending</option>
@@ -511,26 +548,58 @@ export default function JudgesNotificationPage() {
                                             <th className="text-left py-2 px-3 font-semibold">Stage</th>
                                             <th className="text-left py-2 px-3 font-semibold">Event</th>
                                             <th className="text-left py-2 px-3 font-semibold">Category</th>
+                                            <th className="text-left py-2 px-3 font-semibold">Status</th>
+                                            <th className="text-center py-2 px-3 font-semibold">Notify</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {judge.schedule.map((item, itemIdx) => (
-                                            <tr key={itemIdx} className="border-b hover:bg-gray-50">
-                                                <td className="py-2 px-3">{formatDate(item.date)}</td>
-                                                <td className="py-2 px-3">{item.time}</td>
-                                                <td className="py-2 px-3">{item.stage}</td>
-                                                <td className="py-2 px-3">{item.event}</td>
-                                                <td className="py-2 px-3">
-                                                    <span className={`px-2 py-1 rounded text-xs font-medium ${item.category === 'SNR' ? 'bg-blue-100 text-blue-700' :
-                                                        item.category === 'JNR' ? 'bg-green-100 text-green-700' :
-                                                            item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
-                                                                'bg-orange-100 text-orange-700'
-                                                        }`}>
-                                                        {item.category}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        {judge.schedule.map((item, itemIdx) => {
+                                            const eventKey = `${judge.name}-${itemIdx}`;
+                                            const currentStatus = eventNotificationStatus[eventKey] || 'Pending';
+
+                                            return (
+                                                <tr key={itemIdx} className="border-b hover:bg-gray-50">
+                                                    <td className="py-2 px-3">{formatDate(item.date)}</td>
+                                                    <td className="py-2 px-3">{item.time}</td>
+                                                    <td className="py-2 px-3">{item.stage}</td>
+                                                    <td className="py-2 px-3">{item.event}</td>
+                                                    <td className="py-2 px-3">
+                                                        <span className={`px-2 py-1 rounded text-xs font-medium ${item.category === 'SNR' ? 'bg-blue-100 text-blue-700' :
+                                                                item.category === 'JNR' ? 'bg-green-100 text-green-700' :
+                                                                    item.category === 'SJR' ? 'bg-purple-100 text-purple-700' :
+                                                                        'bg-orange-100 text-orange-700'
+                                                            }`}>
+                                                            {item.category}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-2 px-3">
+                                                        <select
+                                                            value={currentStatus}
+                                                            onChange={(e) => handleEventStatusChange(judge.name, itemIdx, e.target.value)}
+                                                            className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${currentStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
+                                                                    currentStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                                        'bg-green-50 border-green-300 text-green-700'
+                                                                }`}
+                                                        >
+                                                            <option value="Pending">Pending</option>
+                                                            <option value="Notified">Notified</option>
+                                                            <option value="Confirmed">Confirmed</option>
+                                                        </select>
+                                                    </td>
+                                                    <td className="py-2 px-3 text-center">
+                                                        <Button
+                                                            onClick={() => handleEventNotify(judge.name, judge.phone, itemIdx, item.event, item.date, item.time)}
+                                                            size="sm"
+                                                            className="gap-1 text-xs px-2 py-1"
+                                                            disabled={!judge.phone}
+                                                        >
+                                                            <Send size={12} />
+                                                            Notify
+                                                        </Button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>
