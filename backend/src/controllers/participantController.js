@@ -48,24 +48,36 @@ exports.addParticipant = async (req, res) => {
         return res.status(400).json({ error: 'Invalid input, expected array of candidates' });
     }
 
+    if (candidates.length === 0) {
+        return res.status(200).json([]);
+    }
+
     const client = await db.pool.connect();
     try {
         await client.query('BEGIN');
-        const added = [];
 
-        for (const cand of candidates) {
-            const { candidate_id, team_code } = cand;
-            const { rows } = await client.query(
-                'INSERT INTO participants (event_id, candidate_id, team_code, status) VALUES ($1, $2, $3, $4) ON CONFLICT DO NOTHING RETURNING *',
-                [eventId, candidate_id, team_code, 'Pending']
-            );
-            if (rows.length > 0) {
-                added.push(rows[0]);
-            }
-        }
+        // Construct bulk insert values
+        const values = [];
+        const placeholders = candidates.map((_, i) =>
+            `($1, $${i * 2 + 2}, $${i * 2 + 3}, 'Pending')`
+        ).join(',');
+
+        values.push(eventId);
+        candidates.forEach(cand => {
+            values.push(cand.candidate_id, cand.team_code);
+        });
+
+        const query = `
+            INSERT INTO participants (event_id, candidate_id, team_code, status)
+            VALUES ${placeholders}
+            ON CONFLICT DO NOTHING
+            RETURNING *
+        `;
+
+        const { rows } = await client.query(query, values);
 
         await client.query('COMMIT');
-        res.status(201).json(added);
+        res.status(201).json(rows);
     } catch (err) {
         await client.query('ROLLBACK');
         res.status(500).json({ error: err.message });

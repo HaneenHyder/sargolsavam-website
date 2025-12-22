@@ -40,12 +40,15 @@ exports.createEvent = async (req, res) => {
         // If Group item, auto-populate participants
         if (item_type === 'Group') {
             const teams = ['100', '200', '300'];
-            for (const teamCode of teams) {
-                await db.query(
-                    'INSERT INTO participants (event_id, team_code, status) VALUES ($1, $2, $3)',
-                    [rows[0].id, teamCode, 'Pending']
-                );
-            }
+            const values = [rows[0].id];
+            const placeholders = teams.map((team, index) => `($1, $${index + 2}, 'Pending')`).join(',');
+
+            teams.forEach(team => values.push(team));
+
+            await db.query(
+                `INSERT INTO participants (event_id, team_code, status) VALUES ${placeholders}`,
+                values
+            );
         }
 
         res.status(201).json(rows[0]);
