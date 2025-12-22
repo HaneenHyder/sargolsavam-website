@@ -128,6 +128,10 @@ export default function UnifiedEventManagement() {
     const [eventFilterType, setEventFilterType] = useState("All");
     const [eventFilterStage, setEventFilterStage] = useState("All");
 
+    // Bulk Absent State
+    const [isAbsentModalOpen, setIsAbsentModalOpen] = useState(false);
+    const [bulkAbsentSelection, setBulkAbsentSelection] = useState<string[]>([]);
+
     useEffect(() => {
         fetchData();
         fetchPublishedResults();
@@ -479,6 +483,44 @@ export default function UnifiedEventManagement() {
                 i === index ? { ...entry, [field]: value } : entry
             ),
         }));
+    };
+
+    const handleBulkAbsentToggle = (id: string) => {
+        setBulkAbsentSelection(prev =>
+            prev.includes(id)
+                ? prev.filter(item => item !== id)
+                : [...prev, id]
+        );
+    };
+
+    const confirmBulkAbsent = () => {
+        if (!selectedEvent) return;
+
+        const newAbsentEntries = bulkAbsentSelection.map(id => {
+            if (selectedEvent.item_type === "Individual") {
+                const participant = eventParticipants.find(p => p.candidate_id === id);
+                return {
+                    candidate_id: id,
+                    team_code: participant?.candidates.team_code || "",
+                    grade: "A" // grade is ignored for absent but kept for structure
+                };
+            } else {
+                return {
+                    candidate_id: "",
+                    team_code: id,
+                    grade: "A"
+                };
+            }
+        });
+
+        setPositionResults(prev => ({
+            ...prev,
+            "Absent": [...prev["Absent"], ...newAbsentEntries]
+        }));
+
+        setBulkAbsentSelection([]);
+        setIsAbsentModalOpen(false);
+        toast.success(`Added ${newAbsentEntries.length} to absent list`);
     };
 
     const handleAddResults = async () => {
@@ -893,6 +935,73 @@ export default function UnifiedEventManagement() {
                         >
                             Confirm Delete
                         </Button>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Bulk Absent Modal */}
+            <Modal
+                isOpen={isAbsentModalOpen}
+                onClose={() => setIsAbsentModalOpen(false)}
+                title="Bulk Mark Absent"
+                footer={
+                    <>
+                        <Button variant="outline" onClick={() => setIsAbsentModalOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={confirmBulkAbsent}
+                            disabled={bulkAbsentSelection.length === 0}
+                        >
+                            Mark {bulkAbsentSelection.length} as Absent
+                        </Button>
+                    </>
+                }
+            >
+                <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                        Select participants who were absent. They will be added to the absent list.
+                    </p>
+                    <div className="border rounded-md max-h-[300px] overflow-y-auto p-2">
+                        {selectedEvent && (selectedEvent.item_type === "Individual" ? (
+                            eventParticipants
+                                .filter(p => !Object.values(positionResults).flat().some(r => r.candidate_id === p.candidate_id))
+                                .map(p => (
+                                    <div key={p.candidate_id} className="flex items-center space-x-2 py-2 px-2 hover:bg-muted/50 rounded">
+                                        <Checkbox
+                                            checked={bulkAbsentSelection.includes(p.candidate_id)}
+                                            onCheckedChange={() => handleBulkAbsentToggle(p.candidate_id)}
+                                        />
+                                        <label
+                                            className="flex-1 cursor-pointer text-sm"
+                                            onClick={() => handleBulkAbsentToggle(p.candidate_id)}
+                                        >
+                                            {p.candidates.chest_no} - {p.candidates.name}
+                                        </label>
+                                    </div>
+                                ))
+                        ) : (
+                            ["100", "200", "300"]
+                                .filter(team => !Object.values(positionResults).flat().some(r => r.team_code === team))
+                                .map(team => (
+                                    <div key={team} className="flex items-center space-x-2 py-2 px-2 hover:bg-muted/50 rounded">
+                                        <Checkbox
+                                            checked={bulkAbsentSelection.includes(team)}
+                                            onCheckedChange={() => handleBulkAbsentToggle(team)}
+                                        />
+                                        <label
+                                            className="flex-1 cursor-pointer text-sm"
+                                            onClick={() => handleBulkAbsentToggle(team)}
+                                        >
+                                            Team {team}
+                                        </label>
+                                    </div>
+                                ))
+                        ))}
+                        {selectedEvent && selectedEvent.item_type === "Individual" && eventParticipants.filter(p => !Object.values(positionResults).flat().some(r => r.candidate_id === p.candidate_id)).length === 0 && (
+                            <p className="text-center py-4 text-muted-foreground">No available participants to mark as absent.</p>
+                        )}
                     </div>
                 </div>
             </Modal>
@@ -1480,6 +1589,18 @@ export default function UnifiedEventManagement() {
                                                     >
                                                         <Plus className="h-4 w-4 mr-2" />
                                                         Mark Absent
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
+                                                        className="text-red-600 border-red-200 hover:bg-red-50 ml-2"
+                                                        onClick={() => {
+                                                            setBulkAbsentSelection([]);
+                                                            setIsAbsentModalOpen(true);
+                                                        }}
+                                                    >
+                                                        <Users className="h-4 w-4 mr-2" />
+                                                        Bulk Mark Absent
                                                     </Button>
                                                 </div>
 

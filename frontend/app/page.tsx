@@ -35,6 +35,20 @@ export default function Home() {
         };
     }, [videoEnded]);
 
+    // Skip video on key press
+    useEffect(() => {
+        const handleKeyPress = () => {
+            if (!videoEnded) {
+                handleVideoEnd();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyPress);
+        return () => {
+            window.removeEventListener('keydown', handleKeyPress);
+        };
+    }, [videoEnded]);
+
     return (
         <div className="flex flex-col w-full">
             {/* Full Screen Video Intro */}
