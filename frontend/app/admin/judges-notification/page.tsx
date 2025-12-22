@@ -508,6 +508,38 @@ export default function JudgesNotificationPage() {
         }));
     };
 
+    // Track thank you notification status for each judge
+    const [thankYouStatus, setThankYouStatus] = useState<{ [key: string]: string }>(() => {
+        const initialStatus: { [key: string]: string } = {};
+        judgesSchedule.forEach(judge => {
+            initialStatus[judge.name] = 'Pending';
+        });
+        return initialStatus;
+    });
+
+    // Handle thank you notification
+    const handleThankYouNotify = (judgeName: string, phone: string) => {
+        if (!phone) {
+            alert(`No phone number available for ${judgeName}`);
+            return;
+        }
+        // TODO: Implement actual notification logic (SMS/WhatsApp)
+        alert(`Thank you message sent to ${judgeName} at ${phone}\n\nMessage: "Thank you for your valuable time and dedication as a judge for Sargolsavam 2025!"`);
+        // Update status to 'Sent'
+        setThankYouStatus(prev => ({
+            ...prev,
+            [judgeName]: 'Sent'
+        }));
+    };
+
+    // Handle thank you status change
+    const handleThankYouStatusChange = (judgeName: string, newStatus: string) => {
+        setThankYouStatus(prev => ({
+            ...prev,
+            [judgeName]: newStatus
+        }));
+    };
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -625,8 +657,8 @@ export default function JudgesNotificationPage() {
                                                     value={dayStatus}
                                                     onChange={(e) => handleDayStatusChange(judge.name, day, e.target.value)}
                                                     className={`px-2 py-1 border rounded text-xs font-medium focus:outline-none focus:ring-1 focus:ring-primary ${dayStatus === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                            dayStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                                'bg-green-50 border-green-300 text-green-700'
+                                                        dayStatus === 'Notified' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                            'bg-green-50 border-green-300 text-green-700'
                                                         }`}
                                                 >
                                                     <option value="Pending">Pending</option>
@@ -711,6 +743,36 @@ export default function JudgesNotificationPage() {
                                         })}
                                     </tbody>
                                 </table>
+                            </div>
+
+                            {/* Thank You Notification Row */}
+                            <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm font-semibold text-gray-700">💚 Thank You Message:</span>
+                                        <select
+                                            value={thankYouStatus[judge.name] || 'Pending'}
+                                            onChange={(e) => handleThankYouStatusChange(judge.name, e.target.value)}
+                                            className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${thankYouStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
+                                                    thankYouStatus[judge.name] === 'Sent' ? 'bg-blue-50 border-blue-300 text-blue-700' :
+                                                        'bg-green-50 border-green-300 text-green-700'
+                                                }`}
+                                        >
+                                            <option value="Pending">Pending</option>
+                                            <option value="Sent">Sent</option>
+                                            <option value="Acknowledged">Acknowledged</option>
+                                        </select>
+                                    </div>
+                                    <Button
+                                        onClick={() => handleThankYouNotify(judge.name, judge.phone)}
+                                        size="sm"
+                                        className="gap-2 bg-green-600 hover:bg-green-700"
+                                        disabled={!judge.phone}
+                                    >
+                                        <Send size={14} />
+                                        Send Thank You
+                                    </Button>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
