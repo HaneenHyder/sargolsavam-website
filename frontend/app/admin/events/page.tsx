@@ -1175,7 +1175,10 @@ export default function UnifiedEventManagement() {
                             )}
                         </div>
 
-                        <div className="space-y-2 max-h-[600px] overflow-y-auto overscroll-y-contain">
+                        <div
+                            className="space-y-2 overflow-y-auto"
+                            style={{ maxHeight: '600px', overscrollBehavior: 'contain' }}
+                        >
                             {events.filter(event => {
                                 const matchesSearch = event.name.toLowerCase().includes(eventSearchQuery.toLowerCase()) ||
                                     (event.code && event.code.toLowerCase().includes(eventSearchQuery.toLowerCase()));
@@ -1337,7 +1340,10 @@ export default function UnifiedEventManagement() {
                                                             onChange={e => setChestNumberFilter(e.target.value)}
                                                         />
                                                     </div>
-                                                    <div className="border rounded-lg p-4 max-h-[300px] overflow-y-auto overscroll-y-contain">
+                                                    <div
+                                                        className="border rounded-lg p-4 overflow-y-auto"
+                                                        style={{ maxHeight: '300px', overscrollBehavior: 'contain' }}
+                                                    >
                                                         {availableCandidates.map(candidate => (
                                                             <div key={candidate.id} className="flex items-center space-x-2 py-2">
                                                                 <Checkbox
