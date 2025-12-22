@@ -525,10 +525,10 @@ export default function JudgesNotificationPage() {
         }
         // TODO: Implement actual notification logic (SMS/WhatsApp)
         alert(`Thank you message sent to ${judgeName} at ${phone}\n\nMessage: "Thank you for your valuable time and dedication as a judge for Sargolsavam 2025!"`);
-        // Update status to 'Sent'
+        // Update status to 'Send'
         setThankYouStatus(prev => ({
             ...prev,
-            [judgeName]: 'Sent'
+            [judgeName]: 'Send'
         }));
     };
 
@@ -753,12 +753,11 @@ export default function JudgesNotificationPage() {
                                             value={thankYouStatus[judge.name] || 'Pending'}
                                             onChange={(e) => handleThankYouStatusChange(judge.name, e.target.value)}
                                             className={`px-3 py-1.5 border rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary ${thankYouStatus[judge.name] === 'Pending' ? 'bg-yellow-50 border-yellow-300 text-yellow-700' :
-                                                thankYouStatus[judge.name] === 'Sent' ? 'bg-blue-50 border-blue-300 text-blue-700' :
-                                                    'bg-green-50 border-green-300 text-green-700'
+                                                'bg-blue-50 border-blue-300 text-blue-700'
                                                 }`}
                                         >
                                             <option value="Pending">Pending</option>
-                                            <option value="Sent">Sent</option>
+                                            <option value="Send">Send</option>
                                         </select>
                                     </div>
                                     <Button
