@@ -44,7 +44,11 @@ export default function CommitteePage() {
             if (indexA !== -1) return -1;
             if (indexB !== -1) return 1;
             return 0;
-        });
+        })
+        .map((member, index) => ({
+            ...member,
+            id: `static-${index}-${member.name.replace(/\s+/g, '-').toLowerCase()}`
+        }));
 
     return (
         <div className="space-y-12 py-8">
