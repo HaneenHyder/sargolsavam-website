@@ -19,7 +19,7 @@ const formatDate = (dateString: string): string => {
 const judgesSchedule = [
     {
         name: "SHUKKOOR SULTHAN NADWI",
-        phone: "91 81398 60760",
+        phone: "+91 81398 60760",
         schedule: [
             { date: "Monday 22 December 2025", time: "4:30-5:30 PM", stage: "Stage 4", event: "ഖുർആൻ പാരായണം", category: "JNR" },
             { date: "Monday 22 December 2025", time: "8:30-9:30 PM", stage: "Stage 3", event: "കവിതാലാപനം ഉറുദു", category: "SNR" },
@@ -31,7 +31,7 @@ const judgesSchedule = [
     },
     {
         name: "AMAL MANAS USTHAD",
-        phone: "91 75618 67458",
+        phone: "+91 75618 67458",
         schedule: [
             { date: "Monday 22 December 2025", time: "4:30-5:30 PM", stage: "Stage 2", event: "ഖുർആൻ പാരായണം", category: "JNR" },
             { date: "Tuesday 23 December 2025", time: "6:00-7:45 AM", stage: "Stage 1", event: "ഖുർആൻ പാരായണം", category: "SNR" },
@@ -61,7 +61,7 @@ const judgesSchedule = [
     },
     {
         name: "ABDUL VAHID NADWI",
-        phone: "91 97464 20638",
+        phone: "+91 97464 20638",
         schedule: [
             { date: "Monday 22 December 2025", time: "8:30-9:30 PM", stage: "Stage 3", event: "കവിതാലാപനം അറബി", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "6:00-7:45 AM", stage: "Stage 1", event: "ഖുർആൻ പാരായണം", category: "SNR" },
@@ -76,7 +76,7 @@ const judgesSchedule = [
     },
     {
         name: "NASRUDHEEN NADWI",
-        phone: "91 94464 29571",
+        phone: "+91 94464 29571",
         schedule: [
             { date: "Monday 22 December 2025", time: "4:30-5:30 PM", stage: "Stage 2", event: "അറബി ഗാനം", category: "SNR" },
             { date: "Monday 22 December 2025", time: "8:30-9:30 PM", stage: "Stage 4", event: "കഥാകഥനം അറബി", category: "JNR" },
@@ -89,7 +89,7 @@ const judgesSchedule = [
     },
     {
         name: "MUNEEB AZHARI",
-        phone: "91 79025 47541",
+        phone: "+91 79025 47541",
         schedule: [
             { date: "Monday 22 December 2025", time: "8:30-10:00 PM", stage: "Stage 1", event: "മാപ്പിളപ്പാട്ട്", category: "SNR" },
             { date: "Monday 22 December 2025", time: "8:30-10:00 PM", stage: "Stage 1", event: "മാപ്പിളപ്പാട്ട്", category: "JNR" },
@@ -101,7 +101,7 @@ const judgesSchedule = [
     },
     {
         name: "BASITH ABDULLAH AZHARI",
-        phone: "91 7592 051 248",
+        phone: "+91 7592 051 248",
         schedule: [
             { date: "Monday 22 December 2025", time: "8:30-10:00 PM", stage: "Stage 1", event: "മാപ്പിളപ്പാട്ട്", category: "SNR" },
             { date: "Monday 22 December 2025", time: "8:30-10:00 PM", stage: "Stage 1", event: "മാപ്പിളപ്പാട്ട്", category: "JNR" },
@@ -119,7 +119,7 @@ const judgesSchedule = [
     },
     {
         name: "MUHAMMED YASIR USTHAD",
-        phone: "91 82813 71467",
+        phone: "+91 82813 71467",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "7:00-8:00 AM", stage: "Stage 4", event: "കഥാകഥനം ഇംഗ്ലീഷ്", category: "SJR" },
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 5", event: "പ്രസംഗം ഇംഗ്ലീഷ്", category: "JNR" },
@@ -129,7 +129,7 @@ const judgesSchedule = [
     },
     {
         name: "THAHIR AZHARI",
-        phone: "91 70255 35401",
+        phone: "+91 70255 35401",
         schedule: [
             { date: "Tuesday 22 December 2025", time: "8:30-10:00 PM", stage: "Stage 1", event: "മാപ്പിളപ്പാട്ട്", category: "SNR" },
             { date: "Tuesday 22 December 2025", time: "8:30-10:00 PM", stage: "Stage 1", event: "മാപ്പിളപ്പാട്ട്", category: "JNR" },
@@ -139,7 +139,7 @@ const judgesSchedule = [
     },
     {
         name: "UMAR AHMED NADWI",
-        phone: "91 90485 74632",
+        phone: "+91 90485 74632",
         schedule: [
             { date: "Monday 22 December 2025", time: "8:30-9:30 PM", stage: "Stage 3", event: "കവിതാലാപനം ഉറുദു", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "7:00-8:00 AM", stage: "Stage 2", event: "കവിതാലാപനം അറബി", category: "SNR" },
@@ -153,7 +153,7 @@ const judgesSchedule = [
     },
     {
         name: "SHAHABAS AZHARI",
-        phone: "91 70346 01531",
+        phone: "+91 70346 01531",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "7:00-8:00 AM", stage: "Stage 4", event: "കഥാകഥനം ഇംഗ്ലീഷ്", category: "SJR" },
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 3", event: "പ്രസംഗം ഇംഗ്ലീഷ്", category: "SNR" },
@@ -166,7 +166,7 @@ const judgesSchedule = [
     },
     {
         name: "SHAKKEER MUHAMMED NADWI",
-        phone: "91 97464 20638",
+        phone: "+91 97464 20638",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "7:00-8:00 AM", stage: "Stage 2", event: "കവിതാലാപനം അറബി", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 2", event: "പ്രസംഗം ഉറുദു", category: "JNR" },
@@ -179,7 +179,7 @@ const judgesSchedule = [
     },
     {
         name: "ANSHAD SIR",
-        phone: "91 98479 58006",
+        phone: "+91 98479 58006",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "7:00-8:00 AM", stage: "Stage 4", event: "കഥാകഥനം ഇംഗ്ലീഷ്", category: "SJR" },
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 3", event: "പ്രസംഗം ഇംഗ്ലീഷ്", category: "SNR" },
@@ -190,7 +190,7 @@ const judgesSchedule = [
     },
     {
         name: "SHAFEEK AZHARI",
-        phone: "91 86062 19983",
+        phone: "+91 86062 19983",
         schedule: [
             { date: "Monday 22 December 2025", time: "8:30-9:30 PM", stage: "Stage 4", event: "കഥാകഥനം അറബി", category: "JNR" },
             { date: "Tuesday 23 December 2025", time: "7:00-8:00 AM", stage: "Stage 5", event: "കവിതാലാപനം അറബി", category: "JNR" },
@@ -206,7 +206,7 @@ const judgesSchedule = [
     },
     {
         name: "SIMI TEACHER",
-        phone: "91 98475 86818",
+        phone: "+91 98475 86818",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 5", event: "പ്രസംഗം ഇംഗ്ലീഷ്", category: "JNR" },
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 2", event: "കവിതാലാപനം ഇംഗ്ലീഷ്", category: "SNR" },
@@ -216,7 +216,7 @@ const judgesSchedule = [
     },
     {
         name: "RAMLA TEACHER",
-        phone: "91 94461 68777",
+        phone: "+91 94461 68777",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 5", event: "പ്രസംഗം ഇംഗ്ലീഷ്", category: "JNR" },
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 4", event: "ലൈവ് ട്രാൻസലേഷൻ(Eng-Mala)", category: "JNR" },
@@ -227,7 +227,7 @@ const judgesSchedule = [
     },
     {
         name: "MUHAMMED JAMAL USTHAD",
-        phone: "91 96051 31336",
+        phone: "+91 96051 31336",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 3", event: "പ്രസംഗം ഇംഗ്ലീഷ്", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 4", event: "ലൈവ് ട്രാൻസലേഷൻ(Eng-Mal)", category: "JNR" },
@@ -238,7 +238,7 @@ const judgesSchedule = [
     },
     {
         name: "MUFEED SIR",
-        phone: "91 94968 40256",
+        phone: "+91 94968 40256",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 5", event: "കവിതാലാപനം മലയാളം", category: "SNR" },
             { date: "Wednesday 24 December 2025", time: "9:00-10:00 AM", stage: "Stage 2", event: "നിമിഷ പ്രസംഗം", category: "SJR" },
@@ -249,7 +249,7 @@ const judgesSchedule = [
     },
     {
         name: "ILYAS USTHAD",
-        phone: "91 96568 85383",
+        phone: "+91 96568 85383",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 3", event: "പ്രസംഗം മലയാളം", category: "SJR" },
             { date: "Wednesday 24 December 2025", time: "2:00 - 4:00 PM", stage: "Stage 3", event: "മോണോലോഗ്", category: "SJR" },
@@ -259,7 +259,7 @@ const judgesSchedule = [
     },
     {
         name: "JALEEL SIR",
-        phone: "91 8078 396 014",
+        phone: "+91 8078 396 014",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 5", event: "കവിതാലാപനം മലയാളം", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "2:15-3:15 PM", stage: "Stage 4", event: "കവിതാലാപനം മലയാളം", category: "JNR" },
@@ -271,7 +271,7 @@ const judgesSchedule = [
     },
     {
         name: "NAYEEF AZHARI",
-        phone: "91 79029 35310",
+        phone: "+91 79029 35310",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "11:00-12:00 PM", stage: "Stage 4", event: "കഥാകഥനം Malayalam", category: "SJR" },
             { date: "Wednesday 24 December 2025", time: "9:00-10:00 AM", stage: "Stage 2", event: "നിമിഷ പ്രസംഗം", category: "SJR" }
@@ -279,7 +279,7 @@ const judgesSchedule = [
     },
     {
         name: "ALTHAF SIR",
-        phone: "91 81578 90936",
+        phone: "+91 81578 90936",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "2:15-3:15 PM", stage: "Stage 2", event: "ഇസ്ലാമിക് ഗാനം", category: "SJR" },
             { date: "Tuesday 23 December 2025", time: "3:15- 4:15 PM", stage: "Stage 2", event: "ഇസ്ലാമിക് ഗാനം", category: "SNR" },
@@ -305,7 +305,7 @@ const judgesSchedule = [
     },
     {
         name: "SIDDIQ SIR",
-        phone: "91 95397 56914",
+        phone: "+91 95397 56914",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "8:30-9:45 PM", stage: "Stage 1", event: "സംഗീതശില്പം", category: "group" },
             { date: "Tuesday 23 December 2025", time: "6:30-7:30 AM", stage: "Stage 5", event: "കഥാകഥനം Malayalam", category: "SJR" }
@@ -313,7 +313,7 @@ const judgesSchedule = [
     },
     {
         name: "NOORUDHEEN AZHARI",
-        phone: "91 97456 29954",
+        phone: "+91 97456 29954",
         schedule: [
             { date: "Monday 22 December 2025", time: "4:30-5:30 PM", stage: "Stage 4", event: "ഖുർആൻ പാരായണം", category: "JNR" },
             { date: "Monday 22 December 2025", time: "8:30-9:30 PM", stage: "Stage 4", event: "കഥാകഥനം അറബി", category: "JNR" },
@@ -328,14 +328,14 @@ const judgesSchedule = [
     },
     {
         name: "FIROZ MURABBI",
-        phone: "91 98479 10444",
+        phone: "+91 98479 10444",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "12:15-01:15 PM", stage: "Stage 5", event: "NEWS READING", category: "GROUP" }
         ]
     },
     {
         name: "MAHAD SIR",
-        phone: "91 86062 43441",
+        phone: "+91 86062 43441",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 2", event: "കവിതാലാപനം ഇംഗ്ലീഷ്", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "12:15-01:15 PM", stage: "Stage 5", event: "NEWS READING", category: "GROUP" },
@@ -345,7 +345,7 @@ const judgesSchedule = [
     },
     {
         name: "ABDUL AZEEZ ALAVI",
-        phone: "91 92074 01181",
+        phone: "+91 92074 01181",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "8:30-9:30 AM", stage: "Stage 4", event: "പ്രസംഗം അറബി", category: "SJR" },
             { date: "Tuesday 23 December 2025", time: "11:00-12:00 PM", stage: "Stage 6", event: "ഉറുദു ഗാനം", category: "SNR" },
@@ -356,7 +356,7 @@ const judgesSchedule = [
     },
     {
         name: "AJMAL ASLAM AZHARI",
-        phone: "91 95672 00145",
+        phone: "+91 95672 00145",
         schedule: [
             { date: "Tuesday 23 December 2025", time: "4:30-5:30 PM", stage: "Stage 2", event: "അറബി ഗാനം", category: "SNR" },
             { date: "Tuesday 23 December 2025", time: "9:45-10:45 AM", stage: "Stage 3", event: "പ്രസംഗം മലയാളം", category: "SJR" },
