@@ -165,18 +165,6 @@ export default function AdminDashboard() {
                     </Link>
                 </Card>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="hover:bg-gray-50 transition-colors cursor-pointer">
-                    <Link href="/admin/import">
-                        <CardContent className="p-4 flex items-center gap-3">
-                            <Upload size={20} className="text-gray-500" />
-                            <span className="font-medium">Import Data</span>
-                        </CardContent>
-                    </Link>
-                </Card>
-                {/* Add more quick links here if needed */}
-            </div>
         </div>
     );
 }

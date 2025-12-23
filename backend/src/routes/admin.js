@@ -3,8 +3,6 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 
 const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // Temporary storage for import
 
 router.get('/stats', verifyToken, isAdmin, adminController.getDashboardStats);
 router.get('/leaderboard', verifyToken, isAdmin, adminController.getLeaderboard);
@@ -12,7 +10,6 @@ router.get('/leaderboard/detailed', verifyToken, isAdmin, require('../controller
 
 
 router.get('/export/team/:code', verifyToken, isAdmin, adminController.exportTeam);
-router.post('/import-candidates', verifyToken, isAdmin, upload.single('file'), adminController.importCandidates);
 
 // Insights routes
 const viewerController = require('../controllers/viewerController');

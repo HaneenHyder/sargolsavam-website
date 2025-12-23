@@ -109,14 +109,6 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                     Manage Schedule
                 </Link>
                 <Link
-                    href="/admin/import"
-                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                >
-                    <Upload size={20} />
-                    Import Data
-                </Link>
-                <Link
                     href="/admin/judges-notification"
                     className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
                     onClick={() => setIsMobileMenuOpen(false)}

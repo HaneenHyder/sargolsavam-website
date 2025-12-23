@@ -35,6 +35,17 @@ export default function InsightsPage() {
     const [loading, setLoading] = useState(true);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
     const [loginTypeFilter, setLoginTypeFilter] = useState<string>('all');
+    const [sortField, setSortField] = useState<'created_at' | 'login_type' | 'username' | 'ip_address' | 'success'>('created_at');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+    const handleSort = (field: 'created_at' | 'login_type' | 'username' | 'ip_address' | 'success') => {
+        if (sortField === field) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortField(field);
+            setSortDirection('desc');
+        }
+    };
 
     const fetchData = async () => {
         try {
@@ -77,7 +88,25 @@ export default function InsightsPage() {
         );
     }
 
-    const filteredLogs = loginLogs.filter(log => loginTypeFilter === 'all' || log.login_type === loginTypeFilter);
+    const filteredLogs = loginLogs
+        .filter(log => loginTypeFilter === 'all' || log.login_type === loginTypeFilter)
+        .sort((a, b) => {
+            let comparison = 0;
+
+            if (sortField === 'created_at') {
+                comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+            } else if (sortField === 'login_type') {
+                comparison = a.login_type.localeCompare(b.login_type);
+            } else if (sortField === 'username') {
+                comparison = a.username.localeCompare(b.username);
+            } else if (sortField === 'ip_address') {
+                comparison = a.ip_address.localeCompare(b.ip_address);
+            } else if (sortField === 'success') {
+                comparison = (a.success === b.success) ? 0 : a.success ? -1 : 1;
+            }
+
+            return sortDirection === 'asc' ? comparison : -comparison;
+        });
 
     return (
         <div className="space-y-8">
@@ -253,11 +282,11 @@ export default function InsightsPage() {
                         <table className="w-full">
                             <thead>
                                 <tr className="border-b">
-                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Date & Time</th>
-                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Type</th>
-                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Username/ID</th>
-                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">IP Address</th>
-                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Status</th>
+                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-50" onClick={() => handleSort('created_at')}><div className="flex items-center gap-1">Date & Time {sortField === 'created_at' && <span className="text-primary">{sortDirection === 'asc' ? '?' : '?'}</span>}</div></th>
+    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-50" onClick={() => handleSort('login_type')}><div className="flex items-center gap-1">Type {sortField === 'login_type' && <span className="text-primary">{sortDirection === 'asc' ? '?' : '?'}</span>}</div></th>
+                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-50" onClick={() => handleSort('username')}><div className="flex items-center gap-1">Username/ID {sortField === 'username' && <span className="text-primary">{sortDirection === 'asc' ? '?' : '?'}</span>}</div></th>
+                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-50" onClick={() => handleSort('ip_address')}><div className="flex items-center gap-1">IP Address {sortField === 'ip_address' && <span className="text-primary">{sortDirection === 'asc' ? '?' : '?'}</span>}</div></th>
+                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700 cursor-pointer hover:bg-gray-50" onClick={() => handleSort('success')}><div className="flex items-center gap-1">Status {sortField === 'success' && <span className="text-primary">{sortDirection === 'asc' ? '?' : '?'}</span>}</div></th>
                                     <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Reason</th>
                                 </tr>
                             </thead>
