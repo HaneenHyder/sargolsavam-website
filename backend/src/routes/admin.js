@@ -13,7 +13,14 @@ router.get('/leaderboard/detailed', verifyToken, isAdmin, require('../controller
 
 router.get('/export/team/:code', verifyToken, isAdmin, adminController.exportTeam);
 router.post('/import-candidates', verifyToken, isAdmin, upload.single('file'), adminController.importCandidates);
+
+// Insights routes
+const viewerController = require('../controllers/viewerController');
+router.get('/insights/viewers', verifyToken, isAdmin, viewerController.getStats);
+router.get('/insights/logins', verifyToken, isAdmin, viewerController.getLoginLogs);
+
 router.post('/create-admin', adminController.createAdmin); // Helper to create first admin
+
 
 // Temporary Remote Seeding Endpoint
 router.post('/seed-committee', verifyToken, isAdmin, async (req, res) => {

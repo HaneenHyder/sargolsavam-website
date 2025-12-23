@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { LogOut, LayoutDashboard, Calendar, Trophy, FileText, Upload, Menu, X, Users, Bell } from 'lucide-react';
+import { LogOut, LayoutDashboard, Calendar, Trophy, FileText, Upload, Menu, X, Users, Bell, BarChart } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
@@ -75,6 +75,14 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                 >
                     <LayoutDashboard size={20} />
                     Dashboard
+                </Link>
+                <Link
+                    href="/admin/insights"
+                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                >
+                    <BarChart size={20} />
+                    Insights
                 </Link>
                 <Link
                     href="/admin/events"

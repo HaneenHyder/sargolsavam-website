@@ -12,13 +12,36 @@ exports.login = async (req, res) => {
 
         console.log('Login Request Body:', req.body);
         const { username, password, type, code } = req.body || {}; // Handle undefined body safely
+        const ipAddress = req.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        const userAgent = req.headers['user-agent'];
+
         if (type === 'admin') {
             const { rows } = await db.query('SELECT * FROM admins WHERE username = $1', [username]);
-            if (rows.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
+            if (rows.length === 0) {
+                // Log failed login attempt
+                await db.query(
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason) VALUES ($1, $2, $3, $4, $5, $6)',
+                    [null, username, ipAddress, userAgent, false, 'User not found']
+                );
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
 
             const admin = rows[0];
             const validPassword = await bcrypt.compare(password, admin.password_hash);
-            if (!validPassword) return res.status(401).json({ error: 'Invalid credentials' });
+            if (!validPassword) {
+                // Log failed login attempt
+                await db.query(
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason) VALUES ($1, $2, $3, $4, $5, $6)',
+                    [admin.id, username, ipAddress, userAgent, false, 'Invalid password']
+                );
+                return res.status(401).json({ error: 'Invalid credentials' });
+            }
+
+            // Log successful login
+            await db.query(
+                'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success) VALUES ($1, $2, $3, $4, $5)',
+                [admin.id, username, ipAddress, userAgent, true]
+            );
 
             const token = jwt.sign({ id: admin.id, role: admin.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 

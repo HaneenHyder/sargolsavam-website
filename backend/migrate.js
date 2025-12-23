@@ -67,6 +67,22 @@ async function runMigration() {
             console.log('Add payment columns migration successful!');
         }
 
+        const createPageViewsSqlPath = path.join(__dirname, 'migrations', 'create_page_views_table.sql');
+        if (fs.existsSync(createPageViewsSqlPath)) {
+            const createPageViewsSql = fs.readFileSync(createPageViewsSqlPath, 'utf8');
+            console.log('Running create page_views table migration...');
+            await client.query(createPageViewsSql);
+            console.log('Create page_views table migration successful!');
+        }
+
+        const createLoginLogsSqlPath = path.join(__dirname, 'migrations', 'create_login_logs_table.sql');
+        if (fs.existsSync(createLoginLogsSqlPath)) {
+            const createLoginLogsSql = fs.readFileSync(createLoginLogsSqlPath, 'utf8');
+            console.log('Running create login_logs table migration...');
+            await client.query(createLoginLogsSql);
+            console.log('Create login_logs table migration successful!');
+        }
+
 
 
         // Create Admin User if not exists

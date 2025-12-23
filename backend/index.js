@@ -161,6 +161,14 @@ try {
     console.error('❌ Error loading judges routes:', error.message);
 }
 
+// Public Page View Tracking Route
+try {
+    const viewerController = require('./src/controllers/viewerController');
+    app.post('/api/track-view', viewerController.trackView);
+    console.log('✅ Viewer tracking route loaded');
+} catch (error) {
+    console.error('❌ Error loading viewer controller:', error.message);
+}
 
 // ============================================
 // ERROR HANDLING MIDDLEWARE
