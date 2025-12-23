@@ -162,8 +162,7 @@ const getCandidateByChestNo = async (req, res) => {
 
 const getAllCandidates = async (req, res) => {
     try {
-        const { page = 1, limit = 10, search = '' } = req.query;
-        const offset = (page - 1) * limit;
+        const { page = 1, limit = 10, search = '', all } = req.query;
 
         let query = 'SELECT * FROM candidates';
         let countQuery = 'SELECT COUNT(*) FROM candidates';
@@ -175,9 +174,15 @@ const getAllCandidates = async (req, res) => {
             params.push(`%${search}%`);
         }
 
-        query += ` ORDER BY CAST(chest_no AS INTEGER) ASC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+        query += ` ORDER BY CAST(chest_no AS INTEGER) ASC`;
 
-        const queryParams = [...params, limit, offset];
+        // Only apply pagination if all=true is not set
+        let queryParams = [...params];
+        if (all !== 'true') {
+            const offset = (page - 1) * limit;
+            query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+            queryParams.push(limit, offset);
+        }
 
         const [candidatesRes, countRes] = await Promise.all([
             db.query(query, queryParams),
@@ -185,15 +190,15 @@ const getAllCandidates = async (req, res) => {
         ]);
 
         const total = parseInt(countRes.rows[0].count);
-        const totalPages = Math.ceil(total / limit);
+        const totalPages = all === 'true' ? 1 : Math.ceil(total / limit);
 
         res.json({
             data: candidatesRes.rows,
             pagination: {
                 total,
-                page: parseInt(page),
+                page: all === 'true' ? 1 : parseInt(page),
                 totalPages,
-                limit: parseInt(limit)
+                limit: all === 'true' ? total : parseInt(limit)
             }
         });
     } catch (error) {
