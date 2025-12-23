@@ -3,8 +3,65 @@ const bcrypt = require('bcryptjs');
 
 exports.getAllEvents = async (req, res) => {
     try {
-        const { rows } = await db.query('SELECT * FROM events ORDER BY name ASC');
-        res.json(rows);
+        const { page = 1, limit = 10, search = '', category, item_type, event_type, all } = req.query;
+
+        let query = 'SELECT * FROM events';
+        let countQuery = 'SELECT COUNT(*) FROM events';
+        let params = [];
+        let conditions = [];
+
+        if (search) {
+            conditions.push(`(name ILIKE $${params.length + 1} OR code ILIKE $${params.length + 1})`);
+            params.push(`%${search}%`);
+        }
+        if (category && category !== 'All') {
+            conditions.push(`category = $${params.length + 1}`);
+            params.push(category);
+        }
+        if (item_type && item_type !== 'All') {
+            conditions.push(`item_type = $${params.length + 1}`);
+            params.push(item_type);
+        }
+        if (event_type && event_type !== 'All') {
+            conditions.push(`event_type = $${params.length + 1}`);
+            params.push(event_type);
+        }
+
+        if (conditions.length > 0) {
+            const whereClause = ' WHERE ' + conditions.join(' AND ');
+            query += whereClause;
+            countQuery += whereClause;
+        }
+
+        query += ' ORDER BY name ASC';
+
+        let queryParams = [...params];
+        const countParams = [...params];
+
+        if (all !== 'true') {
+            const totalLimit = parseInt(limit);
+            const totalOffset = (parseInt(page) - 1) * totalLimit;
+            query += ` LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`;
+            queryParams.push(totalLimit, totalOffset);
+        }
+
+        const [eventsRes, countRes] = await Promise.all([
+            db.query(query, queryParams),
+            db.query(countQuery, countParams)
+        ]);
+
+        const total = parseInt(countRes.rows[0].count);
+        const totalPages = Math.ceil(total / limit);
+
+        res.json({
+            data: eventsRes.rows,
+            pagination: {
+                total,
+                page: parseInt(page),
+                totalPages,
+                limit: parseInt(limit)
+            }
+        });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -28,7 +85,7 @@ exports.createEvent = async (req, res) => {
     if (!code) {
         const prefix = name.substring(0, 3).toUpperCase().replace(/\s/g, '');
         const random = Math.floor(100 + Math.random() * 900); // 3 digit random
-        code = `${prefix}${random}`;
+        code = `${prefix}${random} `;
     }
 
     try {
@@ -46,7 +103,7 @@ exports.createEvent = async (req, res) => {
             teams.forEach(team => values.push(team));
 
             await db.query(
-                `INSERT INTO participants (event_id, team_code, status) VALUES ${placeholders}`,
+                `INSERT INTO participants(event_id, team_code, status) VALUES ${placeholders} `,
                 values
             );
         }

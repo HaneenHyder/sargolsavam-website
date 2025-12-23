@@ -162,8 +162,40 @@ const getCandidateByChestNo = async (req, res) => {
 
 const getAllCandidates = async (req, res) => {
     try {
-        const { rows } = await db.query('SELECT * FROM candidates ORDER BY chest_no ASC');
-        res.json(rows);
+        const { page = 1, limit = 10, search = '' } = req.query;
+        const offset = (page - 1) * limit;
+
+        let query = 'SELECT * FROM candidates';
+        let countQuery = 'SELECT COUNT(*) FROM candidates';
+        let params = [];
+
+        if (search) {
+            query += ' WHERE name ILIKE $1 OR chest_no ILIKE $1 OR team_code ILIKE $1';
+            countQuery += ' WHERE name ILIKE $1 OR chest_no ILIKE $1 OR team_code ILIKE $1';
+            params.push(`%${search}%`);
+        }
+
+        query += ` ORDER BY CAST(chest_no AS INTEGER) ASC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
+
+        const queryParams = [...params, limit, offset];
+
+        const [candidatesRes, countRes] = await Promise.all([
+            db.query(query, queryParams),
+            db.query(countQuery, params)
+        ]);
+
+        const total = parseInt(countRes.rows[0].count);
+        const totalPages = Math.ceil(total / limit);
+
+        res.json({
+            data: candidatesRes.rows,
+            pagination: {
+                total,
+                page: parseInt(page),
+                totalPages,
+                limit: parseInt(limit)
+            }
+        });
     } catch (error) {
         console.error(`[${new Date().toISOString()}] Error fetching all candidates:`, error);
         res.status(500).json({ message: 'Server error', error: error.message });

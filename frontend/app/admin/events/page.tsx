@@ -10,7 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/Badge";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Textarea } from "@/components/ui/Textarea";
-import { Plus, Trash2, Trophy, Users, Edit, ListOrdered, Search, Filter, X } from "lucide-react";
+import { Plus, Trash2, Trophy, Users, Edit, ListOrdered, Search, Filter, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Modal } from "@/components/ui/Modal";
@@ -64,7 +64,13 @@ interface PublishedResult {
 
 export default function UnifiedEventManagement() {
     const [events, setEvents] = useState<Event[]>([]);
+    const [eventsPagination, setEventsPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+    const [eventsSearch, setEventsSearch] = useState("");
+
     const [candidates, setCandidates] = useState<Candidate[]>([]);
+    const [candidatesPagination, setCandidatesPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+    const [candidatesSearch, setCandidatesSearch] = useState("");
+
     const [loading, setLoading] = useState(true);
     const [showEventForm, setShowEventForm] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -133,9 +139,22 @@ export default function UnifiedEventManagement() {
     const [bulkAbsentSelection, setBulkAbsentSelection] = useState<string[]>([]);
 
     useEffect(() => {
-        fetchData();
+        fetchEvents();
+        fetchCandidates();
         fetchPublishedResults();
     }, []);
+
+    useEffect(() => {
+        fetchEvents(1);
+    }, [eventsSearch, eventFilterCategory, eventFilterType, eventFilterStage]);
+
+    // Debounce search for candidates
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchCandidates(1);
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [candidatesSearch]);
 
     useEffect(() => {
         if (selectedEvent) {
@@ -143,27 +162,60 @@ export default function UnifiedEventManagement() {
         }
     }, [selectedEvent]);
 
-    const fetchData = async () => {
+    const fetchEvents = async (page = eventsPagination.page) => {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-            const [eventsRes, candidatesRes] = await Promise.all([
-                fetch(`${API_URL}/api/events`, { credentials: 'include' }).then(res => res.json()),
-                fetch(`${API_URL}/api/candidates`, { credentials: 'include' }).then(res => res.json()),
-            ]);
-
-            // Sort candidates by chest number numerically
-            const sortedCandidates = (candidatesRes || []).sort((a: Candidate, b: Candidate) => {
-                return parseInt(a.chest_no) - parseInt(b.chest_no);
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: "10",
+                search: eventsSearch,
             });
 
-            setEvents(eventsRes || []);
-            setCandidates(sortedCandidates);
+            if (eventFilterCategory !== "All") params.append("category", eventFilterCategory);
+            if (eventFilterType !== "All") params.append("item_type", eventFilterType);
+            if (eventFilterStage !== "All") params.append("event_type", eventFilterStage);
+
+            const res = await fetch(`${API_URL}/api/events?${params.toString()}`, { credentials: 'include' });
+            const data = await res.json();
+
+            setEvents(data.data || []);
+            if (data.pagination) {
+                setEventsPagination({
+                    page: data.pagination.page,
+                    totalPages: data.pagination.totalPages,
+                    total: data.pagination.total
+                });
+            }
         } catch (error) {
-            console.error("Error fetching data:", error);
-            toast.error("Failed to load data");
-        } finally {
-            setLoading(false);
+            console.error("Error fetching events:", error);
+            toast.error("Failed to load events");
         }
+    };
+
+    const fetchCandidates = async (page = candidatesPagination.page) => {
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const res = await fetch(`${API_URL}/api/candidates?page=${page}&limit=20&search=${candidatesSearch}`, { credentials: 'include' });
+            const data = await res.json();
+
+            setCandidates(data.data || []);
+            if (data.pagination) {
+                setCandidatesPagination({
+                    page: data.pagination.page,
+                    totalPages: data.pagination.totalPages,
+                    total: data.pagination.total
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching candidates:", error);
+            toast.error("Failed to load candidates");
+        }
+    };
+
+    // Kept for compatibility but now essentially splits the work
+    const fetchData = async () => {
+        await Promise.all([fetchEvents(), fetchCandidates()]);
+        setLoading(false);
     };
 
     const fetchPublishedResults = async () => {
@@ -580,15 +632,19 @@ export default function UnifiedEventManagement() {
     const executePublishEventResults = async (eventId: string) => {
         setPublishingId(eventId);
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_BASE_URL}/api` || 'http://localhost:5000/api';
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/api/results/publish`, {
+            if (!token) {
+                toast.error("You must be logged in to publish results");
+                return;
+            }
+
+            const res = await fetch(`${API_URL}/results/publish`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                credentials: 'include',
                 body: JSON.stringify({ event_id: eventId })
             });
 
@@ -1120,8 +1176,8 @@ export default function UnifiedEventManagement() {
                                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     placeholder="Search events..."
-                                    value={eventSearchQuery}
-                                    onChange={(e) => setEventSearchQuery(e.target.value)}
+                                    value={eventsSearch}
+                                    onChange={(e) => setEventsSearch(e.target.value)}
                                     className="pl-8"
                                 />
                             </div>
@@ -1164,7 +1220,7 @@ export default function UnifiedEventManagement() {
                                     size="sm"
                                     className="w-full h-6 text-xs text-muted-foreground"
                                     onClick={() => {
-                                        setEventSearchQuery("");
+                                        setEventsSearch("");
                                         setEventFilterCategory("All");
                                         setEventFilterType("All");
                                         setEventFilterStage("All");
@@ -1179,14 +1235,7 @@ export default function UnifiedEventManagement() {
                             className="space-y-2 overflow-y-auto"
                             style={{ maxHeight: '600px', overscrollBehavior: 'contain' }}
                         >
-                            {events.filter(event => {
-                                const matchesSearch = event.name.toLowerCase().includes(eventSearchQuery.toLowerCase()) ||
-                                    (event.code && event.code.toLowerCase().includes(eventSearchQuery.toLowerCase()));
-                                const matchesCategory = eventFilterCategory === "All" || event.category === eventFilterCategory;
-                                const matchesType = eventFilterType === "All" || event.item_type === eventFilterType;
-                                const matchesStage = eventFilterStage === "All" || event.event_type === eventFilterStage;
-                                return matchesSearch && matchesCategory && matchesType && matchesStage;
-                            }).map(event => (
+                            {events.map(event => (
                                 <div
                                     key={event.id}
                                     className={`p-3 rounded-lg border-2 cursor-pointer transition-colors ${selectedEvent?.id === event.id
@@ -1233,9 +1282,33 @@ export default function UnifiedEventManagement() {
                                                 {event.event_type}
                                             </Badge>
                                         )}
+                                        {event.code && <Badge variant="secondary" className="font-mono">{event.code}</Badge>}
                                     </div>
                                 </div>
                             ))}
+
+                            {/* Pagination Controls */}
+                            <div className="flex items-center justify-between pt-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => fetchEvents(eventsPagination.page - 1)}
+                                    disabled={eventsPagination.page === 1}
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                </Button>
+                                <span className="text-xs text-muted-foreground">
+                                    Page {eventsPagination.page} of {eventsPagination.totalPages}
+                                </span>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => fetchEvents(eventsPagination.page + 1)}
+                                    disabled={eventsPagination.page === eventsPagination.totalPages}
+                                >
+                                    <ChevronRight className="h-4 w-4" />
+                                </Button>
+                            </div>
                         </div>
                     </Card>
 
@@ -1335,29 +1408,56 @@ export default function UnifiedEventManagement() {
                                                     </div>
                                                     <div className="mb-3">
                                                         <Input
-                                                            placeholder="Filter by chest number..."
-                                                            value={chestNumberFilter}
-                                                            onChange={e => setChestNumberFilter(e.target.value)}
+                                                            placeholder="Search candidates via Name or Chest No..."
+                                                            value={candidatesSearch}
+                                                            onChange={e => setCandidatesSearch(e.target.value)}
                                                         />
                                                     </div>
                                                     <div
                                                         className="border rounded-lg p-4 overflow-y-auto"
                                                         style={{ maxHeight: '300px', overscrollBehavior: 'contain' }}
                                                     >
-                                                        {availableCandidates.map(candidate => (
-                                                            <div key={candidate.id} className="flex items-center space-x-2 py-2">
-                                                                <Checkbox
-                                                                    checked={selectedParticipants.includes(candidate.id)}
-                                                                    onCheckedChange={() => handleToggleParticipant(candidate.id)}
-                                                                />
-                                                                <label
-                                                                    className="flex-1 cursor-pointer text-sm"
-                                                                    onClick={() => handleToggleParticipant(candidate.id)}
-                                                                >
-                                                                    {candidate.chest_no} - {candidate.name} ({candidate.team_code})
-                                                                </label>
-                                                            </div>
-                                                        ))}
+                                                        {candidates.map(candidate => {
+                                                            const isAdded = eventParticipants.some(p => p.candidate_id === candidate.id);
+                                                            return (
+                                                                <div key={candidate.id} className={`flex items-center space-x-2 py-2 ${isAdded ? 'opacity-50' : ''}`}>
+                                                                    <Checkbox
+                                                                        checked={selectedParticipants.includes(candidate.id) || isAdded}
+                                                                        disabled={isAdded}
+                                                                        onCheckedChange={() => !isAdded && handleToggleParticipant(candidate.id)}
+                                                                    />
+                                                                    <label
+                                                                        className="flex-1 cursor-pointer text-sm"
+                                                                        onClick={() => !isAdded && handleToggleParticipant(candidate.id)}
+                                                                    >
+                                                                        {candidate.chest_no} - {candidate.name} ({candidate.team_code})
+                                                                        {isAdded && <span className="text-xs ml-2 text-green-600">(Added)</span>}
+                                                                    </label>
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+
+                                                    <div className="flex items-center justify-between pt-2">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => fetchCandidates(candidatesPagination.page - 1)}
+                                                            disabled={candidatesPagination.page === 1}
+                                                        >
+                                                            <ChevronLeft className="h-4 w-4" />
+                                                        </Button>
+                                                        <span className="text-xs text-muted-foreground">
+                                                            Page {candidatesPagination.page} of {candidatesPagination.totalPages}
+                                                        </span>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => fetchCandidates(candidatesPagination.page + 1)}
+                                                            disabled={candidatesPagination.page === candidatesPagination.totalPages}
+                                                        >
+                                                            <ChevronRight className="h-4 w-4" />
+                                                        </Button>
                                                     </div>
                                                 </div>
                                             </>

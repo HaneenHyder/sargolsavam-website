@@ -868,7 +868,7 @@ export default function LeaderboardPage() {
 
             const [resultsRes, candidatesRes, teamsRes, detailedRes] = await Promise.all([
                 fetch(`${API_URL}/api/results`, { headers }).then(res => res.json()),
-                fetch(`${API_URL}/api/candidates`, { headers }).then(res => res.json()),
+                fetch(`${API_URL}/api/candidates?all=true`, { headers }).then(res => res.json()),
                 fetch(`${API_URL}/api/teams`, { headers }).then(res => res.json()),
                 fetch(`${API_URL}/api/admin/leaderboard/detailed`, {
                     headers,
