@@ -168,7 +168,13 @@ export default function UnifiedEventManagement() {
 
     const fetchEvents = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            if (!API_URL) {
+                console.error("API_URL is missing");
+                toast.error("Configuration Error: API URL is missing");
+                return;
+            }
+            console.log("Fetching events from:", API_URL);
             const params = new URLSearchParams({
                 all: 'true',
                 search: eventsSearch,
@@ -190,7 +196,8 @@ export default function UnifiedEventManagement() {
 
     const fetchCandidates = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            if (!API_URL) return;
             // Fetch all candidates at once
             const res = await fetch(`${API_URL}/api/candidates?all=true&search=${candidatesSearch}`, { credentials: 'include' });
             const data = await res.json();
@@ -211,7 +218,8 @@ export default function UnifiedEventManagement() {
 
     const fetchPublishedResults = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            if (!API_URL) return;
             const res = await fetch(`${API_URL}/api/results`, { credentials: 'include' });
             if (!res.ok) throw new Error(`Failed to fetch results: ${res.status}`);
             const data = await res.json();
@@ -224,7 +232,8 @@ export default function UnifiedEventManagement() {
 
     const fetchEventParticipants = async (eventId: string) => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            if (!API_URL) return;
             const data = await fetch(`${API_URL}/api/participants/event/${eventId}`, { credentials: 'include' }).then(res => res.json());
             // Transform data to match interface if needed
             // Backend returns joined data, assume it matches or adapt here
