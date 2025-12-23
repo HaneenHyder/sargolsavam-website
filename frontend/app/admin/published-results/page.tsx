@@ -24,6 +24,9 @@ export default function PublishedResultsPage() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editForm, setEditForm] = useState({ position: '', grade: '', points: 0 });
 
+    const [categoryFilter, setCategoryFilter] = useState('All');
+    const [resultTypeFilter, setResultTypeFilter] = useState('All');
+
     useEffect(() => {
         fetchResults();
     }, []);
@@ -86,11 +89,21 @@ export default function PublishedResultsPage() {
         }
     };
 
-    const filteredResults = results.filter(r =>
-        r.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (r.candidate_name && r.candidate_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (r.team_name && r.team_name.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const filteredResults = results.filter(r => {
+        const matchesSearch = r.event_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (r.candidate_name && r.candidate_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (r.team_name && r.team_name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        const matchesCategory = categoryFilter === 'All' || r.category === categoryFilter;
+
+        const matchesType = resultTypeFilter === 'All' ||
+            (resultTypeFilter === 'Winners' && r.position !== null) ||
+            (resultTypeFilter === 'With Grade' && r.grade !== null);
+
+        return matchesSearch && matchesCategory && matchesType;
+    });
+
+    const categories = ['All', ...Array.from(new Set(results.map(r => r.category))).filter(Boolean).sort()];
 
     if (loading) return <div className="p-8 text-center text-gray-500">Loading published results...</div>;
 
@@ -103,7 +116,7 @@ export default function PublishedResultsPage() {
                 </p>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col md:flex-row gap-4">
                 <input
                     type="text"
                     placeholder="Search by event, candidate, or team..."
@@ -111,6 +124,26 @@ export default function PublishedResultsPage() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
+
+                <select
+                    className="p-2 border rounded-md min-w-[150px]"
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                >
+                    {categories.map(cat => (
+                        <option key={cat} value={cat}>{cat === 'All' ? 'All Categories' : cat}</option>
+                    ))}
+                </select>
+
+                <select
+                    className="p-2 border rounded-md min-w-[150px]"
+                    value={resultTypeFilter}
+                    onChange={(e) => setResultTypeFilter(e.target.value)}
+                >
+                    <option value="All">All Results</option>
+                    <option value="Winners">Winners (1st, 2nd, 3rd)</option>
+                    <option value="With Grade">With Grade</option>
+                </select>
             </div>
 
             <div className="bg-white rounded-md shadow overflow-hidden">
@@ -162,8 +195,8 @@ export default function PublishedResultsPage() {
                                         <div className="flex items-center gap-2">
                                             {result.position && (
                                                 <span className={`px-2 py-0.5 rounded text-xs font-bold ${result.position === 1 ? 'bg-yellow-100 text-yellow-800' :
-                                                        result.position === 2 ? 'bg-gray-100 text-gray-800' :
-                                                            'bg-orange-100 text-orange-800'
+                                                    result.position === 2 ? 'bg-gray-100 text-gray-800' :
+                                                        'bg-orange-100 text-orange-800'
                                                     }`}>
                                                     {result.position === 1 ? '1st' : result.position === 2 ? '2nd' : '3rd'}
                                                 </span>
