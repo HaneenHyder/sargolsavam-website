@@ -124,14 +124,7 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                     <FileText size={20} />
                     Audit Logs
                 </Link>
-                <Link
-                    href="/admin/judges-notification"
-                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                >
-                    <Bell size={20} />
-                    Judges Schedule
-                </Link>
+
                 {/* Appeals Hidden Temporarily
                 <Link
                     href="/admin/appeals"
