@@ -153,6 +153,14 @@ try {
     console.error('❌ Error loading payments routes:', error.message);
 }
 
+try {
+    const judgesRoutes = require('./src/routes/judges');
+    app.use('/api/judges', judgesRoutes);
+    console.log('✅ Judges routes loaded');
+} catch (error) {
+    console.error('❌ Error loading judges routes:', error.message);
+}
+
 
 
 // Public Analytics Route
