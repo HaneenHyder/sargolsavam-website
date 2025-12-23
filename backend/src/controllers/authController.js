@@ -20,8 +20,8 @@ exports.login = async (req, res) => {
             if (rows.length === 0) {
                 // Log failed login attempt
                 await db.query(
-                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason) VALUES ($1, $2, $3, $4, $5, $6)',
-                    [null, username, ipAddress, userAgent, false, 'User not found']
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [null, username, ipAddress, userAgent, false, 'User not found', 'admin', username]
                 );
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
@@ -31,16 +31,16 @@ exports.login = async (req, res) => {
             if (!validPassword) {
                 // Log failed login attempt
                 await db.query(
-                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason) VALUES ($1, $2, $3, $4, $5, $6)',
-                    [admin.id, username, ipAddress, userAgent, false, 'Invalid password']
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [admin.id, username, ipAddress, userAgent, false, 'Invalid password', 'admin', String(admin.id)]
                 );
                 return res.status(401).json({ error: 'Invalid credentials' });
             }
 
             // Log successful login
             await db.query(
-                'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success) VALUES ($1, $2, $3, $4, $5)',
-                [admin.id, username, ipAddress, userAgent, true]
+                'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+                [admin.id, username, ipAddress, userAgent, true, 'admin', String(admin.id)]
             );
 
             const token = jwt.sign({ id: admin.id, role: admin.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
@@ -60,14 +60,39 @@ exports.login = async (req, res) => {
 
         if (type === 'team') {
             const { rows } = await db.query('SELECT * FROM teams WHERE code = $1', [code]);
-            if (rows.length === 0) return res.status(401).json({ error: 'Invalid team code' });
+            if (rows.length === 0) {
+                // Log failed team login
+                await db.query(
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [null, code, ipAddress, userAgent, false, 'Team not found', 'team', code]
+                );
+                return res.status(401).json({ error: 'Invalid team code' });
+            }
 
             const team = rows[0];
             // If password is provided, verify it. If not (legacy), maybe allow? No, let's enforce password.
-            if (!password) return res.status(400).json({ error: 'Password required' });
+            if (!password) {
+                await db.query(
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [null, code, ipAddress, userAgent, false, 'Password required', 'team', code]
+                );
+                return res.status(400).json({ error: 'Password required' });
+            }
 
             const validPassword = await bcrypt.compare(password.trim(), team.password_hash);
-            if (!validPassword) return res.status(401).json({ error: 'Invalid password' });
+            if (!validPassword) {
+                await db.query(
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [null, code, ipAddress, userAgent, false, 'Invalid password', 'team', code]
+                );
+                return res.status(401).json({ error: 'Invalid password' });
+            }
+
+            // Log successful team login
+            await db.query(
+                'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+                [null, code, ipAddress, userAgent, true, 'team', code]
+            );
 
             const token = jwt.sign({ code: team.code, role: 'team' }, process.env.JWT_SECRET, { expiresIn: '1d' });
             res.cookie('token', token, {
@@ -83,13 +108,29 @@ exports.login = async (req, res) => {
         if (type === 'candidate') {
             // code is chest_no
             const { rows } = await db.query('SELECT * FROM candidates WHERE chest_no = $1', [code]);
-            if (rows.length === 0) return res.status(401).json({ error: 'Invalid chest number' });
+            if (rows.length === 0) {
+                await db.query(
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [null, code, ipAddress, userAgent, false, 'Candidate not found', 'candidate', code]
+                );
+                return res.status(401).json({ error: 'Invalid chest number' });
+            }
 
             // Verify Name (Case insensitive check)
             const candidate = rows[0];
             if (candidate.name.trim().toLowerCase() !== username.trim().toLowerCase()) {
+                await db.query(
+                    'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, failure_reason, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+                    [null, `${code} (${username})`, ipAddress, userAgent, false, 'Name mismatch', 'candidate', code]
+                );
                 return res.status(401).json({ error: 'Invalid name for this chest number' });
             }
+
+            // Log successful candidate login
+            await db.query(
+                'INSERT INTO login_logs (admin_id, username, ip_address, user_agent, success, login_type, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+                [null, `${code} (${candidate.name})`, ipAddress, userAgent, true, 'candidate', code]
+            );
 
             const token = jwt.sign({ id: candidate.id, chest_no: candidate.chest_no, role: 'candidate' }, process.env.JWT_SECRET, { expiresIn: '1d' });
             res.cookie('token', token, {

@@ -83,6 +83,14 @@ async function runMigration() {
             console.log('Create login_logs table migration successful!');
         }
 
+        const addLoginTypeSqlPath = path.join(__dirname, 'migrations', 'add_login_type.sql');
+        if (fs.existsSync(addLoginTypeSqlPath)) {
+            const addLoginTypeSql = fs.readFileSync(addLoginTypeSqlPath, 'utf8');
+            console.log('Running add login_type column migration...');
+            await client.query(addLoginTypeSql);
+            console.log('Add login_type column migration successful!');
+        }
+
 
 
         // Create Admin User if not exists

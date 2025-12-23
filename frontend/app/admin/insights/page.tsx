@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { BarChart, Users, Activity, Globe, Monitor, Chrome, Calendar, Eye, Shield } from 'lucide-react';
+import { Users, Activity, Globe, Monitor, Chrome, Calendar, Eye, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ViewerStats {
@@ -24,6 +24,8 @@ interface LoginLog {
     user_agent: string;
     success: boolean;
     failure_reason: string | null;
+    login_type: string;
+    user_id: string;
     created_at: string;
 }
 
@@ -32,35 +34,22 @@ export default function InsightsPage() {
     const [loginLogs, setLoginLogs] = useState<LoginLog[]>([]);
     const [loading, setLoading] = useState(true);
     const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+    const [loginTypeFilter, setLoginTypeFilter] = useState<string>('all');
 
     const fetchData = async () => {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
             const token = localStorage.getItem('token');
 
-            // Fetch viewer stats
             const statsRes = await fetch(`${API_URL}/api/admin/insights/viewers`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
+            if (statsRes.ok) setStats(await statsRes.json());
 
-            if (statsRes.ok) {
-                const statsData = await statsRes.json();
-                setStats(statsData);
-            }
-
-            // Fetch login logs
-            const logsRes = await fetch(`${API_URL}/api/admin/insights/logins?limit=50`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+            const logsRes = await fetch(`${API_URL}/api/admin/insights/logins?limit=100`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-
-            if (logsRes.ok) {
-                const logsData = await logsRes.json();
-                setLoginLogs(logsData);
-            }
+            if (logsRes.ok) setLoginLogs(await logsRes.json());
 
             setLastUpdated(new Date());
         } catch (err) {
@@ -73,7 +62,7 @@ export default function InsightsPage() {
 
     useEffect(() => {
         fetchData();
-        const interval = setInterval(fetchData, 30000); // Refresh every 30 seconds
+        const interval = setInterval(fetchData, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -88,29 +77,26 @@ export default function InsightsPage() {
         );
     }
 
+    const filteredLogs = loginLogs.filter(log => loginTypeFilter === 'all' || log.login_type === loginTypeFilter);
+
     return (
         <div className="space-y-8">
-            {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-                        <BarChart className="h-8 w-8 text-primary" />
-                        Insights & Analytics
+                        <Globe className="h-8 w-8 text-primary" />
+                        Global Website Insights
                     </h1>
                     <p className="text-gray-500 text-sm mt-1">
-                        Monitor website traffic and authentication activity.
+                        Monitor website traffic, visitor analytics, and all authentication activity.
                         {lastUpdated && <span className="ml-2 text-xs opacity-75">Last updated: {lastUpdated.toLocaleTimeString()}</span>}
                     </p>
                 </div>
-                <button
-                    onClick={fetchData}
-                    className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm"
-                >
+                <button onClick={fetchData} className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors text-sm">
                     Refresh
                 </button>
             </div>
 
-            {/* Overview Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -122,7 +108,6 @@ export default function InsightsPage() {
                         <p className="text-xs text-gray-500 mt-1">All time page views</p>
                     </CardContent>
                 </Card>
-
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Unique Visitors</CardTitle>
@@ -133,7 +118,6 @@ export default function InsightsPage() {
                         <p className="text-xs text-gray-500 mt-1">Unique IP addresses</p>
                     </CardContent>
                 </Card>
-
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Sessions</CardTitle>
@@ -144,7 +128,6 @@ export default function InsightsPage() {
                         <p className="text-xs text-gray-500 mt-1">Unique sessions</p>
                     </CardContent>
                 </Card>
-
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Recent Views</CardTitle>
@@ -157,9 +140,7 @@ export default function InsightsPage() {
                 </Card>
             </div>
 
-            {/* Viewer Specifications */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Device Types */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
@@ -175,14 +156,10 @@ export default function InsightsPage() {
                                     <span className="text-sm font-semibold text-primary">{parseInt(device.count).toLocaleString()}</span>
                                 </div>
                             ))}
-                            {(!stats?.deviceStats || stats.deviceStats.length === 0) && (
-                                <p className="text-sm text-gray-400">No data yet</p>
-                            )}
+                            {(!stats?.deviceStats || stats.deviceStats.length === 0) && <p className="text-sm text-gray-400">No data yet</p>}
                         </div>
                     </CardContent>
                 </Card>
-
-                {/* Browsers */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
@@ -198,14 +175,10 @@ export default function InsightsPage() {
                                     <span className="text-sm font-semibold text-primary">{parseInt(browser.count).toLocaleString()}</span>
                                 </div>
                             ))}
-                            {(!stats?.browserStats || stats.browserStats.length === 0) && (
-                                <p className="text-sm text-gray-400">No data yet</p>
-                            )}
+                            {(!stats?.browserStats || stats.browserStats.length === 0) && <p className="text-sm text-gray-400">No data yet</p>}
                         </div>
                     </CardContent>
                 </Card>
-
-                {/* Operating Systems */}
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2">
@@ -221,15 +194,12 @@ export default function InsightsPage() {
                                     <span className="text-sm font-semibold text-primary">{parseInt(os.count).toLocaleString()}</span>
                                 </div>
                             ))}
-                            {(!stats?.osStats || stats.osStats.length === 0) && (
-                                <p className="text-sm text-gray-400">No data yet</p>
-                            )}
+                            {(!stats?.osStats || stats.osStats.length === 0) && <p className="text-sm text-gray-400">No data yet</p>}
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
-            {/* Popular Pages */}
             <Card>
                 <CardHeader>
                     <CardTitle className="text-lg">Popular Pages</CardTitle>
@@ -251,9 +221,7 @@ export default function InsightsPage() {
                                     </tr>
                                 ))}
                                 {(!stats?.popularPages || stats.popularPages.length === 0) && (
-                                    <tr>
-                                        <td colSpan={2} className="py-4 text-center text-sm text-gray-400">No data yet</td>
-                                    </tr>
+                                    <tr><td colSpan={2} className="py-4 text-center text-sm text-gray-400">No data yet</td></tr>
                                 )}
                             </tbody>
                         </table>
@@ -261,13 +229,24 @@ export default function InsightsPage() {
                 </CardContent>
             </Card>
 
-            {/* Login Logs */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                        <Shield className="h-5 w-5" />
-                        Login Logs (Last 50)
-                    </CardTitle>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                            <Shield className="h-5 w-5" />
+                            Login Logs (All Types - Last 100)
+                        </CardTitle>
+                        <select
+                            value={loginTypeFilter}
+                            onChange={(e) => setLoginTypeFilter(e.target.value)}
+                            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                            <option value="all">All Types</option>
+                            <option value="admin">Admin Only</option>
+                            <option value="team">Team Only</option>
+                            <option value="candidate">Candidate Only</option>
+                        </select>
+                    </div>
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
@@ -275,17 +254,29 @@ export default function InsightsPage() {
                             <thead>
                                 <tr className="border-b">
                                     <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Date & Time</th>
-                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Username</th>
+                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Type</th>
+                                    <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Username/ID</th>
                                     <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">IP Address</th>
                                     <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Status</th>
                                     <th className="text-left py-2 px-4 text-sm font-semibold text-gray-700">Reason</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {loginLogs.map((log) => (
+                                {filteredLogs.map((log) => (
                                     <tr key={log.id} className="border-b hover:bg-gray-50">
                                         <td className="py-2 px-4 text-sm text-gray-700 whitespace-nowrap">
                                             {new Date(log.created_at).toLocaleString()}
+                                        </td>
+                                        <td className="py-2 px-4 text-sm">
+                                            {log.login_type === 'admin' && (
+                                                <span className="px-2 py-1 rounded bg-purple-100 text-purple-800 font-medium text-xs uppercase">Admin</span>
+                                            )}
+                                            {log.login_type === 'team' && (
+                                                <span className="px-2 py-1 rounded bg-blue-100 text-blue-800 font-medium text-xs uppercase">Team</span>
+                                            )}
+                                            {log.login_type === 'candidate' && (
+                                                <span className="px-2 py-1 rounded bg-yellow-100 text-yellow-800 font-medium text-xs uppercase">Candidate</span>
+                                            )}
                                         </td>
                                         <td className="py-2 px-4 text-sm text-gray-700">{log.username}</td>
                                         <td className="py-2 px-4 text-sm text-gray-600 font-mono">{log.ip_address}</td>
@@ -299,10 +290,8 @@ export default function InsightsPage() {
                                         <td className="py-2 px-4 text-sm text-gray-600">{log.failure_reason || '-'}</td>
                                     </tr>
                                 ))}
-                                {loginLogs.length === 0 && (
-                                    <tr>
-                                        <td colSpan={5} className="py-4 text-center text-sm text-gray-400">No login logs yet</td>
-                                    </tr>
+                                {filteredLogs.length === 0 && (
+                                    <tr><td colSpan={6} className="py-4 text-center text-sm text-gray-400">No login logs yet</td></tr>
                                 )}
                             </tbody>
                         </table>
