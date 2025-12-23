@@ -162,16 +162,6 @@ try {
 }
 
 
-
-// Public Analytics Route
-try {
-    const analyticsController = require('./src/controllers/analyticsController');
-    app.post('/api/analytics', analyticsController.trackView);
-    console.log('✅ Analytics route loaded');
-} catch (error) {
-    console.error('❌ Error loading analytics controller:', error.message);
-}
-
 // ============================================
 // ERROR HANDLING MIDDLEWARE
 // ============================================

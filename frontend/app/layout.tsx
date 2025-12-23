@@ -6,7 +6,7 @@ import MainWrapper from "@/components/MainWrapper";
 import FooterWrapper from "@/components/FooterWrapper";
 import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthContext";
-import AnalyticsTracker from "@/components/AnalyticsTracker";
+
 
 import SmoothScroll from "@/components/SmoothScroll";
 
@@ -37,7 +37,7 @@ export default function RootLayout({
             <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50`}>
                 <SmoothScroll />
                 <AuthProvider>
-                    <AnalyticsTracker />
+
                     <HeaderWrapper />
                     <MainWrapper>
                         {children}

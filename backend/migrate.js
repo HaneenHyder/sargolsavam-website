@@ -67,13 +67,7 @@ async function runMigration() {
             console.log('Add payment columns migration successful!');
         }
 
-        const createAnalyticsSqlPath = path.join(__dirname, 'migrations', 'create_analytics_table.sql');
-        if (fs.existsSync(createAnalyticsSqlPath)) {
-            const createAnalyticsSql = fs.readFileSync(createAnalyticsSqlPath, 'utf8');
-            console.log('Running create analytics table migration...');
-            await client.query(createAnalyticsSql);
-            console.log('Create analytics table migration successful!');
-        }
+
 
         // Create Admin User if not exists
         const bcrypt = require('bcryptjs');

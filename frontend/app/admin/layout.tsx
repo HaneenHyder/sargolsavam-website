@@ -77,14 +77,6 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                     Dashboard
                 </Link>
                 <Link
-                    href="/admin/analytics"
-                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                >
-                    <Trophy size={20} />
-                    Analytics
-                </Link>
-                <Link
                     href="/admin/events"
                     className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -115,14 +107,6 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                 >
                     <Upload size={20} />
                     Import Data
-                </Link>
-                <Link
-                    href="/admin/audit-logs"
-                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                >
-                    <FileText size={20} />
-                    Audit Logs
                 </Link>
                 <Link
                     href="/admin/judges-notification"
