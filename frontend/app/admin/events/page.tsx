@@ -139,8 +139,7 @@ export default function UnifiedEventManagement() {
     const [bulkAbsentSelection, setBulkAbsentSelection] = useState<string[]>([]);
 
     useEffect(() => {
-        fetchEvents();
-        fetchCandidates();
+        fetchData();
         fetchPublishedResults();
     }, []);
 
