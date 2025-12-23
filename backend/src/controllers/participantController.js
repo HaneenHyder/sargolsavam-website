@@ -42,30 +42,66 @@ exports.getParticipantsByEvent = async (req, res) => {
 
 exports.addParticipant = async (req, res) => {
     const { eventId } = req.params;
-    const { candidates } = req.body; // Expecting array of { candidate_id, team_code }
-
-    if (!candidates || !Array.isArray(candidates)) {
-        return res.status(400).json({ error: 'Invalid input, expected array of candidates' });
-    }
-
-    if (candidates.length === 0) {
-        return res.status(200).json([]);
-    }
+    let { candidates, chest_numbers } = req.body;
 
     const client = await db.pool.connect();
     try {
         await client.query('BEGIN');
 
-        // Construct bulk insert values
-        const values = [];
-        const placeholders = candidates.map((_, i) =>
-            `($1, $${i * 2 + 2}, $${i * 2 + 3}, 'Pending')`
-        ).join(',');
+        // Resolve chest_numbers to candidates if provided
+        if (chest_numbers && Array.isArray(chest_numbers) && chest_numbers.length > 0) {
+            console.log(`[BulkAdd] Resolving ${chest_numbers.length} chest numbers`);
 
-        values.push(eventId);
+            // Find candidates by chest_no
+            const { rows: foundCandidates } = await client.query(
+                'SELECT id, chest_no, team_code FROM candidates WHERE chest_no = ANY($1)',
+                [chest_numbers]
+            );
+
+            const foundChestNos = foundCandidates.map(c => c.chest_no);
+            const missingChestNos = chest_numbers.filter(cn => !foundChestNos.includes(cn));
+
+            if (!candidates) candidates = [];
+
+            foundCandidates.forEach(cand => {
+                if (!candidates.some(c => c.candidate_id === cand.id)) {
+                    candidates.push({
+                        candidate_id: cand.id,
+                        team_code: cand.team_code
+                    });
+                }
+            });
+
+            if (missingChestNos.length > 0) {
+                res.locals.missingChestNos = missingChestNos;
+            }
+        }
+
+        if (!candidates || !Array.isArray(candidates)) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ error: 'Invalid input, expected array of candidates' });
+        }
+
+        if (candidates.length === 0) {
+            await client.query('ROLLBACK');
+            if (res.locals && res.locals.missingChestNos) {
+                return res.json({ added: [], notFound: res.locals.missingChestNos });
+            }
+            return res.status(200).json([]);
+        }
+
+        console.log(`[BulkAdd] Processing ${candidates.length} candidates for event ${eventId}`);
+
+        // Construct bulk insert values
+        const values = [eventId];
+
         candidates.forEach(cand => {
             values.push(cand.candidate_id, cand.team_code);
         });
+
+        const placeholders = candidates.map((_, i) =>
+            `($1, $${i * 2 + 2}, $${i * 2 + 3}, 'Pending')`
+        ).join(',');
 
         const query = `
             INSERT INTO participants (event_id, candidate_id, team_code, status)
@@ -74,12 +110,24 @@ exports.addParticipant = async (req, res) => {
             RETURNING *
         `;
 
+        console.log(`[BulkAdd] Query: ${query}`);
+
         const { rows } = await client.query(query, values);
 
         await client.query('COMMIT');
-        res.status(201).json(rows);
+
+        if (chest_numbers) {
+            res.status(201).json({
+                added: rows,
+                notFound: res.locals.missingChestNos || [],
+                totalRequested: chest_numbers.length
+            });
+        } else {
+            res.status(201).json(rows);
+        }
     } catch (err) {
         await client.query('ROLLBACK');
+        console.error("Error adding participants:", err);
         res.status(500).json({ error: err.message });
     } finally {
         client.release();
