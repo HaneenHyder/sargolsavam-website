@@ -32,6 +32,15 @@ interface Result {
     team_name: string | null;
 }
 
+interface AnalyticsData {
+    id: string;
+    chest_no: string;
+    name: string;
+    team_code: string;
+    category: string;
+    event_count: string; // Postgres returns count as string
+}
+
 interface Candidate {
     id: string; // UUID
     chest_no: string;
@@ -44,6 +53,210 @@ interface Team {
     id: number;
     code: string;
     name: string;
+}
+
+// --- Participation Analytics Component ---
+
+function ParticipationAnalyticsView({ analyticsData }: { analyticsData: AnalyticsData[] }) {
+    const [zeroEventCandidates, setZeroEventCandidates] = useState<AnalyticsData[]>([]);
+    const [teamStats, setTeamStats] = useState<{ team: string; total: number; active: number; percentage: number }[]>([]);
+    const [categoryStats, setCategoryStats] = useState<{ category: string; total: number; active: number; percentage: number }[]>([]);
+    const [overallStats, setOverallStats] = useState({ total: 0, active: 0, percentage: 0 });
+
+    useEffect(() => {
+        if (!analyticsData.length) return;
+
+        // Zero Event Candidates
+        const zeroEvents = analyticsData.filter(d => parseInt(d.event_count) === 0);
+        setZeroEventCandidates(zeroEvents);
+
+        // Overall Stats
+        const totalCandidates = analyticsData.length;
+        const activeCandidates = analyticsData.filter(d => parseInt(d.event_count) > 0).length;
+        setOverallStats({
+            total: totalCandidates,
+            active: activeCandidates,
+            percentage: totalCandidates > 0 ? (activeCandidates / totalCandidates) * 100 : 0
+        });
+
+        // Team Stats
+        const teamMap = new Map<string, { total: number; active: number }>();
+        analyticsData.forEach(d => {
+            if (!teamMap.has(d.team_code)) teamMap.set(d.team_code, { total: 0, active: 0 });
+            const team = teamMap.get(d.team_code)!;
+            team.total++;
+            if (parseInt(d.event_count) > 0) team.active++;
+        });
+
+        const tStats = Array.from(teamMap.entries()).map(([team, stats]) => ({
+            team,
+            total: stats.total,
+            active: stats.active,
+            percentage: stats.total > 0 ? (stats.active / stats.total) * 100 : 0
+        })).sort((a, b) => b.percentage - a.percentage);
+        setTeamStats(tStats);
+
+        // Category Stats
+        const catMap = new Map<string, { total: number; active: number }>();
+        analyticsData.forEach(d => {
+            if (!catMap.has(d.category)) catMap.set(d.category, { total: 0, active: 0 });
+            const cat = catMap.get(d.category)!;
+            cat.total++;
+            if (parseInt(d.event_count) > 0) cat.active++;
+        });
+
+        const cStats = Array.from(catMap.entries()).map(([category, stats]) => ({
+            category,
+            total: stats.total,
+            active: stats.active,
+            percentage: stats.total > 0 ? (stats.active / stats.total) * 100 : 0
+        })).sort((a, b) => b.percentage - a.percentage);
+        setCategoryStats(cStats);
+
+    }, [analyticsData]);
+
+    return (
+        <div className="space-y-6">
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-700">Overall Participation</h3>
+                    <div className="mt-4 flex items-baseline gap-2">
+                        <span className="text-4xl font-bold text-primary">{overallStats.percentage.toFixed(1)}%</span>
+                        <span className="text-sm text-gray-500">of candidates</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">
+                        {overallStats.active} active out of {overallStats.total} total
+                    </p>
+                </Card>
+                <Card className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-700">Candidates with 0 Events</h3>
+                    <div className="mt-4">
+                        <span className="text-4xl font-bold text-red-500">{zeroEventCandidates.length}</span>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-2">
+                        Students registered but not participating
+                    </p>
+                </Card>
+                <Card className="p-6">
+                    <h3 className="text-lg font-semibold text-gray-700">Top Team Participation</h3>
+                    <div className="mt-4">
+                        {teamStats.length > 0 && (
+                            <>
+                                <span className="text-4xl font-bold text-green-600">{teamStats[0].percentage.toFixed(1)}%</span>
+                                <span className="ml-2 text-lg font-medium text-gray-700">{teamStats[0].team}</span>
+                            </>
+                        )}
+                    </div>
+                </Card>
+            </div>
+
+            {/* Team Analysis */}
+            <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Team Participation Breakdown</h3>
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Team</TableHead>
+                                <TableHead className="text-right">Total Members</TableHead>
+                                <TableHead className="text-right">Active</TableHead>
+                                <TableHead className="text-right">Participation %</TableHead>
+                                <TableHead className="w-[200px]">Progress</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {teamStats.map((stat, idx) => (
+                                <TableRow key={idx}>
+                                    <TableCell className="font-medium">{stat.team}</TableCell>
+                                    <TableCell className="text-right">{stat.total}</TableCell>
+                                    <TableCell className="text-right">{stat.active}</TableCell>
+                                    <TableCell className="text-right font-bold">{stat.percentage.toFixed(1)}%</TableCell>
+                                    <TableCell>
+                                        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full ${stat.percentage >= 80 ? 'bg-green-500' : stat.percentage >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                                style={{ width: `${stat.percentage}%` }}
+                                            />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </Card>
+
+            {/* Category Analysis */}
+            <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4">Category Participation Breakdown</h3>
+                <div className="overflow-x-auto">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Category</TableHead>
+                                <TableHead className="text-right">Total candidates</TableHead>
+                                <TableHead className="text-right">Active</TableHead>
+                                <TableHead className="text-right">Participation %</TableHead>
+                                <TableHead className="w-[200px]">Progress</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {categoryStats.map((stat, idx) => (
+                                <TableRow key={idx}>
+                                    <TableCell className="font-medium">{formatCategory(stat.category)}</TableCell>
+                                    <TableCell className="text-right">{stat.total}</TableCell>
+                                    <TableCell className="text-right">{stat.active}</TableCell>
+                                    <TableCell className="text-right font-bold">{stat.percentage.toFixed(1)}%</TableCell>
+                                    <TableCell>
+                                        <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                                            <div
+                                                className={`h-full ${stat.percentage >= 80 ? 'bg-blue-500' : stat.percentage >= 50 ? 'bg-indigo-500' : 'bg-purple-500'}`}
+                                                style={{ width: `${stat.percentage}%` }}
+                                            />
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </div>
+            </Card>
+
+            {/* Zero Events List */}
+            <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-4 text-red-600">Candidates with Zero Participation</h3>
+                <div className="max-h-[400px] overflow-y-auto border rounded-md">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Chest No</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Team</TableHead>
+                                <TableHead>Category</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {zeroEventCandidates.length > 0 ? zeroEventCandidates.map((c, idx) => (
+                                <TableRow key={idx}>
+                                    <TableCell className="font-mono">{c.chest_no}</TableCell>
+                                    <TableCell>{c.name}</TableCell>
+                                    <TableCell><Badge variant="outline">{c.team_code}</Badge></TableCell>
+                                    <TableCell>{formatCategory(c.category)}</TableCell>
+                                </TableRow>
+                            )) : (
+                                <TableRow>
+                                    <TableCell colSpan={4} className="text-center py-8 text-green-600 font-medium">
+                                        Amazing! Every registered candidate has participated in at least one event.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </div>
+            </Card>
+        </div>
+    );
 }
 
 // --- Combined Analytics Component ---
@@ -846,6 +1059,7 @@ export default function LeaderboardPage() {
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [detailedStats, setDetailedStats] = useState<any[]>([]);
+    const [analyticsData, setAnalyticsData] = useState<AnalyticsData[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -866,14 +1080,15 @@ export default function LeaderboardPage() {
             const token = localStorage.getItem('token');
             const headers: HeadersInit = token ? { 'Authorization': `Bearer ${token}` } : {};
 
-            const [resultsRes, candidatesRes, teamsRes, detailedRes] = await Promise.all([
+            const [resultsRes, candidatesRes, teamsRes, detailedRes, analyticsRes] = await Promise.all([
                 fetch(`${API_URL}/api/results`, { headers }).then(res => res.json()),
                 fetch(`${API_URL}/api/candidates?all=true`, { headers }).then(res => res.json()),
                 fetch(`${API_URL}/api/teams`, { headers }).then(res => res.json()),
                 fetch(`${API_URL}/api/admin/leaderboard/detailed`, {
                     headers,
                     credentials: 'include'
-                }).then(res => res.json())
+                }).then(res => res.json()),
+                fetch(`${API_URL}/api/admin/leaderboard/analytics`, { headers }).then(res => res.json())
             ]);
 
             // Handle new paginated API response structure
@@ -884,7 +1099,8 @@ export default function LeaderboardPage() {
                 candidatesRaw: candidatesRes?.data ? `Paginated: ${candidatesRes.data.length} items` : (Array.isArray(candidatesRes) ? `Array: ${candidatesRes.length}` : 'Invalid format'),
                 candidatesExtracted: candidatesData.length,
                 teams: Array.isArray(teamsRes) ? teamsRes.length : 'Not Array',
-                detailed: Array.isArray(detailedRes) ? detailedRes.length : 'Not Array'
+                detailed: Array.isArray(detailedRes) ? detailedRes.length : 'Not Array',
+                analytics: Array.isArray(analyticsRes) ? analyticsRes.length : 'Not Array'
             });
 
             const publishedResults = Array.isArray(resultsRes)
@@ -897,6 +1113,10 @@ export default function LeaderboardPage() {
 
             if (Array.isArray(detailedRes)) {
                 setDetailedStats(detailedRes);
+            }
+
+            if (Array.isArray(analyticsRes)) {
+                setAnalyticsData(analyticsRes);
             }
 
         } catch (error) {
@@ -917,6 +1137,7 @@ export default function LeaderboardPage() {
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="teams">Team Performance</TabsTrigger>
                     <TabsTrigger value="candidates">Candidate Performance</TabsTrigger>
+                    <TabsTrigger value="analytics">Participation Analytics</TabsTrigger>
                 </TabsList>
                 <TabsContent value="overview">
                     <CombinedAnalyticsView results={results} candidates={candidates} />
@@ -926,6 +1147,9 @@ export default function LeaderboardPage() {
                 </TabsContent>
                 <TabsContent value="candidates">
                     <CandidatePerformanceTable results={results} candidates={candidates} detailedData={detailedStats} />
+                </TabsContent>
+                <TabsContent value="analytics">
+                    <ParticipationAnalyticsView analyticsData={analyticsData} />
                 </TabsContent>
             </Tabs>
         </div>

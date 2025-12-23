@@ -33,13 +33,18 @@ export default function PublishedResultsPage() {
 
     const fetchResults = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_BASE_URL}/api` || 'http://localhost:5000/api';
+            // Use consistent API URL logic
+            const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+            const API_URL = `${BASE_URL}/api`;
+
+            console.log('Fetching published results from:', `${API_URL}/results/published`);
+
             const response = await fetch(`${API_URL}/results/published`);
             if (response.ok) {
                 const data = await response.json();
                 setResults(data);
             } else {
-                console.error('Failed to fetch results');
+                console.error('Failed to fetch results:', response.status, response.statusText);
             }
         } catch (error) {
             console.error('Error fetching results:', error);
@@ -63,7 +68,8 @@ export default function PublishedResultsPage() {
 
     const handleSave = async (id: string) => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_BASE_URL}/api` || 'http://localhost:5000/api';
+            const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000';
+            const API_URL = `${BASE_URL}/api`;
             const response = await fetch(`${API_URL}/results/${id}`, {
                 method: 'PUT',
                 headers: {

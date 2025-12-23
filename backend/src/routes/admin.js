@@ -7,6 +7,7 @@ const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
 router.get('/stats', verifyToken, isAdmin, adminController.getDashboardStats);
 router.get('/leaderboard', verifyToken, isAdmin, adminController.getLeaderboard);
 router.get('/leaderboard/detailed', verifyToken, isAdmin, require('../controllers/leaderboardController').getDetailedLeaderboard);
+router.get('/leaderboard/analytics', verifyToken, isAdmin, require('../controllers/leaderboardController').getParticipationAnalytics);
 
 
 router.get('/export/team/:code', verifyToken, isAdmin, adminController.exportTeam);

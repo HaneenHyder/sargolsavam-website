@@ -35,3 +35,26 @@ exports.getDetailedLeaderboard = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getParticipationAnalytics = async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                c.id,
+                c.chest_no,
+                c.name,
+                c.team_code,
+                c.category,
+                COUNT(p.id) as event_count
+            FROM candidates c
+            LEFT JOIN participants p ON c.id = p.candidate_id
+            GROUP BY c.id, c.chest_no, c.name, c.team_code, c.category
+            ORDER BY c.team_code, c.chest_no
+        `;
+
+        const { rows } = await db.query(query);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
