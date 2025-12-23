@@ -143,6 +143,7 @@ export default function UnifiedEventManagement() {
     const [bulkChestNos, setBulkChestNos] = useState("");
 
     useEffect(() => {
+        console.log("UnifiedEventManagement: Mounted");
         fetchData();
         fetchPublishedResults();
     }, []);
