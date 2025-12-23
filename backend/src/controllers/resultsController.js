@@ -117,3 +117,50 @@ exports.deleteResult = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+exports.getPublishedResults = async (req, res) => {
+    try {
+        const { rows } = await db.query(`
+            SELECT p.*, e.name as event_name, e.item_type, e.event_type, e.category, e.status as event_status, c.name as candidate_name, c.chest_no, t.name as team_name
+            FROM participants p
+            JOIN events e ON p.event_id = e.id
+            LEFT JOIN candidates c ON p.candidate_id = c.id
+            LEFT JOIN teams t ON p.team_code = t.code
+            WHERE e.status = 'Declared' AND (p.position IS NOT NULL OR p.grade IS NOT NULL)
+            ORDER BY e.name, p.position
+        `);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+exports.updateResult = async (req, res) => {
+    const { id } = req.params; // participant id
+    const { position, grade, points } = req.body;
+
+    try {
+        // Calculate status based on position
+        let status = 'Pending';
+        if (position === 'Absent') {
+            status = 'Absent';
+        } else if (position || grade) {
+            status = 'Winner'; // Or just 'Participated'? Usually 'Winner' if they have a position/grade in this context
+        }
+
+        const posVal = (position === 'Absent' || !position) ? null : parseInt(position);
+
+        const { rows } = await db.query(`
+            UPDATE participants 
+            SET position = $1, grade = $2, points = $3, status = $4
+            WHERE id = $5
+            RETURNING *
+        `, [posVal, grade, points, status, id]);
+
+        if (rows.length === 0) return res.status(404).json({ error: 'Result not found' });
+
+        res.json(rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};

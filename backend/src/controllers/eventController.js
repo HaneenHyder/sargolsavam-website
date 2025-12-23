@@ -74,12 +74,27 @@ exports.updateEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
     const { id } = req.params;
+    const client = await db.pool.connect();
     try {
-        const { rowCount } = await db.query('DELETE FROM events WHERE id = $1', [id]);
-        if (rowCount === 0) return res.status(404).json({ error: 'Event not found' });
+        await client.query('BEGIN');
+
+        // Delete participants first due to FK constraint
+        await client.query('DELETE FROM participants WHERE event_id = $1', [id]);
+
+        const { rowCount } = await client.query('DELETE FROM events WHERE id = $1', [id]);
+
+        if (rowCount === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        await client.query('COMMIT');
         res.json({ message: 'Event deleted successfully' });
     } catch (err) {
+        await client.query('ROLLBACK');
         res.status(500).json({ error: err.message });
+    } finally {
+        client.release();
     }
 };
 

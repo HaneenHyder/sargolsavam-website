@@ -103,7 +103,7 @@ export default function JudgesNotificationPage() {
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6">
                 {filteredJudges.map((judge) => (
                     <Card key={judge.id} className="flex flex-col">
                         <CardHeader className="pb-2">

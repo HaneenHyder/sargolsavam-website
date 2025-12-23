@@ -132,6 +132,14 @@ function NavContent({ setIsMobileMenuOpen, logout }: { setIsMobileMenuOpen: (ope
                     <Bell size={20} />
                     Judges Notification
                 </Link>
+                <Link
+                    href="/admin/published-results"
+                    className="flex items-center gap-3 px-4 py-2 rounded-md hover:bg-gray-100 text-gray-700"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                >
+                    <Trophy size={20} />
+                    Published Results
+                </Link>
 
                 {/* Appeals Hidden Temporarily
                 <Link
