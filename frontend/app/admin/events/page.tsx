@@ -1483,8 +1483,7 @@ export default function UnifiedEventManagement() {
                                                             />
                                                         </div>
                                                         <div
-                                                            className="border rounded-lg p-4 overflow-y-auto"
-                                                            style={{ maxHeight: '300px', overscrollBehavior: 'contain' }}
+                                                            className="border rounded-lg p-4"
                                                         >
                                                             {candidates.map(candidate => {
                                                                 const isAdded = eventParticipants.some(p => p.candidate_id === candidate.id);
