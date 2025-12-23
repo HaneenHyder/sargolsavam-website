@@ -28,7 +28,8 @@ export default function JudgesNotificationPage() {
     useEffect(() => {
         const fetchJudges = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/judges`);
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || `${process.env.NEXT_PUBLIC_API_BASE_URL}/api` || 'http://localhost:5000/api';
+                const response = await fetch(`${API_URL}/judges`);
                 if (response.ok) {
                     const data = await response.json();
                     setJudges(data);
@@ -129,8 +130,8 @@ export default function JudgesNotificationPage() {
                                             <div className="text-gray-500 flex justify-between mt-1">
                                                 <span>{item.stage}</span>
                                                 <span className={`px-1.5 rounded ${item.category.includes('SNR') ? 'bg-blue-100 text-blue-700' :
-                                                        item.category.includes('JNR') ? 'bg-green-100 text-green-700' :
-                                                            'bg-gray-100 text-gray-700'
+                                                    item.category.includes('JNR') ? 'bg-green-100 text-green-700' :
+                                                        'bg-gray-100 text-gray-700'
                                                     }`}>{item.category}</span>
                                             </div>
                                             <div className="text-gray-400 mt-1 text-[10px]">{item.date} • {item.time}</div>
