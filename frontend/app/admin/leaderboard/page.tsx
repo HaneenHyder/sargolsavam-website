@@ -888,7 +888,9 @@ export default function LeaderboardPage() {
                 : [];
 
             setResults(publishedResults);
-            setCandidates(Array.isArray(candidatesRes) ? candidatesRes : []);
+            // Handle new paginated API response structure
+            const candidatesData = candidatesRes?.data ? candidatesRes.data : (Array.isArray(candidatesRes) ? candidatesRes : []);
+            setCandidates(candidatesData);
             setTeams(Array.isArray(teamsRes) ? teamsRes : []);
 
             if (Array.isArray(detailedRes)) {
