@@ -68,7 +68,7 @@ export default function UnifiedEventManagement() {
     const [eventsSearch, setEventsSearch] = useState("");
 
     const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [candidatesPagination, setCandidatesPagination] = useState({ page: 1, totalPages: 1, total: 0 });
+
     const [candidatesSearch, setCandidatesSearch] = useState("");
 
     const [loading, setLoading] = useState(true);
@@ -138,6 +138,10 @@ export default function UnifiedEventManagement() {
     const [isAbsentModalOpen, setIsAbsentModalOpen] = useState(false);
     const [bulkAbsentSelection, setBulkAbsentSelection] = useState<string[]>([]);
 
+    // Bulk Add State
+    const [showBulkInput, setShowBulkInput] = useState(false);
+    const [bulkChestNos, setBulkChestNos] = useState("");
+
     useEffect(() => {
         fetchData();
         fetchPublishedResults();
@@ -191,25 +195,20 @@ export default function UnifiedEventManagement() {
         }
     };
 
-    const fetchCandidates = async (page = candidatesPagination.page) => {
+    const fetchCandidates = async () => {
         try {
             const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-            const res = await fetch(`${API_URL}/api/candidates?page=${page}&limit=20&search=${candidatesSearch}`, { credentials: 'include' });
+            // Fetch all candidates at once
+            const res = await fetch(`${API_URL}/api/candidates?all=true&search=${candidatesSearch}`, { credentials: 'include' });
             const data = await res.json();
 
             setCandidates(data.data || []);
-            if (data.pagination) {
-                setCandidatesPagination({
-                    page: data.pagination.page,
-                    totalPages: data.pagination.totalPages,
-                    total: data.pagination.total
-                });
-            }
         } catch (error) {
             console.error("Error fetching candidates:", error);
             toast.error("Failed to load candidates");
         }
     };
+
 
     // Kept for compatibility but now essentially splits the work
     const fetchData = async () => {
@@ -477,6 +476,83 @@ export default function UnifiedEventManagement() {
 
             toast.success(`Added ${selectedParticipants.length} participant(s)`);
             setSelectedParticipants([]);
+            fetchEventParticipants(selectedEvent.id);
+        } catch (error: any) {
+            console.error("Error adding participants:", error);
+            toast.error(error.message || "Failed to add participants");
+        }
+    };
+
+    const handleAddBulk = async () => {
+        if (!selectedEvent || !bulkChestNos.trim()) return;
+
+        const chestNumbers = bulkChestNos
+            .split(/[\s,]+/)
+            .map(s => s.trim())
+            .filter(Boolean);
+
+        if (chestNumbers.length === 0) {
+            toast.error("No valid chest numbers entered");
+            return;
+        }
+
+        // Find candidates matching these chest numbers
+        const candidatesToAdd: { candidate_id: string; team_code: string }[] = [];
+        const notFound: string[] = [];
+        const alreadyAdded: string[] = [];
+
+        chestNumbers.forEach(chestNo => {
+            const candidate = candidates.find(c => c.chest_no === chestNo);
+            if (!candidate) {
+                notFound.push(chestNo);
+            } else if (eventParticipants.some(p => p.candidate_id === candidate.id)) {
+                alreadyAdded.push(chestNo);
+            } else {
+                candidatesToAdd.push({
+                    candidate_id: candidate.id,
+                    team_code: candidate.team_code
+                });
+            }
+        });
+
+        if (notFound.length > 0) {
+            toast.warning(`Chest numbers not found: ${notFound.join(", ")}`);
+        }
+        if (alreadyAdded.length > 0) {
+            toast.info(`Already added: ${alreadyAdded.join(", ")}`);
+        }
+
+        if (candidatesToAdd.length === 0) {
+            if (notFound.length === 0 && alreadyAdded.length === 0) {
+                toast.error("No valid candidates found to add");
+            }
+            return;
+        }
+
+        // Limit Check
+        if (selectedEvent.item_type === "Individual" && (eventParticipants.length + candidatesToAdd.length) > 12) {
+            toast.error(`Cannot add ${candidatesToAdd.length} candidates: Exceeds limit of 12`);
+            return;
+        }
+
+        try {
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/api/participants/event/${selectedEvent.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                credentials: 'include',
+                body: JSON.stringify({ candidates: candidatesToAdd })
+            });
+
+            if (!res.ok) throw new Error('Failed to add participants');
+
+            toast.success(`Added ${candidatesToAdd.length} participant(s)`);
+            setBulkChestNos("");
+            setShowBulkInput(false);
             fetchEventParticipants(selectedEvent.id);
         } catch (error: any) {
             console.error("Error adding participants:", error);
@@ -1395,16 +1471,55 @@ export default function UnifiedEventManagement() {
                                                 </div>
 
                                                 <div className="space-y-2">
-                                                    <div className="flex justify-between items-center">
+                                                    <div className="flex justify-between items-center bg-muted/30 p-2 rounded-lg">
                                                         <h4 className="font-medium">Add Participants</h4>
-                                                        <Button
-                                                            size="sm"
-                                                            onClick={handleAddParticipants}
-                                                            disabled={selectedParticipants.length === 0}
-                                                        >
-                                                            Add Selected ({selectedParticipants.length})
-                                                        </Button>
+                                                        <div className="flex gap-2">
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                onClick={() => setShowBulkInput(!showBulkInput)}
+                                                                title="Bulk Add via Chest Numbers"
+                                                            >
+                                                                <ListOrdered className="h-4 w-4 mr-2" />
+                                                                {showBulkInput ? "Hide Bulk" : "Bulk Add"}
+                                                            </Button>
+                                                            <Button
+                                                                size="sm"
+                                                                onClick={handleAddParticipants}
+                                                                disabled={selectedParticipants.length === 0}
+                                                            >
+                                                                Add Selected ({selectedParticipants.length})
+                                                            </Button>
+                                                        </div>
                                                     </div>
+
+                                                    {showBulkInput && (
+                                                        <div className="bg-muted/50 p-4 rounded-lg space-y-3 border border-dashed border-primary/50">
+                                                            <Label htmlFor="bulk-chest-nos" className="text-sm font-semibold text-primary">
+                                                                Bulk Add by Chest Numbers
+                                                            </Label>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Enter logic chest numbers separated by commas, spaces, or newlines (e.g., 101, 102, 105)
+                                                            </p>
+                                                            <Textarea
+                                                                id="bulk-chest-nos"
+                                                                placeholder="101, 102, 103..."
+                                                                value={bulkChestNos}
+                                                                onChange={(e) => setBulkChestNos(e.target.value)}
+                                                                className="min-h-[80px]"
+                                                            />
+                                                            <div className="flex justify-end">
+                                                                <Button 
+                                                                    size="sm" 
+                                                                    onClick={handleAddBulk}
+                                                                    disabled={!bulkChestNos.trim()}
+                                                                >
+                                                                    Verify & Add
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
                                                     <div className="mb-3">
                                                         <Input
                                                             placeholder="Search candidates via Name or Chest No..."
@@ -1437,27 +1552,7 @@ export default function UnifiedEventManagement() {
                                                         })}
                                                     </div>
 
-                                                    <div className="flex items-center justify-between pt-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => fetchCandidates(candidatesPagination.page - 1)}
-                                                            disabled={candidatesPagination.page === 1}
-                                                        >
-                                                            <ChevronLeft className="h-4 w-4" />
-                                                        </Button>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            Page {candidatesPagination.page} of {candidatesPagination.totalPages}
-                                                        </span>
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => fetchCandidates(candidatesPagination.page + 1)}
-                                                            disabled={candidatesPagination.page === candidatesPagination.totalPages}
-                                                        >
-                                                            <ChevronRight className="h-4 w-4" />
-                                                        </Button>
-                                                    </div>
+                                                </div>
                                                 </div>
                                             </>
                                         )
@@ -1775,13 +1870,13 @@ export default function UnifiedEventManagement() {
                                     )}
                                 </TabsContent>
                             </Tabs>
-                        ) : (
-                            <div className="flex items-center justify-center h-[400px] text-muted-foreground">
-                                Select an event to manage participants and publish results
-                            </div>
+                    ) : (
+                    <div className="flex items-center justify-center h-[400px] text-muted-foreground">
+                        Select an event to manage participants and publish results
+                    </div>
                         )}
-                    </Card>
-                </div>
+                </Card>
+            </div>
 
 
 
@@ -1789,7 +1884,7 @@ export default function UnifiedEventManagement() {
 
 
 
-            </div >
         </div >
+
     );
 }
