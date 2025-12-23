@@ -876,9 +876,13 @@ export default function LeaderboardPage() {
                 }).then(res => res.json())
             ]);
 
+            // Handle new paginated API response structure
+            const candidatesData = candidatesRes?.data ? candidatesRes.data : (Array.isArray(candidatesRes) ? candidatesRes : []);
+
             console.log("Fetch Data Results:", {
                 results: Array.isArray(resultsRes) ? resultsRes.length : 'Not Array',
-                candidates: Array.isArray(candidatesRes) ? candidatesRes.length : 'Not Array',
+                candidatesRaw: candidatesRes?.data ? `Paginated: ${candidatesRes.data.length} items` : (Array.isArray(candidatesRes) ? `Array: ${candidatesRes.length}` : 'Invalid format'),
+                candidatesExtracted: candidatesData.length,
                 teams: Array.isArray(teamsRes) ? teamsRes.length : 'Not Array',
                 detailed: Array.isArray(detailedRes) ? detailedRes.length : 'Not Array'
             });
@@ -888,8 +892,6 @@ export default function LeaderboardPage() {
                 : [];
 
             setResults(publishedResults);
-            // Handle new paginated API response structure
-            const candidatesData = candidatesRes?.data ? candidatesRes.data : (Array.isArray(candidatesRes) ? candidatesRes : []);
             setCandidates(candidatesData);
             setTeams(Array.isArray(teamsRes) ? teamsRes : []);
 
