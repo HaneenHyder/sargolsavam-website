@@ -168,7 +168,7 @@ export default function UnifiedEventManagement() {
 
     const fetchEvents = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
             const params = new URLSearchParams({
                 all: 'true',
                 search: eventsSearch,
@@ -190,7 +190,7 @@ export default function UnifiedEventManagement() {
 
     const fetchCandidates = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
             // Fetch all candidates at once
             const res = await fetch(`${API_URL}/api/candidates?all=true&search=${candidatesSearch}`, { credentials: 'include' });
             const data = await res.json();
@@ -211,7 +211,7 @@ export default function UnifiedEventManagement() {
 
     const fetchPublishedResults = async () => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
             const res = await fetch(`${API_URL}/api/results`, { credentials: 'include' });
             if (!res.ok) throw new Error(`Failed to fetch results: ${res.status}`);
             const data = await res.json();
@@ -224,7 +224,7 @@ export default function UnifiedEventManagement() {
 
     const fetchEventParticipants = async (eventId: string) => {
         try {
-            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+            const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
             const data = await fetch(`${API_URL}/api/participants/event/${eventId}`, { credentials: 'include' }).then(res => res.json());
             // Transform data to match interface if needed
             // Backend returns joined data, assume it matches or adapt here
@@ -797,7 +797,7 @@ export default function UnifiedEventManagement() {
             }
 
             try {
-                const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+                const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://sargolsavam.azharululoom.net';
                 const token = localStorage.getItem('token');
                 const res = await fetch(`${API_URL}/api/results/${resultId}`, {
                     method: 'DELETE',
@@ -868,6 +868,17 @@ export default function UnifiedEventManagement() {
             };
             return styles[grade as keyof typeof styles] || "bg-muted text-muted-foreground";
         };
+
+        // Safety timeout for loading state
+        useEffect(() => {
+            const timer = setTimeout(() => {
+                if (loading) {
+                    console.warn("Loading timed out, forcing render");
+                    setLoading(false);
+                }
+            }, 3000);
+            return () => clearTimeout(timer);
+        }, [loading]);
 
         if (loading) {
             return <div className="flex items-center justify-center p-8">Loading...</div>;
