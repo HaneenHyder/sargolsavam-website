@@ -178,7 +178,10 @@ const getAllCandidates = async (req, res) => {
 
         // Only apply pagination if all=true is not set
         let queryParams = [...params];
-        if (all !== 'true') {
+        // Check for 'true' string or boolean true or just presence if no value
+        const isAll = all === 'true' || all === true;
+
+        if (!isAll) {
             const offset = (page - 1) * limit;
             query += ` LIMIT $${params.length + 1} OFFSET $${params.length + 2}`;
             queryParams.push(limit, offset);
@@ -190,15 +193,15 @@ const getAllCandidates = async (req, res) => {
         ]);
 
         const total = parseInt(countRes.rows[0].count);
-        const totalPages = all === 'true' ? 1 : Math.ceil(total / limit);
+        const totalPages = isAll ? 1 : Math.ceil(total / limit);
 
         res.json({
             data: candidatesRes.rows,
             pagination: {
                 total,
-                page: all === 'true' ? 1 : parseInt(page),
+                page: isAll ? 1 : parseInt(page),
                 totalPages,
-                limit: all === 'true' ? total : parseInt(limit)
+                limit: isAll ? total : parseInt(limit)
             }
         });
     } catch (error) {
