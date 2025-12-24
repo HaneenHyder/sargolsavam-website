@@ -64,6 +64,34 @@ exports.getDashboardData = async (req, res) => {
             ORDER BY e.name
         `, [teamCode]);
 
+        // 4. Fetch Participation Analytics (Category Breakdown)
+        // Count participations per category
+        const analyticsResult = await db.query(`
+            SELECT e.category, COUNT(*) as count 
+            FROM participants p
+            JOIN events e ON p.event_id = e.id
+            WHERE p.team_code = $1 AND p.candidate_id IS NOT NULL
+            GROUP BY e.category
+        `, [teamCode]);
+
+        const participationStats = analyticsResult.rows;
+
+        // 5. Fetch Candidates with Zero Participation
+        // Find candidates who have NO entries in participants table for this team
+        const zeroParticipationResult = await db.query(`
+            SELECT * FROM candidates 
+            WHERE team_code = $1 
+            AND id NOT IN (
+                SELECT DISTINCT candidate_id 
+                FROM participants 
+                WHERE team_code = $1 
+                AND candidate_id IS NOT NULL
+            )
+            ORDER BY name
+        `, [teamCode]);
+
+        const zeroParticipationCandidates = zeroParticipationResult.rows;
+
 
         // Calculate medal counts and total points
         const medalCounts = { first: 0, second: 0, third: 0 };
@@ -81,6 +109,8 @@ exports.getDashboardData = async (req, res) => {
             team: { ...team, total_points: totalPoints }, // Override with calculated points
             candidates: candidatesResult.rows,
             results: resultsResult.rows,
+            participationStats,
+            zeroParticipationCandidates,
             medalCounts
         });
 

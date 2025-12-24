@@ -38,6 +38,8 @@ const CaptainDashboard = () => {
     const [resultSearch, setResultSearch] = useState("");
     const [memberSearch, setMemberSearch] = useState("");
     const [isAppealModalOpen, setIsAppealModalOpen] = useState(false);
+    const [participationStats, setParticipationStats] = useState<{ category: string, count: string }[]>([]);
+    const [zeroParticipationCandidates, setZeroParticipationCandidates] = useState<any[]>([]);
 
     useEffect(() => {
         if (!loading) {
@@ -84,6 +86,8 @@ const CaptainDashboard = () => {
             setResults(data.results);
             setMedalCounts(data.medalCounts);
             setTotalPoints(data.team.total_points || 0);
+            setParticipationStats(data.participationStats || []);
+            setZeroParticipationCandidates(data.zeroParticipationCandidates || []);
 
         } catch (error) {
             console.error("Error fetching dashboard data:", error);
@@ -202,6 +206,62 @@ const CaptainDashboard = () => {
                                 </div>
                             </div>
                         </div>
+                    </Card>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    {/* Participation Analytics */}
+                    <Card className="p-6">
+                        <h2 className="text-xl font-semibold mb-4">Participation Analytics</h2>
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                                <span className="font-medium">Total Participations</span>
+                                <span className="font-bold text-lg text-primary">
+                                    {participationStats.reduce((acc, curr) => acc + parseInt(curr.count), 0)}
+                                </span>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Category Breakdown</p>
+                                {participationStats.length > 0 ? (
+                                    participationStats.map((stat, index) => (
+                                        <div key={index} className="flex justify-between items-center text-sm border-b border-border/50 py-2 last:border-0">
+                                            <span>{formatCategory(stat.category)}</span>
+                                            <Badge variant="secondary">{stat.count}</Badge>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-muted-foreground">No participation data available</p>
+                                )}
+                            </div>
+                        </div>
+                    </Card>
+
+                    {/* Zero Participation Candidates */}
+                    <Card className="p-6">
+                        <h2 className="text-xl font-semibold mb-4 text-red-600 dark:text-red-400">Zero Participation</h2>
+                        <p className="text-sm text-muted-foreground mb-4">
+                            Team members who have not participated in any individual events.
+                        </p>
+                        {zeroParticipationCandidates.length > 0 ? (
+                            <div className="max-h-[250px] overflow-y-auto pr-2 space-y-2">
+                                {zeroParticipationCandidates.map((candidate) => (
+                                    <div key={candidate.id} className="flex items-center gap-3 p-2 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20">
+                                        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400 font-bold text-xs">
+                                            {candidate.chest_no}
+                                        </div>
+                                        <div>
+                                            <p className="font-medium text-sm">{candidate.name}</p>
+                                            <p className="text-xs text-muted-foreground">{formatCategory(candidate.category)}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center h-[150px] text-muted-foreground">
+                                <Users className="h-8 w-8 mb-2 opacity-20" />
+                                <p>All members are participating!</p>
+                            </div>
+                        )}
                     </Card>
                 </div>
 
