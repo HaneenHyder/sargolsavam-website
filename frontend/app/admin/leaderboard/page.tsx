@@ -659,8 +659,179 @@ function CombinedAnalyticsView({ results, candidates }: { results: Result[], can
             .slice(0, 5));
     };
 
+    const exportTopCandidatesPDF = () => {
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            toast.error("Unable to open print window. Please allow popups.");
+            return;
+        }
+
+        const currentDate = new Date().toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Top Candidates Report - Sargolsavam</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { 
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                        padding: 40px; 
+                        background: #fff;
+                        color: #1a1a1a;
+                    }
+                    .header { 
+                        text-align: center; 
+                        margin-bottom: 30px; 
+                        border-bottom: 3px solid #2563eb;
+                        padding-bottom: 20px;
+                    }
+                    .header h1 { 
+                        color: #1e40af; 
+                        font-size: 28px; 
+                        margin-bottom: 5px;
+                    }
+                    .header p { 
+                        color: #64748b; 
+                        font-size: 14px; 
+                    }
+                    .categories-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 25px;
+                        margin-top: 25px;
+                    }
+                    .category-card {
+                        border: 1px solid #e2e8f0;
+                        border-radius: 12px;
+                        padding: 20px;
+                        background: #f8fafc;
+                    }
+                    .category-card h2 {
+                        font-size: 16px;
+                        color: #1e40af;
+                        margin-bottom: 15px;
+                        padding-bottom: 10px;
+                        border-bottom: 2px solid #e2e8f0;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+                    .candidate-row {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 12px;
+                        margin-bottom: 10px;
+                        background: #fff;
+                        border-radius: 8px;
+                        border: 1px solid #e2e8f0;
+                    }
+                    .rank {
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        font-size: 14px;
+                        margin-right: 12px;
+                    }
+                    .rank-1 { background: #fef3c7; color: #92400e; }
+                    .rank-2 { background: #f1f5f9; color: #475569; }
+                    .rank-3 { background: #fef3c7; color: #b45309; }
+                    .candidate-info { flex: 1; }
+                    .candidate-name { font-weight: 600; font-size: 14px; }
+                    .candidate-meta { font-size: 11px; color: #64748b; margin-top: 2px; }
+                    .candidate-points { 
+                        font-size: 18px; 
+                        font-weight: bold; 
+                        color: #1e40af;
+                    }
+                    .points-label { font-size: 10px; color: #64748b; }
+                    .no-candidates { 
+                        text-align: center; 
+                        color: #94a3b8; 
+                        padding: 20px;
+                        font-style: italic;
+                    }
+                    .footer { 
+                        margin-top: 40px; 
+                        text-align: center; 
+                        font-size: 11px; 
+                        color: #94a3b8;
+                        border-top: 1px solid #e2e8f0;
+                        padding-top: 15px;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                        .categories-grid { grid-template-columns: repeat(3, 1fr); }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>🏆 Top Candidates Report</h1>
+                    <p>Sargolsavam - Generated on ${currentDate}</p>
+                </div>
+
+                <div class="categories-grid">
+                    ${topCandidatesByCategory.map(catGroup => `
+                        <div class="category-card">
+                            <h2>🏆 ${catGroup.category}</h2>
+                            ${catGroup.candidates.length > 0 ? catGroup.candidates.map((candidate, idx) => `
+                                <div class="candidate-row">
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="rank rank-${idx + 1}">${idx + 1}</div>
+                                        <div class="candidate-info">
+                                            <div class="candidate-name">${candidate.name}</div>
+                                            <div class="candidate-meta">${candidate.chest_number} • ${candidate.team_code}</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div class="candidate-points">${candidate.points}</div>
+                                        <div class="points-label">pts</div>
+                                    </div>
+                                </div>
+                            `).join('') : '<div class="no-candidates">No candidates yet</div>'}
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="footer">
+                    <p>This report was automatically generated from the Sargolsavam Admin Panel</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.focus();
+
+        setTimeout(() => {
+            printWindow.print();
+        }, 250);
+
+        toast.success("PDF export ready - use 'Save as PDF' in print dialog");
+    };
+
     return (
         <div className="space-y-6">
+            {/* Top Candidates Header with Export Button */}
+            <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold">Top Candidates by Category</h2>
+                <Button variant="outline" size="sm" onClick={exportTopCandidatesPDF}>
+                    <FileDown className="h-4 w-4 mr-2" /> Export PDF
+                </Button>
+            </div>
+
             <div className="grid md:grid-cols-3 gap-6">
                 {topCandidatesByCategory.map((catGroup, catIdx) => (
                     <Card key={catIdx} className="p-6">
