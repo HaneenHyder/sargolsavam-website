@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { Modal } from "@/components/ui/Modal";
-import { Trophy, TrendingUp, Users, Award, Search, Download, ArrowUpDown, ChevronRight } from "lucide-react";
+import { Trophy, TrendingUp, Users, Award, Search, Download, ArrowUpDown, ChevronRight, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { formatCategory } from "@/lib/utils";
 
@@ -911,6 +911,158 @@ function TeamPerformanceTable({ results, teams }: { results: Result[], teams: Te
         toast.success("Data exported successfully");
     };
 
+    const exportToPDF = () => {
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            toast.error("Unable to open print window. Please allow popups.");
+            return;
+        }
+
+        const currentDate = new Date().toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Team Performance Report - Sargolsavam</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { 
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                        padding: 40px; 
+                        background: #fff;
+                        color: #1a1a1a;
+                    }
+                    .header { 
+                        text-align: center; 
+                        margin-bottom: 30px; 
+                        border-bottom: 3px solid #2563eb;
+                        padding-bottom: 20px;
+                    }
+                    .header h1 { 
+                        color: #1e40af; 
+                        font-size: 28px; 
+                        margin-bottom: 5px;
+                    }
+                    .header p { 
+                        color: #64748b; 
+                        font-size: 14px; 
+                    }
+                    table { 
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        margin-top: 20px;
+                        font-size: 12px;
+                    }
+                    th { 
+                        background: #1e40af; 
+                        color: white; 
+                        padding: 12px 8px; 
+                        text-align: left;
+                        font-weight: 600;
+                    }
+                    th.center, td.center { text-align: center; }
+                    th.right, td.right { text-align: right; }
+                    td { 
+                        padding: 10px 8px; 
+                        border-bottom: 1px solid #e2e8f0;
+                    }
+                    tr:nth-child(even) { background: #f8fafc; }
+                    tr:hover { background: #f1f5f9; }
+                    .rank { 
+                        font-weight: bold; 
+                        color: #1e40af;
+                    }
+                    .team-name { font-weight: 600; }
+                    .team-code { 
+                        font-size: 10px; 
+                        color: #64748b;
+                    }
+                    .gold { color: #ca8a04; }
+                    .silver { color: #64748b; }
+                    .bronze { color: #b45309; }
+                    .total-points { 
+                        font-weight: bold; 
+                        font-size: 14px;
+                        color: #1e40af;
+                    }
+                    .footer { 
+                        margin-top: 30px; 
+                        text-align: center; 
+                        font-size: 11px; 
+                        color: #94a3b8;
+                        border-top: 1px solid #e2e8f0;
+                        padding-top: 15px;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                        .no-print { display: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>Team Performance Report</h1>
+                    <p>Sargolsavam - Generated on ${currentDate}</p>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team</th>
+                            <th class="center">Events</th>
+                            <th class="center">🥇 1st</th>
+                            <th class="center">🥈 2nd</th>
+                            <th class="center">🥉 3rd</th>
+                            <th class="center">Onstage</th>
+                            <th class="center">Offstage</th>
+                            <th class="right">Total Points</th>
+                            <th>Best Performer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${filteredTeams.map((team, idx) => `
+                            <tr>
+                                <td class="rank">${idx + 1}</td>
+                                <td>
+                                    <div class="team-name">${team.team_name}</div>
+                                    <div class="team-code">${team.team_code}</div>
+                                </td>
+                                <td class="center">${team.total_events}</td>
+                                <td class="center gold">${team.first_prizes}</td>
+                                <td class="center silver">${team.second_prizes}</td>
+                                <td class="center bronze">${team.third_prizes}</td>
+                                <td class="center">${team.onstage_points}</td>
+                                <td class="center">${team.offstage_points}</td>
+                                <td class="right total-points">${team.total_points}</td>
+                                <td>${team.best_performer ? `${team.best_performer.name} (${team.best_performer.points} pts)` : '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="footer">
+                    <p>This report was automatically generated from the Sargolsavam Admin Panel</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.focus();
+
+        // Wait for content to load before printing
+        setTimeout(() => {
+            printWindow.print();
+        }, 250);
+
+        toast.success("PDF export ready - use 'Save as PDF' in print dialog");
+    };
+
     return (
         <>
             <Card className="p-6">
@@ -921,7 +1073,10 @@ function TeamPerformanceTable({ results, teams }: { results: Result[], teams: Te
                             <Button variant={sortBy === "prizes" ? "primary" : "outline"} size="sm" onClick={() => { if (sortBy === "prizes") setSortOrder(sortOrder === "asc" ? "desc" : "asc"); else setSortBy("prizes"); }}>Prizes <ArrowUpDown className="h-3 w-3 ml-1" /></Button>
                             <Button variant={sortBy === "events" ? "primary" : "outline"} size="sm" onClick={() => { if (sortBy === "events") setSortOrder(sortOrder === "asc" ? "desc" : "asc"); else setSortBy("events"); }}>Participation <ArrowUpDown className="h-3 w-3 ml-1" /></Button>
                         </div>
-                        <Button onClick={exportToCSV} variant="outline"><Download className="h-4 w-4 mr-2" /> Export CSV</Button>
+                        <div className="flex gap-2">
+                            <Button onClick={exportToPDF} variant="outline"><FileDown className="h-4 w-4 mr-2" /> Export PDF</Button>
+                            <Button onClick={exportToCSV} variant="outline"><Download className="h-4 w-4 mr-2" /> Export CSV</Button>
+                        </div>
                     </div>
 
                     <div className="border rounded-lg overflow-auto max-h-[600px]">

@@ -129,44 +129,42 @@ export default function AdminDashboard() {
                 </Card>
             </div>
 
+            {/* Quick Actions */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="hover:border-primary transition-colors cursor-pointer group">
+                    <Link href="/admin/events">
+                        <CardContent className="p-6 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-100 transition-colors">
+                                    <List size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg">Manage Events</h3>
+                                    <p className="text-gray-500 text-sm">Create events, add participants, enter results.</p>
+                                </div>
+                            </div>
+                            <div className="text-gray-400 group-hover:text-primary transition-colors">→</div>
+                        </CardContent>
+                    </Link>
+                </Card>
+
+                <Card className="hover:border-primary transition-colors cursor-pointer group">
+                    <Link href="/admin/leaderboard">
+                        <CardContent className="p-6 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-yellow-50 text-yellow-600 rounded-lg group-hover:bg-yellow-100 transition-colors">
+                                    <BarChart3 size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg">View Leaderboard</h3>
+                                    <p className="text-gray-500 text-sm">Check live team standings and points.</p>
+                                </div>
+                            </div>
+                            <div className="text-gray-400 group-hover:text-primary transition-colors">→</div>
+                        </CardContent>
+                    </Link>
+                </Card>
+            </div>
         </div>
-
-            {/* Quick Actions */ }
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="hover:border-primary transition-colors cursor-pointer group">
-            <Link href="/admin/events">
-                <CardContent className="p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-100 transition-colors">
-                            <List size={24} />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-lg">Manage Events</h3>
-                            <p className="text-gray-500 text-sm">Create events, add participants, enter results.</p>
-                        </div>
-                    </div>
-                    <div className="text-gray-400 group-hover:text-primary transition-colors">→</div>
-                </CardContent>
-            </Link>
-        </Card>
-
-        <Card className="hover:border-primary transition-colors cursor-pointer group">
-            <Link href="/admin/leaderboard">
-                <CardContent className="p-6 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="p-3 bg-yellow-50 text-yellow-600 rounded-lg group-hover:bg-yellow-100 transition-colors">
-                            <BarChart3 size={24} />
-                        </div>
-                        <div>
-                            <h3 className="font-bold text-lg">View Leaderboard</h3>
-                            <p className="text-gray-500 text-sm">Check live team standings and points.</p>
-                        </div>
-                    </div>
-                    <div className="text-gray-400 group-hover:text-primary transition-colors">→</div>
-                </CardContent>
-            </Link>
-        </Card>
-    </div>
-        </div >
     );
 }
