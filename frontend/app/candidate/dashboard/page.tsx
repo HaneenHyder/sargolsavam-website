@@ -189,6 +189,8 @@ const CandidateDashboard = () => {
                     .grade-b { color: #2563eb; font-weight: bold; }
                     .grade-c { color: #9333ea; font-weight: bold; }
                     .absent { color: #dc2626; }
+                    .onstage { color: #2563eb; font-weight: 600; }
+                    .offstage { color: #9333ea; font-weight: 600; }
                     .footer { 
                         margin-top: 30px; 
                         text-align: center; 
@@ -244,6 +246,7 @@ const CandidateDashboard = () => {
                         <tr>
                             <th>#</th>
                             <th>Event Name</th>
+                            <th>Type</th>
                             <th>Status</th>
                             <th>Position</th>
                             <th>Grade</th>
@@ -254,6 +257,7 @@ const CandidateDashboard = () => {
                             <tr>
                                 <td>${idx + 1}</td>
                                 <td>${result.event_name}</td>
+                                <td><span class="${result.event_type === 'Onstage' ? 'onstage' : 'offstage'}">${result.event_type || 'N/A'}</span></td>
                                 <td>${result.status === 'published' ? 'Published' : result.status === 'Absent' ? '<span class="absent">Absent</span>' : 'Pending'}</td>
                                 <td>${result.status === 'Absent' ? '<span class="absent">Absent</span>' :
                 result.position === 1 ? '<span class="gold">1st</span>' :
@@ -420,6 +424,7 @@ const CandidateDashboard = () => {
                                 <thead>
                                     <tr className="border-b border-border">
                                         <th className="text-left py-3 px-4 whitespace-nowrap">Event Name</th>
+                                        <th className="text-left py-3 px-4 whitespace-nowrap">Type</th>
                                         <th className="text-left py-3 px-4 whitespace-nowrap">Status</th>
                                         <th className="text-left py-3 px-4 whitespace-nowrap">Position</th>
                                         <th className="text-left py-3 px-4 whitespace-nowrap">Grade</th>
@@ -429,6 +434,15 @@ const CandidateDashboard = () => {
                                     {results.map((result) => (
                                         <tr key={result.id} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
                                             <td className="py-4 px-4 font-medium min-w-[150px]">{result.event_name}</td>
+                                            <td className="py-4 px-4 whitespace-nowrap">
+                                                <Badge className={
+                                                    result.event_type === 'Onstage'
+                                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                                                        : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                                                }>
+                                                    {result.event_type || 'N/A'}
+                                                </Badge>
+                                            </td>
                                             <td className="py-4 px-4 whitespace-nowrap">
                                                 <Badge className={
                                                     result.status === 'published' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
