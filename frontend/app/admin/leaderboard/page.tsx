@@ -57,9 +57,9 @@ interface Team {
 
 // --- Participation Analytics Component ---
 
-function ParticipationAnalyticsView({ analyticsData }: { analyticsData: AnalyticsData[] }) {
+function ParticipationAnalyticsView({ analyticsData, teams }: { analyticsData: AnalyticsData[], teams: Team[] }) {
     const [zeroEventCandidates, setZeroEventCandidates] = useState<AnalyticsData[]>([]);
-    const [teamStats, setTeamStats] = useState<{ team: string; total: number; active: number; percentage: number }[]>([]);
+    const [teamStats, setTeamStats] = useState<{ team: string; teamName: string; total: number; active: number; percentage: number }[]>([]);
     const [categoryStats, setCategoryStats] = useState<{ category: string; total: number; active: number; percentage: number }[]>([]);
     const [overallStats, setOverallStats] = useState({ total: 0, active: 0, percentage: 0 });
 
@@ -88,12 +88,16 @@ function ParticipationAnalyticsView({ analyticsData }: { analyticsData: Analytic
             if (parseInt(d.event_count) > 0) team.active++;
         });
 
-        const tStats = Array.from(teamMap.entries()).map(([team, stats]) => ({
-            team,
-            total: stats.total,
-            active: stats.active,
-            percentage: stats.total > 0 ? (stats.active / stats.total) * 100 : 0
-        })).sort((a, b) => b.percentage - a.percentage);
+        const tStats = Array.from(teamMap.entries()).map(([team, stats]) => {
+            const teamInfo = teams.find(t => t.code === team);
+            return {
+                team,
+                teamName: teamInfo?.name || team,
+                total: stats.total,
+                active: stats.active,
+                percentage: stats.total > 0 ? (stats.active / stats.total) * 100 : 0
+            };
+        }).sort((a, b) => b.percentage - a.percentage);
         setTeamStats(tStats);
 
         // Category Stats
@@ -257,7 +261,7 @@ function ParticipationAnalyticsView({ analyticsData }: { analyticsData: Analytic
                     <div class="summary-card warning">
                         <h3>Top Team</h3>
                         <div class="value">${teamStats[0].percentage.toFixed(1)}%</div>
-                        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">${teamStats[0].team}</p>
+                        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">${teamStats[0].teamName}</p>
                     </div>
                     ` : ''}
                 </div>
@@ -277,7 +281,7 @@ function ParticipationAnalyticsView({ analyticsData }: { analyticsData: Analytic
                         <tbody>
                             ${teamStats.map(stat => `
                                 <tr>
-                                    <td><strong>${stat.team}</strong></td>
+                                    <td><strong>${stat.teamName}</strong></td>
                                     <td class="right">${stat.total}</td>
                                     <td class="right">${stat.active}</td>
                                     <td class="right"><strong>${stat.percentage.toFixed(1)}%</strong></td>
@@ -403,7 +407,7 @@ function ParticipationAnalyticsView({ analyticsData }: { analyticsData: Analytic
                         {teamStats.length > 0 && (
                             <>
                                 <span className="text-4xl font-bold text-green-600">{teamStats[0].percentage.toFixed(1)}%</span>
-                                <span className="ml-2 text-lg font-medium text-gray-700">{teamStats[0].team}</span>
+                                <span className="ml-2 text-lg font-medium text-gray-700">{teamStats[0].teamName}</span>
                             </>
                         )}
                     </div>
@@ -427,7 +431,7 @@ function ParticipationAnalyticsView({ analyticsData }: { analyticsData: Analytic
                         <TableBody>
                             {teamStats.map((stat, idx) => (
                                 <TableRow key={idx}>
-                                    <TableCell className="font-medium">{stat.team}</TableCell>
+                                    <TableCell className="font-medium">{stat.teamName}</TableCell>
                                     <TableCell className="text-right">{stat.total}</TableCell>
                                     <TableCell className="text-right">{stat.active}</TableCell>
                                     <TableCell className="text-right font-bold">{stat.percentage.toFixed(1)}%</TableCell>
@@ -1563,7 +1567,7 @@ export default function LeaderboardPage() {
                     <CandidatePerformanceTable results={results} candidates={candidates} detailedData={detailedStats} />
                 </TabsContent>
                 <TabsContent value="analytics">
-                    <ParticipationAnalyticsView analyticsData={analyticsData} />
+                    <ParticipationAnalyticsView analyticsData={analyticsData} teams={teams} />
                 </TabsContent>
             </Tabs>
         </div>
