@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Trophy, User, Users as UsersIcon, Award, LogOut } from "lucide-react";
+import { Trophy, User, Users as UsersIcon, Award, LogOut, FileDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext"; // Adjust path if needed
 
 // Use absolute URL or env var
@@ -81,6 +81,207 @@ const CandidateDashboard = () => {
     const handleLogout = async () => {
         await logout();
         router.push("/login");
+    };
+
+    const exportToPDF = () => {
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            alert("Unable to open print window. Please allow popups.");
+            return;
+        }
+
+        const currentDate = new Date().toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        const candidateName = candidateData?.name || user?.name || 'Candidate';
+        const chestNo = candidateData?.chest_no || user?.chest_no || '-';
+        const teamCode = candidateData?.team_code || user?.team_code || '-';
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Event Results - ${candidateName}</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { 
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                        padding: 40px; 
+                        background: #fff;
+                        color: #1a1a1a;
+                    }
+                    .header { 
+                        text-align: center; 
+                        margin-bottom: 30px; 
+                        border-bottom: 3px solid #2563eb;
+                        padding-bottom: 20px;
+                    }
+                    .header h1 { 
+                        color: #1e40af; 
+                        font-size: 24px; 
+                        margin-bottom: 5px;
+                    }
+                    .header p { 
+                        color: #64748b; 
+                        font-size: 14px; 
+                    }
+                    .candidate-info {
+                        display: flex;
+                        justify-content: center;
+                        gap: 30px;
+                        margin: 20px 0;
+                        padding: 15px;
+                        background: #f8fafc;
+                        border-radius: 8px;
+                    }
+                    .info-item {
+                        text-align: center;
+                    }
+                    .info-label {
+                        font-size: 12px;
+                        color: #64748b;
+                    }
+                    .info-value {
+                        font-size: 18px;
+                        font-weight: bold;
+                        color: #1e40af;
+                    }
+                    .summary-row {
+                        display: flex;
+                        justify-content: center;
+                        gap: 20px;
+                        margin: 20px 0;
+                    }
+                    .summary-item {
+                        text-align: center;
+                        padding: 10px 20px;
+                        background: #fef3c7;
+                        border-radius: 8px;
+                    }
+                    .summary-item.events {
+                        background: #dcfce7;
+                    }
+                    table { 
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        margin-top: 20px;
+                        font-size: 13px;
+                    }
+                    th { 
+                        background: #1e40af; 
+                        color: white; 
+                        padding: 12px 8px; 
+                        text-align: left;
+                        font-weight: 600;
+                    }
+                    td { 
+                        padding: 10px 8px; 
+                        border-bottom: 1px solid #e2e8f0;
+                    }
+                    tr:nth-child(even) { background: #f8fafc; }
+                    .gold { color: #ca8a04; font-weight: bold; }
+                    .silver { color: #64748b; font-weight: bold; }
+                    .bronze { color: #b45309; font-weight: bold; }
+                    .grade-a { color: #16a34a; font-weight: bold; }
+                    .grade-b { color: #2563eb; font-weight: bold; }
+                    .grade-c { color: #9333ea; font-weight: bold; }
+                    .absent { color: #dc2626; }
+                    .footer { 
+                        margin-top: 30px; 
+                        text-align: center; 
+                        font-size: 11px; 
+                        color: #94a3b8;
+                        border-top: 1px solid #e2e8f0;
+                        padding-top: 15px;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>My Event Results</h1>
+                    <p>Sargolsavam - Generated on ${currentDate}</p>
+                </div>
+                <div class="candidate-info">
+                    <div class="info-item">
+                        <div class="info-label">Name</div>
+                        <div class="info-value">${candidateName}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Chest No</div>
+                        <div class="info-value">${chestNo}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Team</div>
+                        <div class="info-value">${teamCode}</div>
+                    </div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-item">
+                        <div class="info-label">🥇 First</div>
+                        <div class="info-value">${medalCounts.first}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="info-label">🥈 Second</div>
+                        <div class="info-value">${medalCounts.second}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="info-label">🥉 Third</div>
+                        <div class="info-value">${medalCounts.third}</div>
+                    </div>
+                    <div class="summary-item events">
+                        <div class="info-label">Total Events</div>
+                        <div class="info-value">${results.length}</div>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Event Name</th>
+                            <th>Status</th>
+                            <th>Position</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${results.map((result, idx) => `
+                            <tr>
+                                <td>${idx + 1}</td>
+                                <td>${result.event_name}</td>
+                                <td>${result.status === 'published' ? 'Published' : result.status === 'Absent' ? '<span class="absent">Absent</span>' : 'Pending'}</td>
+                                <td>${result.status === 'Absent' ? '<span class="absent">Absent</span>' :
+                result.position === 1 ? '<span class="gold">1st</span>' :
+                    result.position === 2 ? '<span class="silver">2nd</span>' :
+                        result.position === 3 ? '<span class="bronze">3rd</span>' : '-'}</td>
+                                <td>${result.status === 'Absent' ? '<span class="absent">Absent</span>' :
+                result.grade === 'A' ? '<span class="grade-a">Grade A</span>' :
+                    result.grade === 'B' ? '<span class="grade-b">Grade B</span>' :
+                        result.grade === 'C' ? '<span class="grade-c">Grade C</span>' :
+                            result.grade ? 'Grade ' + result.grade : '-'}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                <div class="footer">
+                    <p>This report was automatically generated from the Sargolsavam Candidate Portal</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.focus();
+
+        setTimeout(() => {
+            printWindow.print();
+        }, 250);
     };
 
     if (loading || !user) {
@@ -200,7 +401,14 @@ const CandidateDashboard = () => {
                 </div>
 
                 <Card className="p-6">
-                    <h2 className="text-xl font-semibold mb-6">My Event Results</h2>
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold">My Event Results</h2>
+                        {results.length > 0 && (
+                            <Button variant="outline" size="sm" onClick={exportToPDF}>
+                                <FileDown className="h-4 w-4 mr-2" /> Export PDF
+                            </Button>
+                        )}
+                    </div>
 
                     {loadingResults ? (
                         <p className="text-center text-muted-foreground py-8">Loading results...</p>
