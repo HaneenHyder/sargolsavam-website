@@ -115,8 +115,267 @@ function ParticipationAnalyticsView({ analyticsData }: { analyticsData: Analytic
 
     }, [analyticsData]);
 
+    const exportToPDF = () => {
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+            toast.error("Unable to open print window. Please allow popups.");
+            return;
+        }
+
+        const currentDate = new Date().toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Participation Analytics Report - Sargolsavam</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { 
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                        padding: 40px; 
+                        background: #fff;
+                        color: #1a1a1a;
+                    }
+                    .header { 
+                        text-align: center; 
+                        margin-bottom: 30px; 
+                        border-bottom: 3px solid #2563eb;
+                        padding-bottom: 20px;
+                    }
+                    .header h1 { 
+                        color: #1e40af; 
+                        font-size: 28px; 
+                        margin-bottom: 5px;
+                    }
+                    .header p { 
+                        color: #64748b; 
+                        font-size: 14px; 
+                    }
+                    .summary-cards {
+                        display: flex;
+                        justify-content: center;
+                        gap: 20px;
+                        margin: 25px 0;
+                    }
+                    .summary-card {
+                        text-align: center;
+                        padding: 20px 30px;
+                        background: #f8fafc;
+                        border-radius: 12px;
+                        border: 1px solid #e2e8f0;
+                    }
+                    .summary-card.highlight { background: #dcfce7; }
+                    .summary-card.warning { background: #fef3c7; }
+                    .summary-card.danger { background: #fee2e2; }
+                    .summary-card h3 {
+                        font-size: 12px;
+                        color: #64748b;
+                        margin-bottom: 8px;
+                    }
+                    .summary-card .value {
+                        font-size: 32px;
+                        font-weight: bold;
+                        color: #1e40af;
+                    }
+                    .summary-card.highlight .value { color: #16a34a; }
+                    .summary-card.danger .value { color: #dc2626; }
+                    .section { margin-top: 30px; }
+                    .section h2 {
+                        font-size: 18px;
+                        color: #1e40af;
+                        margin-bottom: 15px;
+                        padding-bottom: 8px;
+                        border-bottom: 2px solid #e2e8f0;
+                    }
+                    table { 
+                        width: 100%; 
+                        border-collapse: collapse; 
+                        font-size: 12px;
+                    }
+                    th { 
+                        background: #1e40af; 
+                        color: white; 
+                        padding: 10px 8px; 
+                        text-align: left;
+                        font-weight: 600;
+                    }
+                    th.right, td.right { text-align: right; }
+                    td { 
+                        padding: 8px; 
+                        border-bottom: 1px solid #e2e8f0;
+                    }
+                    tr:nth-child(even) { background: #f8fafc; }
+                    .progress-bar {
+                        width: 100px;
+                        height: 8px;
+                        background: #e2e8f0;
+                        border-radius: 4px;
+                        overflow: hidden;
+                        display: inline-block;
+                    }
+                    .progress-fill { height: 100%; border-radius: 4px; }
+                    .progress-high { background: #16a34a; }
+                    .progress-medium { background: #eab308; }
+                    .progress-low { background: #dc2626; }
+                    .footer { 
+                        margin-top: 30px; 
+                        text-align: center; 
+                        font-size: 11px; 
+                        color: #94a3b8;
+                        border-top: 1px solid #e2e8f0;
+                        padding-top: 15px;
+                    }
+                    @media print {
+                        body { padding: 20px; }
+                        .page-break { page-break-before: always; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>Participation Analytics Report</h1>
+                    <p>Sargolsavam - Generated on ${currentDate}</p>
+                </div>
+
+                <div class="summary-cards">
+                    <div class="summary-card highlight">
+                        <h3>Overall Participation</h3>
+                        <div class="value">${overallStats.percentage.toFixed(1)}%</div>
+                        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">${overallStats.active} of ${overallStats.total} candidates</p>
+                    </div>
+                    <div class="summary-card danger">
+                        <h3>Zero Participation</h3>
+                        <div class="value">${zeroEventCandidates.length}</div>
+                        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">Candidates not participating</p>
+                    </div>
+                    ${teamStats.length > 0 ? `
+                    <div class="summary-card warning">
+                        <h3>Top Team</h3>
+                        <div class="value">${teamStats[0].percentage.toFixed(1)}%</div>
+                        <p style="font-size: 11px; color: #64748b; margin-top: 5px;">${teamStats[0].team}</p>
+                    </div>
+                    ` : ''}
+                </div>
+
+                <div class="section">
+                    <h2>Team Participation Breakdown</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Team</th>
+                                <th class="right">Total Members</th>
+                                <th class="right">Active</th>
+                                <th class="right">Participation %</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${teamStats.map(stat => `
+                                <tr>
+                                    <td><strong>${stat.team}</strong></td>
+                                    <td class="right">${stat.total}</td>
+                                    <td class="right">${stat.active}</td>
+                                    <td class="right"><strong>${stat.percentage.toFixed(1)}%</strong></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill ${stat.percentage >= 80 ? 'progress-high' : stat.percentage >= 50 ? 'progress-medium' : 'progress-low'}" style="width: ${stat.percentage}%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section">
+                    <h2>Category Participation Breakdown</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th class="right">Total Candidates</th>
+                                <th class="right">Active</th>
+                                <th class="right">Participation %</th>
+                                <th>Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${categoryStats.map(stat => `
+                                <tr>
+                                    <td><strong>${formatCategory(stat.category)}</strong></td>
+                                    <td class="right">${stat.total}</td>
+                                    <td class="right">${stat.active}</td>
+                                    <td class="right"><strong>${stat.percentage.toFixed(1)}%</strong></td>
+                                    <td>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill ${stat.percentage >= 80 ? 'progress-high' : stat.percentage >= 50 ? 'progress-medium' : 'progress-low'}" style="width: ${stat.percentage}%"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                ${zeroEventCandidates.length > 0 ? `
+                <div class="section page-break">
+                    <h2 style="color: #dc2626;">Candidates with Zero Participation (${zeroEventCandidates.length})</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Chest No</th>
+                                <th>Name</th>
+                                <th>Team</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${zeroEventCandidates.map(c => `
+                                <tr>
+                                    <td><strong>${c.chest_no}</strong></td>
+                                    <td>${c.name}</td>
+                                    <td>${c.team_code}</td>
+                                    <td>${formatCategory(c.category)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                ` : ''}
+
+                <div class="footer">
+                    <p>This report was automatically generated from the Sargolsavam Admin Panel</p>
+                </div>
+            </body>
+            </html>
+        `;
+
+        printWindow.document.write(html);
+        printWindow.document.close();
+        printWindow.focus();
+
+        setTimeout(() => {
+            printWindow.print();
+        }, 250);
+
+        toast.success("PDF export ready - use 'Save as PDF' in print dialog");
+    };
+
     return (
         <div className="space-y-6">
+            {/* Header with Export Button */}
+            <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold">Participation Analytics</h2>
+                <Button variant="outline" size="sm" onClick={exportToPDF}>
+                    <FileDown className="h-4 w-4 mr-2" /> Export PDF
+                </Button>
+            </div>
+
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="p-6">
