@@ -5,6 +5,7 @@ const adminController = require('../controllers/adminController');
 const { verifyToken, isAdmin } = require('../middleware/authMiddleware');
 
 router.get('/stats', verifyToken, isAdmin, adminController.getDashboardStats);
+router.get('/stats/login', verifyToken, isAdmin, adminController.getLoginStats);
 router.get('/leaderboard', verifyToken, isAdmin, adminController.getLeaderboard);
 router.get('/leaderboard/detailed', verifyToken, isAdmin, require('../controllers/leaderboardController').getDetailedLeaderboard);
 router.get('/leaderboard/analytics', verifyToken, isAdmin, require('../controllers/leaderboardController').getParticipationAnalytics);

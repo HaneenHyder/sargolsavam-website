@@ -21,6 +21,37 @@ exports.getDashboardStats = async (req, res) => {
     }
 };
 
+exports.getLoginStats = async (req, res) => {
+    try {
+        const query = `
+            SELECT login_type, success, COUNT(*) as count 
+            FROM login_logs 
+            GROUP BY login_type, success
+        `;
+        const { rows } = await db.query(query);
+
+        const stats = {
+            admin: { success: 0, fail: 0 },
+            team: { success: 0, fail: 0 },
+            candidate: { success: 0, fail: 0 }
+        };
+
+        rows.forEach(row => {
+            const type = row.login_type || 'unknown';
+            const status = row.success ? 'success' : 'fail';
+            const count = parseInt(row.count);
+
+            if (stats[type]) {
+                stats[type][status] = count;
+            }
+        });
+
+        res.json(stats);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
 exports.getLeaderboard = async (req, res) => {
     try {
         const { rows } = await db.query('SELECT * FROM teams ORDER BY total_points DESC');
