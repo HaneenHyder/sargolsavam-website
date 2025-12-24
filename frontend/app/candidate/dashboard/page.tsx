@@ -6,8 +6,17 @@ import Header from "@/components/Header";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Trophy, User, Users as UsersIcon, Award, LogOut } from "lucide-react";
+import { Trophy, User, Users as UsersIcon, Award, LogOut, Download } from "lucide-react";
 import { useAuth } from "@/context/AuthContext"; // Adjust path if needed
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+// Extend jsPDF type to include autoTable
+declare module 'jspdf' {
+    interface jsPDF {
+        lastAutoTable: { finalY: number };
+        autoTable: (options: any) => jsPDF;
+    }
+}
 
 // Use absolute URL or env var
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -200,7 +209,43 @@ const CandidateDashboard = () => {
                 </div>
 
                 <Card className="p-6">
-                    <h2 className="text-xl font-semibold mb-6">My Event Results</h2>
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-semibold">My Event Results</h2>
+                        {results.length > 0 && (
+                            <Button onClick={() => {
+                                const doc = new jsPDF();
+
+                                // Add Title
+                                doc.setFontSize(18);
+                                doc.text("Sargolsavam 2024 - Candidate Results", 14, 20);
+
+                                // Add Candidate Info
+                                doc.setFontSize(12);
+                                doc.text(`Name: ${candidateData?.name || user.name}`, 14, 30);
+                                doc.text(`Chest No: ${candidateData?.chest_no || user?.chest_no || '-'}`, 14, 36);
+                                doc.text(`Team Code: ${candidateData?.team_code || user?.team_code || '-'}`, 14, 42);
+
+                                // Add Table
+                                doc.autoTable({
+                                    startY: 50,
+                                    head: [['Event Name', 'Status', 'Position', 'Grade']],
+                                    body: results.map(result => [
+                                        result.event_name,
+                                        result.status === 'published' ? 'Published' : result.status,
+                                        result.status === 'Absent' ? '-' : (result.position ? `${result.position}` : '-'),
+                                        result.status === 'Absent' ? '-' : (result.grade ? result.grade : '-')
+                                    ]),
+                                    theme: 'grid',
+                                    headStyles: { fillColor: [66, 66, 66] }
+                                });
+
+                                // Save PDF
+                                doc.save(`Results_${candidateData?.chest_no || 'Candidate'}.pdf`);
+                            }} className="gap-2">
+                                <Download className="h-4 w-4" /> Download PDF
+                            </Button>
+                        )}
+                    </div>
 
                     {loadingResults ? (
                         <p className="text-center text-muted-foreground py-8">Loading results...</p>
